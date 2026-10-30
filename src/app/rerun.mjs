@@ -3,28 +3,74 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { LocalizedError, msg, problemOf } from "../i18n/index.mjs";
 import { findModel, MODELS } from "../models/catalog.mjs";
-import { CHAT_VENDORS, parseChatChoice, parseCustomParams } from "../server/chat/vendors.mjs";
-import { keyVendorsOf, taskProblem, usesLocalModel } from "../server/modes.mjs";
-import { PROVIDERS, parseModelChoice } from "../server/providers/index.mjs";
+import { CHAT_VENDORS } from "../server/chat/vendors.mjs";
+import { describeRoute, keyVendorsOf, taskProblem } from "../server/modes.mjs";
+import { PROVIDERS } from "../server/providers/index.mjs";
 import { findTask } from "../server/tasks/index.mjs";
-import { resolveSettings, routeOf } from "../storage/settings.mjs";
+import { findVendor } from "../server/vendors.mjs";
+import { patchSettings, resolveSettings, routeOf, SETTINGS } from "../storage/settings.mjs";
+import { hopsOf, needsOf } from "./model-plaza.mjs";
 
-// 历史里"用另一个模型重跑"：拿存下来的录音按另一条路线再跑一次，结果存成一条新记录。
-// 和一次正常听写的区别只有来源：音频不是从悬浮条来的，而是 Recordings 里的那个文件；其余（任务、提示词、收尾、记账）
-// 都走同一条路。路线是这一次现砌的，不改设置里正在用的那条。
-//
-// 选项（重跑对话框要的）由这里算：哪些模型装好了、哪家的 key 在，renderer 不用自己猜。
+// 历史里"换个模型重跑"：拿存下来的录音按另一条路线再跑一次，结果另存一条，记下重跑自哪条（统计不数它）。
+// 和一次正常听写只差在音频的来处：不是悬浮条，是录音目录里的那个文件；任务、提示词、收尾、记账走同一条路。
+// 路线按"设置里换掉这几项"现拼（storage/settings.mjs 的 patchSettings、routeOf），不动正在用的那条；
+// 一跳是谁、还差什么用引擎页那一套（app/model-plaza.mjs 的 hopsOf、needsOf），页面照引擎页的写法画。
+
+const listed = (registry) => registry.flatMap(({ id, models }) => models.map((model) => `${id}/${model.id}`));
+
+/** 重跑时每种方式能换的那几项设置：是路线上的哪一跳、能选哪些（设置里现在的不在其中时补在最前面） */
+const CHOICES = {
+  native: [{ name: "model", role: "native", values: listed(PROVIDERS) }],
+  local: [
+    { name: "transcriber", role: "transcribe", values: SETTINGS.transcriber.choices },
+    { name: "polish", role: "polish", values: listed(CHAT_VENDORS.filter(({ id }) => id !== "custom")) },
+  ],
+  private: [{ name: "privateTranscriber", role: "transcribe", values: SETTINGS.privateTranscriber.choices }],
+};
+
+/** 缺的这一项是不是这一跳的：本机模型的下载、自定义服务的地址、这一跳那家的 key */
+const needOfHop = (hop) => (need) => {
+  if (need.kind === "download") return hop.platform === "local";
+  if (need.kind === "url") return hop.platform === "custom";
+  return need.platform === hop.platform;
+};
+
+/** 缺的那一项写成一句话，和引擎页说的一样 */
+const needProblem = (need) =>
+  msg(`home.mode.needs.${need.kind}`, {
+    platform: findVendor(need.platform ?? "")?.name,
+    model: findModel(need.model ?? "")?.name,
+  });
+
+/** 交给任务的参数：翻译照这条原来的目标语言，听写照现在设置里的成品字形 */
+const parametersOf = (row, settings) =>
+  row.kind === "translate" ? { output_language: row.outputLanguage } : { output_script: settings.outputScript.value };
+
+/**
+ * 历史里一条记录的录音：记录在、录音文件也在才有。回放和重跑共用
+ * @param {{ history: { get(id: string): object | null }, recordingsDir: string }} where
+ * @param {string} id
+ * @returns {{ row: object, file: string }}
+ */
+export function recordingOf({ history, recordingsDir }, id) {
+  const row = history.get(id);
+  if (row === null) throw new LocalizedError(msg("history.notFound"));
+  const file = row.audioFile === null ? null : join(recordingsDir, row.audioFile);
+  if (file === null || !existsSync(file)) throw new LocalizedError(msg("history.noRecording"));
+  return { row, file };
+}
 
 /**
  * @param {object} deps
  * @param {{ get(id: string): object | null, add(entry: object): void }} deps.history
- * @param {{ keyOf(id: string): { apiKey: string, source: string } | null }} deps.keys
+ * @param {{ sources(): Record<string, string | null>, keyOf(id: string): { apiKey: string } | null }} deps.keys
  * @param {{ refineOnce(options: object): Promise<{ text: string, source: string | null }> }} deps.service
- * @param {{ isInstalled(id: string): boolean }} deps.localModels
+ * @param {{ status(id: string): { installed: boolean } }} deps.localModels
  * @param {string} deps.settingsFile
  * @param {Record<string, string | undefined>} deps.env
  * @param {string} deps.recordingsDir
  * @param {() => readonly string[]} deps.vocabulary
+ * @param {(problem: object) => string} deps.describe 失败原因写成界面语言的一句话，存进失败的那条记录
  * @param {() => void} deps.changed 历史变了：让窗口重读
  * @param {{ info: Function, warn: Function }} deps.log
  * @param {() => string} [deps.uuid]
@@ -39,236 +85,159 @@ export function createRerun({
   env,
   recordingsDir,
   vocabulary,
+  describe,
   changed,
   log,
   uuid = randomUUID,
   now = () => new Date(),
 }) {
   const settings = () => resolveSettings({ file: settingsFile, env });
-  const failed = (problem) => ({ ok: false, problem });
+  /** 每家的 key 在哪（不解密）、本机模型的状态：needsOf 要的 */
+  const state = () => ({
+    keys: keys.sources(),
+    status: Object.fromEntries(MODELS.map(({ id }) => [id, localModels.status(id)])),
+  });
 
-  /** 这个模型能不能选：装好了没有；没装好时说清是哪个模型 */
-  const localModelOption = (model) => {
-    const installed = localModels.isInstalled(model.id);
-    return {
-      value: model.id,
-      name: model.name,
-      ready: installed,
-      problem: installed ? null : msg("rerun.modelMissing", { model: model.name }),
-    };
+  const taskOf = (row) => {
+    const task = findTask(row.kind);
+    if (!task) throw new Error(`历史里的 ${row.kind} 不是录音的功能，不能重跑`);
+    return task;
   };
 
-  /** 润色的选项：清单里每家的每个模型，外加正在用的自定义服务（有地址、有模型名才列，没有就不列） */
-  function polishOptions(current) {
-    const fromVendors = CHAT_VENDORS.filter(({ id }) => id !== "custom").flatMap((vendor) => {
-      const ready = keys.keyOf(vendor.id) !== null;
-      return vendor.models.map((model) => ({
-        value: `${vendor.id}/${model.id}`,
-        name: model.name,
-        vendor: vendor.id,
-        ready,
-        problem: ready ? null : msg("rerun.needKey", { vendor: vendor.name }),
-      }));
-    });
-    if (!current.polish.value.startsWith("custom/")) return fromVendors;
-    const vendor = CHAT_VENDORS.find(({ id }) => id === "custom");
-    const ready = keys.keyOf("custom") !== null && current.customUrl.value !== "";
-    return [
-      ...fromVendors,
-      {
-        value: current.polish.value,
-        name: current.polish.value.slice("custom/".length),
-        vendor: "custom",
-        ready,
-        problem: ready ? null : msg("rerun.needKey", { vendor: vendor.name }),
-      },
-    ];
+  /** 词典读不出来照样跑，和正常听写一样（server.mjs 的 vocabularyFor） */
+  function vocabularyNow() {
+    try {
+      return vocabulary();
+    } catch (error) {
+      log.warn("vocabulary_unavailable", { error: String(error?.message ?? error) });
+      return [];
+    }
   }
 
   return {
     /**
-     * 这条记录重跑时能选什么：三种模式各自支不支持这个功能、现在用的是什么、有哪些模型、哪些能选。
-     * 记录不在、没有录音时照样回到选项（`hasAudio: false`），让对话框能说清为什么不能重跑
+     * 这条记录重跑时能选什么：三种方式各自做不做得了这个功能，能换的几项设置、每一项的候选（这一跳是谁、还差什么）。
+     * 记录不在、录音不在时抛 LocalizedError
      * @param {string} id
      */
     options(id) {
-      const row = history.get(id);
-      if (row === null) throw new LocalizedError(msg("history.notFound"));
+      const { row } = recordingOf({ history, recordingsDir }, id);
+      const task = taskOf(row);
       const current = settings();
-      const hasAudio = row.audioFile !== null && existsSync(join(recordingsDir, row.audioFile));
-      const task = findTask(row.kind);
-      // 这个功能在这种模式里做不做得了，由任务和路线说（翻译没有离线那一步）
-      const supported = (mode) => task !== undefined && taskProblem(routeOf(current, mode), task) === null;
-
+      const known = state();
+      const choiceOf = (mode, field, value) => {
+        const route = routeOf(patchSettings(current, { [field.name]: value }), mode);
+        const hop = hopsOf(route).find(({ role }) => role === field.role);
+        return { value, hop, needs: needsOf(route, known).filter(needOfHop(hop)) };
+      };
+      const problemOfMode = (mode) => {
+        try {
+          return taskProblem(routeOf(current, mode), task);
+        } catch (error) {
+          return problemOf(error);
+        }
+      };
       return {
-        id,
-        kind: row.kind,
         mode: current.mode.value,
-        hasAudio,
-        native: {
-          supported: supported("native"),
-          current: current.model.value,
-          models: PROVIDERS.flatMap((provider) =>
-            provider.models.map((model) => {
-              const ready = keys.keyOf(provider.id) !== null;
-              return {
-                value: `${provider.id}/${model.id}`,
-                name: model.name,
-                provider: provider.id,
-                ready,
-                problem: ready ? null : msg("rerun.needKey", { vendor: provider.name }),
-              };
-            }),
-          ),
-        },
-        local: {
-          supported: supported("local"),
-          current: { transcriber: current.transcriber.value, polish: current.polish.value },
-          transcribers: MODELS.map(localModelOption),
-          polishes: polishOptions(current),
-        },
-        private: {
-          supported: supported("private"),
-          current: current.privateTranscriber.value,
-          models: MODELS.map(localModelOption),
-        },
+        modes: Object.fromEntries(
+          Object.entries(CHOICES).map(([mode, fields]) => [
+            mode,
+            {
+              problem: problemOfMode(mode),
+              settings: fields.map((field) => {
+                const chosen = current[field.name].value;
+                const values = field.values.includes(chosen) ? field.values : [chosen, ...field.values];
+                return {
+                  name: field.name,
+                  role: field.role,
+                  current: chosen,
+                  choices: values.map((value) => choiceOf(mode, field, value)),
+                };
+              }),
+            },
+          ]),
+        ),
       };
     },
 
     /**
-     * 按选的那一项重跑，结果存成一条新记录（录音还是原来那个文件）。
-     * 选项这里再验一遍，不靠页面：模型装没装、key 在不在、这个功能在那种模式里做不做得了
-     * @param {{ id: string, target: { mode: string, model?: string, transcriber?: string, polish?: string } }} request
-     * @returns {Promise<{ ok: true, id: string, text: string } | { ok: false, problem: object }>}
+     * 按选的方式和那几项设置重跑，结果另存一条（录音还是原来那个文件）。选项这里再验一遍，不靠页面。
+     * 跑到一半失败的也存一条：已经回了话的那几跳记过账，钱要有处可查
+     * @param {{ id: string, mode: string, settings?: Record<string, string> }} request
+     * @returns {Promise<{ ok: true, id: string } | { ok: false, problem: object }>}
      */
-    async run({ id, target }) {
-      const row = history.get(id);
-      if (row === null) return failed(msg("history.notFound"));
-      if (row.audioFile === null) return failed(msg("rerun.noRecording"));
-      const file = join(recordingsDir, row.audioFile);
-      if (!existsSync(file)) return failed(msg("rerun.recordingMissing"));
-
-      const task = findTask(row.kind);
-      if (!task) return failed(msg("rerun.unsupportedKind"));
-      const current = settings();
-
+    async run({ id, mode, settings: changes = {} }) {
+      let row;
+      let file;
       let route;
-      let parameters;
-      try {
-        ({ route, parameters } = routeTo(target, current, row));
-      } catch (error) {
-        return failed(error instanceof LocalizedError ? error.problem : msg("rerun.badTarget"));
-      }
-      const unsupported = taskProblem(route, task);
-      if (unsupported !== null) return failed(unsupported);
-      if (usesLocalModel(route) && !localModels.isInstalled(route.transcriber)) {
-        return failed(msg("rerun.modelMissing", { model: findModel(route.transcriber).name }));
-      }
-      const keyMap = {};
-      for (const vendor of keyVendorsOf(route)) {
-        const found = keys.keyOf(vendor.id);
-        if (found === null) return failed(msg("rerun.needKey", { vendor: vendor.name }));
-        keyMap[vendor.id] = found.apiKey;
-      }
-
       let bound;
+      let apiKeys;
       try {
-        bound = task.bind(parameters);
+        ({ row, file } = recordingOf({ history, recordingsDir }, id));
+        const current = settings();
+        const foreign = Object.keys(changes).find((name) => !CHOICES[mode]?.some((field) => field.name === name));
+        if (foreign) throw new TypeError(`重跑时 ${mode} 方式换不了 ${foreign}`);
+        route = routeOf(patchSettings(current, { mode, ...changes }), mode);
+        const task = taskOf(row);
+        const [need] = needsOf(route, state());
+        const problem = taskProblem(route, task) ?? (need ? needProblem(need) : null);
+        if (problem) return { ok: false, problem };
+        bound = task.bind(parametersOf(row, current));
+        apiKeys = Object.fromEntries(keyVendorsOf(route).map(({ id: vendor }) => [vendor, keys.keyOf(vendor)?.apiKey]));
       } catch (error) {
-        return failed(problemOf(error));
+        return { ok: false, problem: problemOf(error) };
       }
 
-      const newId = uuid();
+      const entry = {
+        id: uuid(),
+        kind: row.kind,
+        outputLanguage: row.outputLanguage,
+        duration: row.duration,
+        audioFile: row.audioFile,
+        // 重跑的再重跑，记的还是说出来的那一条
+        rerunOf: row.rerunOf ?? row.id,
+      };
       const startedAt = performance.now();
+      const facts = () => ({
+        from: id,
+        to: entry.id,
+        route: describeRoute(route),
+        ms: Math.round(performance.now() - startedAt),
+      });
       try {
         const result = await service.refineOnce({
           route,
-          keys: keyMap,
+          keys: apiKeys,
           audio: readFileSync(file),
           task: bound,
           mimeType: "audio/webm",
-          audioId: newId,
-          vocabulary: vocabulary(),
+          audioId: entry.id,
+          vocabulary: vocabularyNow(),
         });
         history.add({
-          id: newId,
-          kind: row.kind,
+          ...entry,
           status: "completed",
           refinedText: result.text,
           sourceText: row.kind === "translate" ? result.source : null,
-          outputLanguage: row.kind === "translate" ? row.outputLanguage : null,
           error: null,
-          duration: row.duration,
-          // 同一条录音：新记录指回原来那个文件，不另存一份
-          audioFile: row.audioFile,
           createdAt: now().toISOString(),
         });
-        changed();
-        log.info("history_rerun", {
-          from: id,
-          to: newId,
-          mode: route.mode,
-          ms: Math.round(performance.now() - startedAt),
-        });
-        return { ok: true, id: newId, text: result.text };
+        log.info("history_rerun", facts());
+        return { ok: true, id: entry.id };
       } catch (error) {
-        log.warn("history_rerun_failed", {
-          from: id,
-          mode: route.mode,
-          error: String(error?.message ?? error),
+        const problem = problemOf(error);
+        history.add({
+          ...entry,
+          status: "failed",
+          refinedText: "",
+          error: describe(problem),
+          createdAt: now().toISOString(),
         });
-        return failed(problemOf(error));
+        log.warn("history_rerun_failed", { ...facts(), error: String(error?.message ?? error) });
+        return { ok: false, problem };
+      } finally {
+        changed();
       }
     },
   };
-}
-
-/**
- * 页面上选的那一项 → 这一次走的路线，和要交给任务的参数。不认识的写法抛 LocalizedError
- * @param {{ mode: string, model?: string, transcriber?: string, polish?: string }} target
- * @param {ReturnType<typeof resolveSettings>} settings 现读的设置（自定义服务的地址、思考档位、成品字形都取现在的）
- * @param {object} row 这条历史记录（翻译要它的目标语言）
- */
-function routeTo(target, settings, row) {
-  const bad = () => new LocalizedError(msg("rerun.badTarget"));
-  if (target === null || typeof target !== "object") throw bad();
-  const mode = String(target.mode ?? "");
-  if (mode === "native") {
-    return {
-      route: { mode, model: parseModelChoice(String(target.model ?? "")), thinkingLevel: settings.thinking.value },
-      parameters: taskParameters(row, settings),
-    };
-  }
-  if (mode === "local") {
-    const transcriber = String(target.transcriber ?? "");
-    if (!findModel(transcriber)) throw bad();
-    return {
-      route: {
-        mode,
-        transcriber,
-        polish: parseChatChoice(String(target.polish ?? "")),
-        customUrl: settings.customUrl.value || null,
-        customParams: settings.customParams.value ? parseCustomParams(settings.customParams.value) : null,
-      },
-      parameters: taskParameters(row, settings),
-    };
-  }
-  if (mode === "private") {
-    const transcriber = String(target.transcriber ?? "");
-    if (!findModel(transcriber)) throw bad();
-    return {
-      route: { mode, transcriber },
-      parameters: taskParameters(row, settings),
-    };
-  }
-  throw bad();
-}
-
-/** 交给任务的参数：听写带成品字形（设置里现在的），翻译带这条记录原来的目标语言 */
-function taskParameters(row, settings) {
-  if (row.kind === "translate") {
-    if (row.outputLanguage === null) throw new LocalizedError(msg("rerun.badTarget"));
-    return { output_language: row.outputLanguage };
-  }
-  return { output_script: settings.outputScript.value };
 }

@@ -416,6 +416,37 @@ async function localService(
   return { service, control, models };
 }
 
+test("refineOnce 换本机模型：另一个临时装上、跑完卸掉，装不出 refiner 时也卸掉；同一个就借装着的；正在走的路线不动", async (t) => {
+  let unreachable = false;
+  const createRefiner = async (options) => {
+    if (unreachable) throw new Error("润色那家连不上");
+    return throughTranscriber(options);
+  };
+  const { service, control } = await localService(t, { createRefiner });
+  control.finish();
+  await tick();
+  const once = (transcriber) =>
+    service.refineOnce({ route: { ...LOCAL, transcriber }, audio: Buffer.from([1]), task: {}, mimeType: "audio/webm" });
+
+  const other = once("sensevoice-small-q8");
+  await tick();
+  control.finish();
+  assert.equal((await other).text, "转写了 3");
+  assert.deepEqual([control.started, control.disposed], [["qwen3-asr-0.6b-q8", "sensevoice-small-q8"], 1]);
+
+  unreachable = true;
+  const failing = once("sensevoice-small-q8");
+  await tick();
+  control.finish();
+  await assert.rejects(failing, /连不上/);
+  assert.equal(control.disposed, 2);
+
+  unreachable = false;
+  assert.equal((await once("qwen3-asr-0.6b-q8")).text, "转写了 3");
+  assert.equal(control.started.length, 3);
+  assert.deepEqual(service.route, LOCAL);
+});
+
 test("本地转写链路：下载好了的启动时就装上；装载中按下热键说稍等；装好了就能用", async (t) => {
   let changes = 0;
   const { service, control } = await localService(t, { onLocalModel: () => changes++ });
