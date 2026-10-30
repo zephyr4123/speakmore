@@ -122,33 +122,47 @@ export async function spawnTranscriber({
   /** 正在跑的那个；崩过的话重开一个并重新装模型 */
   const ready = () => (current ? Promise.resolve(current) : launch());
 
+  /** 交给子进程转写一段，等它回话；超时从发出去这一刻算 */
+  async function send(samples, vocabulary) {
+    if (disposed) throw new Error("转写进程已经关了");
+    const state = await ready();
+    const id = nextId++;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        state.pending.delete(id);
+        reject(new Error(`本地转写超过 ${Math.round(timeoutFor(samples) / 1000)} 秒没有回话`));
+        // 卡死的运行库救不回来，结束掉。先摘下来：它退出之前又来的转写要交给新开的那个
+        log.error("transcriber_timeout", { model: model.id, seconds: samples.length / SPEECH_SAMPLE_RATE });
+        if (current === state) current = null;
+        state.child.kill();
+      }, timeoutFor(samples));
+      state.pending.set(id, { resolve, reject, timer });
+      // 刚好在这一刻崩掉的话通道已经关了，退出的处理会把它报成失败
+      if (state.child.connected) state.child.send({ type: "transcribe", id, samples, vocabulary });
+    });
+  }
+
+  /** 排在前面的那一段跑完（成没成都算）才发下一段 */
+  let queue = Promise.resolve();
+
   const first = await ready();
   return {
     backend: first.backend,
 
-    /** vocabulary：用户词典，按先后，随这一次交给子进程（收多少由那边按模型挑） */
-    async transcribe(samples, { vocabulary = [] } = {}) {
-      if (disposed) throw new Error("转写进程已经关了");
+    /**
+     * vocabulary：用户词典，按先后，随这一次交给子进程（收多少由那边按模型挑）。
+     * 一次只转写一段，同时来的排队：同一个模型同时跑两份推理，引擎里共用的那一份（session、recognizer）不保证对。
+     * 录音时的预览、说完的整理、历史里重跑、检测都走这里
+     */
+    transcribe(samples, { vocabulary = [] } = {}) {
       // 子进程里按模型的上限挑词（engines/index.mjs 的 windowed），这里按同样的规矩数一下，记进日志
       if (vocabulary.length > 0) {
         const sent = fitTerms(vocabulary, model.vocabulary).length;
         log.info("vocabulary_fitted", { hop: "transcribe", model: model.id, sent, of: vocabulary.length });
       }
-      const state = await ready();
-      const id = nextId++;
-      return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => {
-          state.pending.delete(id);
-          reject(new Error(`本地转写超过 ${Math.round(timeoutFor(samples) / 1000)} 秒没有回话`));
-          // 卡死的运行库救不回来，结束掉。先摘下来：它退出之前又来的转写要交给新开的那个
-          log.error("transcriber_timeout", { model: model.id, seconds: samples.length / SPEECH_SAMPLE_RATE });
-          if (current === state) current = null;
-          state.child.kill();
-        }, timeoutFor(samples));
-        state.pending.set(id, { resolve, reject, timer });
-        // 刚好在这一刻崩掉的话通道已经关了，退出的处理会把它报成失败
-        if (state.child.connected) state.child.send({ type: "transcribe", id, samples, vocabulary });
-      });
+      const turn = queue.then(() => send(samples, vocabulary));
+      queue = turn.catch(() => {});
+      return turn;
     },
 
     /** 卸掉模型、结束子进程。之后不能再用 */

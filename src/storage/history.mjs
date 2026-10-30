@@ -19,6 +19,9 @@ import { LocalizedError, msg } from "../i18n/index.mjs";
  * 从 4（划词翻译）退回 3：
  *   sqlite3 ~/.speakmore/data/history.db "DELETE FROM model_calls WHERE purpose = 'lookup'; PRAGMA user_version = 3;"
  * 只丢掉划词的那几笔账（账表认的用途多一种，版本 3 不在乎）；划词的记录还在，再退回 2 时和翻译一样只剩译文。
+ * 从 5（历史里重跑）退回 4：
+ *   sqlite3 ~/.speakmore/data/history.db "ALTER TABLE history DROP COLUMN rerun_of; PRAGMA user_version = 4;"
+ * 重跑出来的那几条还在，只是认不出是重跑，统计里会当成又说了一次。
  * 家目录搬过的照 speakmore status 里写的位置换路径。
  */
 const MIGRATIONS = [
@@ -82,7 +85,13 @@ const MIGRATIONS = [
    ALTER TABLE model_calls_v4 RENAME TO model_calls;
    CREATE INDEX model_calls_created_at ON model_calls (created_at);
    CREATE INDEX model_calls_audio_id ON model_calls (audio_id);`,
+  // 历史里拿一条录音换个模型重跑，结果另存一条，记下是从哪条来的。统计（次数、字数、时长、听写的等待时间）
+  // 不数重跑的：话只说了一次；钱照算，那一笔确实花了
+  `ALTER TABLE history ADD COLUMN rerun_of TEXT;   -- 重跑的：原记录的 id；正常说的为空`,
 ];
+
+/** 重跑那几次的账：用量里听写的次数、等待时间不数它们 */
+const NOT_RERUN = "audio_id NOT IN (SELECT id FROM history WHERE rerun_of IS NOT NULL)";
 
 function migrate(db) {
   const { user_version: current } = db.prepare("PRAGMA user_version").get();
@@ -108,6 +117,21 @@ function migrate(db) {
  * Mac 上 App 和命令行可能是不同版本、共用这一个库，版本号一变，旧的那一份就起不来了
  */
 const fileNameOf = (stored) => (stored === null ? null : stored.split(/[\\/]/).at(-1));
+
+/**
+ * 搜索的字 → LIKE 的模式：前后加 %，里面的 %、_、\ 按字面找（SQL 里配 ESCAPE '\'）。
+ * 空的、没给的都是 null，不过滤
+ */
+function likePatternOf(query) {
+  if (typeof query !== "string") return null;
+  const text = query.trim();
+  if (text === "") return null;
+  return `%${text.replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_")}%`;
+}
+
+/** 只看哪几个功能 → 交给 json_each 的 JSON 数组；不是数组是 null，不过滤 */
+const kindsParam = (kinds) =>
+  Array.isArray(kinds) ? JSON.stringify(kinds.filter((kind) => typeof kind === "string")) : null;
 
 /** 只读着看的那一方不能替库升级，版本对不上时列可能不一样，所以不读 */
 function openReadOnly(dbPath) {
@@ -146,8 +170,9 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
 
   const insert = db.prepare(
     `INSERT INTO history (id, kind, status, refined_text, source_text, output_language, error, duration,
-                         audio_local_path, created_at)
-     VALUES (:id, :kind, :status, :refinedText, :sourceText, :outputLanguage, :error, :duration, :audioFile, :createdAt)`,
+                         audio_local_path, rerun_of, created_at)
+     VALUES (:id, :kind, :status, :refinedText, :sourceText, :outputLanguage, :error, :duration, :audioFile,
+             :rerunOf, :createdAt)`,
   );
   const insertCall = db.prepare(
     `INSERT INTO model_calls (audio_id, purpose, provider, model, input_tokens, audio_tokens, cached_tokens,
@@ -156,14 +181,23 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
              :outputTokens, :thinkingTokens, :costUsd, :latencyMs, :createdAt)`,
   );
   // 先取最近的几条再去对账，账再多也只按 audio_id 的索引查这几条的。
-  // 一条里有一笔不知道价，这一条的钱就是 null：拿一半当全部会少算
+  // 一条里有一笔不知道价，这一条的钱就是 null：拿一半当全部会少算。
+  // query 是搜索的字，按成品、原文、失败原因找；kinds 是只数这几个功能的；id 是只要这一条（都是 NULL 时不过滤）。
+  // models 是这一条用到的型号，重跑时看得出是哪个模型出的
   const select = db.prepare(
     `WITH recent AS (
-       SELECT * FROM history ORDER BY created_at DESC LIMIT :limit
+       SELECT * FROM history
+       WHERE (:id IS NULL OR id = :id)
+         AND (:query IS NULL OR refined_text LIKE :query ESCAPE '\\'
+              OR source_text LIKE :query ESCAPE '\\'
+              OR error LIKE :query ESCAPE '\\')
+         AND (:kinds IS NULL OR kind IN (SELECT value FROM json_each(:kinds)))
+       ORDER BY created_at DESC LIMIT :limit
      )
      SELECT recent.id, recent.kind, recent.status, recent.refined_text AS refinedText, recent.source_text AS sourceText,
             recent.output_language AS outputLanguage, recent.error, recent.duration,
-            recent.audio_local_path AS audioFile, recent.created_at AS createdAt,
+            recent.audio_local_path AS audioFile, recent.rerun_of AS rerunOf, recent.created_at AS createdAt,
+            group_concat(DISTINCT call.model) AS models,
             count(call.id) AS calls,
             sum(call.input_tokens) AS inputTokens,
             sum(call.output_tokens) AS outputTokens,
@@ -174,11 +208,13 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
      ORDER BY recent.created_at DESC`,
   );
   // kinds 是 JSON 数组，只数这几个功能的；为空时全数。entries 不管功能，是这段时间里所有记录的条数。
-  // 字数按他说的那段数（翻译的是原文），和下面的 dictations() 一个口径：译成英文按字母数，语速会虚高三倍
+  // 字数按他说的那段数（翻译的是原文），和下面的 dictations() 一个口径：译成英文按字母数，语速会虚高三倍。
+  // 重跑的不数：话只说了一次
   const summarize = db.prepare(
     `WITH picked AS (
        SELECT * FROM history
-       WHERE created_at >= :since AND (:kinds IS NULL OR kind IN (SELECT value FROM json_each(:kinds)))
+       WHERE created_at >= :since AND rerun_of IS NULL
+         AND (:kinds IS NULL OR kind IN (SELECT value FROM json_each(:kinds)))
      )
      SELECT (SELECT count(*) FROM history WHERE created_at >= :since) AS entries,
             count(*) FILTER (WHERE status = 'completed') AS dictations,
@@ -189,15 +225,15 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
             (SELECT count(*) - count(cost_usd) FROM model_calls WHERE created_at >= :since) AS unpricedCalls
      FROM picked`,
   );
-  // 说了什么：翻译的是原文（他说的那段话），别的是成品
+  // 说了什么：翻译的是原文（他说的那段话），别的是成品。重跑的不算又说了一次
   const completed = db.prepare(
     `SELECT created_at AS createdAt, kind, coalesce(source_text, refined_text) AS text, duration FROM history
-     WHERE status = 'completed' AND refined_text <> '' ORDER BY created_at`,
+     WHERE status = 'completed' AND refined_text <> '' AND rerun_of IS NULL ORDER BY created_at`,
   );
   // 用量汇总的各列，总数和按型号分开的两处共用
   const USAGE_COLUMNS = `count(*) AS calls,
             count(*) FILTER (WHERE purpose = 'check') AS checks,
-            count(DISTINCT audio_id) FILTER (WHERE purpose = 'dictation') AS dictations,
+            count(DISTINCT audio_id) FILTER (WHERE purpose = 'dictation' AND ${NOT_RERUN}) AS dictations,
             count(DISTINCT audio_id) FILTER (WHERE purpose = 'lookup') AS lookups,
             coalesce(sum(input_tokens), 0) AS inputTokens,
             coalesce(sum(audio_tokens), 0) AS audioTokens,
@@ -221,39 +257,54 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
   );
   const SLOT_FORMATS = { day: "%Y-%m-%d", hour: "%Y-%m-%d %H" };
   // 每次听写等了模型多久：夹着时间戳重来过的，几次加在一起才是用户等的；本机转写的两跳（local 那一笔加润色那一笔）
-  // 也加在一起。按型号分开时各算各的
+  // 也加在一起。按型号分开时各算各的。重跑的不算：没人在等它贴字，挑的又多是长的老录音
   const totalLatencies = db.prepare(
     `SELECT sum(latency_ms) AS ms FROM model_calls
-     WHERE purpose = 'dictation' AND audio_id IS NOT NULL AND created_at >= :since
+     WHERE purpose = 'dictation' AND audio_id IS NOT NULL AND ${NOT_RERUN} AND created_at >= :since
      GROUP BY audio_id ORDER BY ms`,
   );
   const dictationLatencies = db.prepare(
     `SELECT provider, model, sum(latency_ms) AS ms FROM model_calls
-     WHERE purpose = 'dictation' AND audio_id IS NOT NULL AND created_at >= :since
+     WHERE purpose = 'dictation' AND audio_id IS NOT NULL AND ${NOT_RERUN} AND created_at >= :since
      GROUP BY audio_id, provider, model ORDER BY ms`,
   );
+
+  /** 一行记录 → 对外的样子：录音只留文件名；用量没记账是 null，有就几项加在一起，models 是用到的型号 */
+  const rowOf = ({ models, calls, inputTokens, outputTokens, costUsd, latencyMs, ...row }) => ({
+    ...row,
+    audioFile: fileNameOf(row.audioFile),
+    usage: calls === 0 ? null : { calls, inputTokens, outputTokens, costUsd, latencyMs, models: models.split(",") },
+  });
 
   return {
     /**
      * @param {{ id: string, kind?: string, status: "completed" | "failed", refinedText: string, sourceText?: string | null,
-     *   outputLanguage?: string | null, error: string | null, duration: number, audioFile: string | null, createdAt: string }} entry
+     *   outputLanguage?: string | null, error: string | null, duration: number, audioFile: string | null,
+     *   rerunOf?: string | null, createdAt: string }} entry
      *   kind：哪个功能（动作目录的 id），不写是语音输入；sourceText、outputLanguage：翻译的原文和目标语言，不是翻译的不写；
-     *   audioFile：录音在录音目录（paths.recordingsDir）里的文件名，没存录音是 null
+     *   audioFile：录音在录音目录（paths.recordingsDir）里的文件名，没存录音是 null；rerunOf：重跑的，原记录的 id
      */
-    add({ kind = "dictate", sourceText = null, outputLanguage = null, ...entry }) {
-      insert.run({ ...entry, kind, sourceText, outputLanguage });
+    add({ kind = "dictate", sourceText = null, outputLanguage = null, rerunOf = null, ...entry }) {
+      insert.run({ ...entry, kind, sourceText, outputLanguage, rerunOf });
     },
     /**
-     * 最近的记录，新的在前。每一条带上它的用量 usage：{ calls, inputTokens, outputTokens, costUsd, latencyMs }，
+     * 最近的记录，新的在前。每一条带上它的用量 usage：{ calls, inputTokens, outputTokens, costUsd, latencyMs, models }，
      * 夹着时间戳重来过的几次加在一起；没记过账的（没调到模型就失败了，或者记账之前的版本存的）是 null。
-     * 录音是 audioFile：录音目录里的文件名
+     * 录音是 audioFile：录音目录里的文件名；重跑出来的带 rerunOf
+     * @param {{ limit?: number | null, query?: string | null, kinds?: readonly string[] | null }} [options]
+     *   limit 是 null 时不限条数；query：搜索的字，按成品、原文、失败原因找；kinds：只看这几个功能的。都是 null 时不过滤
      */
-    list({ limit = 200 } = {}) {
-      return select.all({ limit }).map(({ calls, inputTokens, outputTokens, costUsd, latencyMs, ...row }) => ({
-        ...row,
-        audioFile: fileNameOf(row.audioFile),
-        usage: calls === 0 ? null : { calls, inputTokens, outputTokens, costUsd, latencyMs },
-      }));
+    list({ limit = 200, query = null, kinds = null } = {}) {
+      return select
+        .all({ id: null, limit: limit ?? -1, query: likePatternOf(query), kinds: kindsParam(kinds) })
+        .map(rowOf);
+    },
+    /**
+     * 按 id 取一条，形同 list() 的一项；没有是 null
+     * @param {string} id
+     */
+    get(id) {
+      return select.all({ id: String(id), limit: 1, query: null, kinds: null }).map(rowOf)[0] ?? null;
     },
     /**
      * 说了多少次、多少字、多长时间（只数完成的），失败了几次，以及花了多少美元（验证 key 的也算）。
@@ -263,7 +314,7 @@ export function openHistory(dbPath, { readOnly = false } = {}) {
      *   kinds：次数、字数、时长只数这几个功能的（命令行只数说话的那几个），不写是全部
      */
     stats({ since = "", kinds = null } = {}) {
-      return { ...summarize.get({ since, kinds: kinds === null ? null : JSON.stringify(kinds) }) };
+      return { ...summarize.get({ since, kinds: kindsParam(kinds) }) };
     },
     /**
      * 所有完成了的记录，老的在前，只带首页统计要的几项（src/usage/insights.mjs）：字数、哪天说的要从文字和时间里数。

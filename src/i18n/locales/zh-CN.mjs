@@ -5,6 +5,7 @@ export default {
     sentence: "{text}。",
     unknownReason: "原因不明",
     close: "关闭",
+    cancel: "取消",
   },
 
   units: {
@@ -799,10 +800,31 @@ export default {
     copied: "已复制",
     copyFailed: "复制失败",
     recording: "录音 {duration}",
+    original: "原文：{text}",
     model: "模型 {latency} · {cost}",
     tokens: "输入 {input} · 输出 {output} token",
     tokensCalls: "输入 {input} · 输出 {output} token · 调用 {calls} 次",
     unpriced: "价格不明",
+    models: "型号 {models}",
+    notFound: "找不到该记录",
+    noRecording: "找不到录音",
+    search: "搜索",
+    noResults: "没有匹配的记录",
+    play: "播放录音",
+    stop: "停止播放",
+    playFailed: "播放失败：{reason}",
+    rerun: "重跑",
+    export: "导出",
+    exportDone: "已导出 {count} 条",
+    exportFailed: "导出失败：{reason}",
+  },
+
+  // 历史里重跑（renderer/hub/history-rerun.mjs）
+  rerun: {
+    running: "重跑中",
+    done: "已重跑",
+    failed: "重跑失败：{reason}",
+    optionsFailed: "无法重跑：{reason}",
   },
 
   // 侧栏"词典"一页（renderer/hub/vocabulary.mjs），版式照原版的词典页

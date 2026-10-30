@@ -19,7 +19,7 @@ const ROUTES = ["home", "models", "history", "vocabulary"];
 localize();
 
 const home = createHome();
-const history = createHistory();
+const history = createHistory({ getSetup: () => setup });
 const vocabulary = createVocabulary();
 const settings = createSettings({ refresh: refreshSetup });
 const engine = createEngine({ refresh: refreshSetup });
@@ -93,16 +93,16 @@ async function refreshSetup() {
 
 async function refreshData() {
   try {
-    const [rows, usage, insights, app] = await Promise.all([
-      window.speakmore.listHistory(),
+    const [usage, insights, app] = await Promise.all([
       window.speakmore.usageReport(),
       window.speakmore.insights(),
       window.speakmore.appInfo(),
     ]);
     home.render({ insights, usage, app });
-    history.render({ rows });
+    // 历史自己管搜索和筛选（history.mjs）：这里只请它重读，搜索的字、选了哪个功能都由它自己带
+    await history.refresh();
   } catch (error) {
-    console.error("读历史失败", error);
+    console.error("刷新失败", error);
     history.showError(error instanceof Error ? error.message : String(error));
   }
 }

@@ -7,6 +7,7 @@ export default {
     sentence: "{text}.",
     unknownReason: "unknown reason",
     close: "Close",
+    cancel: "Cancel",
   },
 
   units: {
@@ -820,10 +821,30 @@ export default {
     copied: "Copied",
     copyFailed: "Copy failed",
     recording: "Recording {duration}",
+    original: "Original: {text}",
     model: "Model {latency} · {cost}",
     tokens: "In {input} · out {output} tokens",
     tokensCalls: "In {input} · out {output} tokens · {calls} calls",
     unpriced: "price unknown",
+    models: "Models {models}",
+    notFound: "Entry not found",
+    noRecording: "Recording not found",
+    search: "Search",
+    noResults: "No matching entries",
+    play: "Play recording",
+    stop: "Stop playback",
+    playFailed: "Playback failed: {reason}",
+    rerun: "Rerun",
+    export: "Export",
+    exportDone: { one: "Exported {count} entry", other: "Exported {count} entries" },
+    exportFailed: "Export failed: {reason}",
+  },
+
+  rerun: {
+    running: "Rerunning",
+    done: "Rerun complete",
+    failed: "Rerun failed: {reason}",
+    optionsFailed: "Can't rerun: {reason}",
   },
 
   vocabulary: {

@@ -47,7 +47,14 @@ contextBridge.exposeInMainWorld("speakmore", {
 
   // 主窗口：首页、历史记录
   appInfo: () => ipcRenderer.invoke("app:info"),
-  listHistory: () => ipcRenderer.invoke("history:list"),
+  // 历史的筛选是可选的 { query, kinds }：搜索的字、只看哪几个功能。导出的是筛出来的全部，回 { count }，取消了是 null
+  listHistory: (filter) => ipcRenderer.invoke("history:list", filter),
+  exportHistory: (filter) => ipcRenderer.invoke("history:export", filter),
+  // 回放：给一条历史记录的 id，回录音的字节
+  historyAudio: (id) => ipcRenderer.invoke("history:audio", id),
+  // 重跑：能选什么；按选的方式和设置再跑一次 { id, mode, settings }（app/rerun.mjs）
+  rerunOptions: (id) => ipcRenderer.invoke("history:rerun-options", id),
+  rerunHistory: (request) => ipcRenderer.invoke("history:rerun", request),
   usageReport: () => ipcRenderer.invoke("usage:report"),
   insights: () => ipcRenderer.invoke("insights:get"),
   copyText: (text) => ipcRenderer.invoke("clipboard:write", text),

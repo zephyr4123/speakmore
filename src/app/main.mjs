@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
-import { closeSync, existsSync, openSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, openSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
-import { basename, dirname, join } from "node:path";
+import { basename, dirname, extname, join } from "node:path";
 import {
   app,
   BrowserWindow,
@@ -66,12 +66,13 @@ import { themeCss } from "../themes/contract.mjs";
 import { findTheme, THEMES } from "../themes/index.mjs";
 import { createUpdates } from "../update/index.mjs";
 import { estimateTime } from "../usage/estimate.mjs";
-import { insights } from "../usage/insights.mjs";
+import { dayKey, insights } from "../usage/insights.mjs";
 import { usageReport } from "../usage/report.mjs";
 import { MAX_TERM_LENGTH, MAX_TERMS } from "../vocabulary/terms.mjs";
 import { createDelivery } from "./delivery.mjs";
 import { chooseHome, needsHomeChoice } from "./first-run.mjs";
 import { helperPaths, startHelper } from "./helper.mjs";
+import { EXPORTS } from "./history-export.mjs";
 import { createHotkeyRecording } from "./hotkey-recording.mjs";
 import { createKeyManager } from "./keys/key-manager.mjs";
 import { createKeyStore } from "./keys/key-store.mjs";
@@ -83,6 +84,7 @@ import { describePlaza, loadPriceBook } from "./model-plaza.mjs";
 import { createModeSwitch } from "./modes.mjs";
 import { MOVE_TO, startMoveWindow } from "./move-window.mjs";
 import { floatAboveAll, showAboveAll } from "./on-top.mjs";
+import { createRerun, recordingOf } from "./rerun.mjs";
 import { startService } from "./service.mjs";
 import { createSessionGate } from "./session-gate.mjs";
 import { summarizeSetup, summaryAsText } from "./setup-state.mjs";
@@ -1088,6 +1090,22 @@ async function main() {
   function historyChanged() {
     hubWindow?.webContents.send("history:changed");
   }
+  // 历史里重跑：按另一条路线跑一次，结果另存一条（app/rerun.mjs）。连着单独启动的服务端时路线归那边，做不了
+  const rerun = service
+    ? createRerun({
+        history,
+        keys,
+        service,
+        localModels,
+        settingsFile: PATHS.settingsFile,
+        env: process.env,
+        recordingsDir: PATHS.recordingsDir,
+        vocabulary: vocabulary.terms,
+        describe: (problem) => t.text(problem),
+        changed: historyChanged,
+        log,
+      })
+    : null;
 
   /**
    * 页面调用主进程。出错时 Electron 只把 message 带给页面，problem 丢了，而 LocalizedError 的 message 是英文：
@@ -1121,7 +1139,34 @@ async function main() {
     historyChanged();
     e2e?.onFinished({ failed: payload.error });
   });
-  handle("history:list", () => history.list());
+  // 搜索和按功能筛都在库里做（几百条也就几毫秒），页面只管画
+  handle("history:list", (_event, filter) => history.list(filter ?? {}));
+  // 回放：页面传 id，不传路径，只认历史里记的那个录音文件（不让页面指到录音目录外面去）
+  handle("history:audio", (_event, id) =>
+    readFileSync(recordingOf({ history, recordingsDir: PATHS.recordingsDir }, id).file),
+  );
+  const viaRerun = (use) => {
+    if (!rerun) throw new LocalizedError(msg("key.externalModel"));
+    return use(rerun);
+  };
+  handle("history:rerun-options", (_event, id) => viaRerun((r) => r.options(String(id))));
+  handle("history:rerun", (_event, request) =>
+    viaRerun((r) => r.run({ id: String(request?.id), mode: request?.mode, settings: request?.settings ?? {} })),
+  );
+  // 导出：现在搜索、筛选出来的全部记录（不止列表里那 200 条），格式按保存窗口里选的文件类型（app/history-export.mjs）
+  handle("history:export", async (_event, filter) => {
+    const picked = await dialog.showSaveDialog(hubWindow ?? undefined, {
+      title: t("history.export"),
+      defaultPath: `speakmore-history-${dayKey(new Date())}.md`,
+      filters: Object.entries(EXPORTS).map(([extension, { name }]) => ({ name, extensions: [extension] })),
+    });
+    if (picked.canceled || !picked.filePath) return null;
+    const format = extname(picked.filePath).slice(1).toLowerCase();
+    const rows = history.list({ ...filter, limit: null });
+    writeFileSync(picked.filePath, (EXPORTS[format] ?? EXPORTS.md).render(rows, t));
+    log.info("history_exported", { format, rows: rows.length });
+    return { count: rows.length };
+  });
   handle("usage:report", () => usageReport(history, { now: new Date() }));
   // 首页的口述统计只数说话的功能（录音会话的动作：语音输入、语音翻译），花费另算、都记
   handle("insights:get", () => insights(history.dictations({ kinds: SPOKEN_ACTIONS }), { now: new Date() }));

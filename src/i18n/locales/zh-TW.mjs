@@ -3,7 +3,8 @@ export default {
   "common": {
     "sentence": "{text}。",
     "unknownReason": "原因不明",
-    "close": "關閉"
+    "close": "關閉",
+    "cancel": "取消"
   },
   "units": {
     "seconds": "{value} 秒",
@@ -966,10 +967,29 @@ export default {
     "copied": "已複製",
     "copyFailed": "複製失敗",
     "recording": "錄音 {duration}",
+    "original": "原文：{text}",
     "model": "模型 {latency} · {cost}",
     "tokens": "輸入 {input} · 輸出 {output} token",
     "tokensCalls": "輸入 {input} · 輸出 {output} token · 呼叫 {calls} 次",
-    "unpriced": "價格不明"
+    "unpriced": "價格不明",
+    "models": "型號 {models}",
+    "notFound": "找不到該記錄",
+    "noRecording": "找不到錄音",
+    "search": "搜尋",
+    "noResults": "沒有匹配的記錄",
+    "play": "播放錄音",
+    "stop": "停止播放",
+    "playFailed": "播放失敗：{reason}",
+    "rerun": "重跑",
+    "export": "匯出",
+    "exportDone": "已匯出 {count} 條",
+    "exportFailed": "匯出失敗：{reason}"
+  },
+  "rerun": {
+    "running": "重跑中",
+    "done": "已重跑",
+    "failed": "重跑失敗：{reason}",
+    "optionsFailed": "無法重跑：{reason}"
   },
   "vocabulary": {
     "title": "詞典",

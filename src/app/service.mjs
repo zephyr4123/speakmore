@@ -192,8 +192,8 @@ export async function startService({
     },
   };
 
-  const build = (nextRoute, apiKey, keys) =>
-    createRefiner({ route: nextRoute, apiKey, keys, transcriber, log, onCall: onModelCall });
+  const build = (nextRoute, apiKey, keys, localFirstHop = transcriber) =>
+    createRefiner({ route: nextRoute, apiKey, keys, transcriber: localFirstHop, log, onCall: onModelCall });
 
   followRoute();
 
@@ -398,6 +398,36 @@ export async function startService({
         if (loadMs !== null) transcriber.dispose();
         busy--;
         restartIdleTimer();
+      }
+    },
+
+    /**
+     * 拿一段存下来的录音、按另给的路线再跑一次（历史里重跑，app/rerun.mjs）。不改正在走的路线：另外建一个 refiner，跑完就丢。
+     * 正在走的就是这个本机模型时借装着的那个，途中不能被空闲释放；别的本机模型照 checkTranscriber 临时装一个，跑完卸掉
+     * （同一时间两份模型，内存或显卡上多占一份）。记账照记，audioId 用这一次新记录的那个 id
+     * @param {{ route: object, keys?: Record<string, string>, audio: Buffer, task: object, mimeType: string,
+     *   audioId?: string | null, vocabulary?: readonly string[] }} options
+     * @returns {Promise<{ text: string, source: string | null }>}
+     */
+    async refineOnce({ route: tried, keys = {}, audio, task, mimeType, audioId = null, vocabulary = [] }) {
+      const borrowed = usesLocalModel(route) && route.transcriber === tried.transcriber;
+      const temporary =
+        usesLocalModel(tried) && !borrowed
+          ? await startLocal({ modelId: tried.transcriber, modelsDir, log, acceleration })
+          : null;
+      if (borrowed) {
+        busy++;
+        clearTimeout(idleTimer);
+      }
+      try {
+        const refiner = await build(tried, keys[keyVendorOf(tried)?.id], keys, temporary ?? transcriber);
+        return await refiner.refine(audio, { task, mimeType, audioId, vocabulary });
+      } finally {
+        temporary?.dispose();
+        if (borrowed) {
+          busy--;
+          restartIdleTimer();
+        }
       }
     },
 

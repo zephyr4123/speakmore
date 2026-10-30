@@ -181,7 +181,7 @@ Open the main window from the menu bar icon. The four pages are on the left, wit
 | --- | --- |
 | Home | The hotkeys of the three features, the active recognition mode, words dictated and speaking rate, a daily heatmap, and the spending trend |
 | Engine | Models, keys and recommended setups for the Voice and Selection sections; see [Model freedom](#-model-freedom) |
-| History | Every record from the three features, filterable by feature; translations show the original, and each entry can be copied |
+| History | Every record from the three features, filterable by feature, searchable by text, and exportable to Markdown / JSON / CSV; translations show the original; each entry can be copied, replayed, or rerun with another model |
 | Dictionary | Names, products and terms that voice input and voice translation spell as written there |
 
 <table>

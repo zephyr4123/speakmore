@@ -901,6 +901,13 @@ button.badge:focus-visible {
   cursor: default;
 }
 
+/* 这一项现在选不了（历史里重跑时做不了这个功能的识别方式）：淡下去，悬停说原因 */
+.segment:disabled {
+  color: var(--ink-2);
+  opacity: 0.45;
+  cursor: default;
+}
+
 /* ---------- 品牌图标的底座：引擎页的节点、详情、密钥面板 ---------- */
 
 .logo-tile {

@@ -101,24 +101,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 搜索和个数 ---------- */
-
-/* 搜索、个数挨着，"支持的模型"靠右 */
-.vocab-toolbar {
-  justify-content: flex-start;
-  gap: 0.75rem 1.25rem;
-}
-
-.vocab-toolbar > .picker-trigger {
-  margin-left: auto;
-}
-
-.vocab-count {
-  font-size: var(--text-small);
-  color: var(--ink-2);
-  font-variant-numeric: tabular-nums;
-}
-
 /* ---------- 新词：就地输入的那一行 ---------- */
 
 .vocab-composer {
@@ -403,49 +385,7 @@
   outline: none;
 }
 
-/* ---------- 删除、导入的确认框 ---------- */
-
-.vocab-dialog {
-  width: min(26rem, 100vw - 4rem);
-  padding: 0;
-  color: var(--ink);
-  background: var(--glass-strong);
-  backdrop-filter: var(--glass-filter);
-  border: none;
-  border-radius: var(--radius-card);
-  box-shadow:
-    var(--edge),
-    0 30px 80px -24px oklch(0 0 0 / 0.4);
-  -webkit-app-region: no-drag;
-}
-
-.vocab-dialog[open] {
-  animation: dialog-in var(--dur-slow) var(--ease-out);
-}
-
-.vocab-dialog::backdrop {
-  background: oklch(0 0 0 / 0.18);
-  backdrop-filter: blur(6px);
-  animation: fade-in var(--dur-slow) var(--ease-out);
-}
-
-.vocab-dialog-form {
-  display: grid;
-  gap: 0.5rem;
-  padding: 1.5rem 1.5rem 1.25rem;
-}
-
-.vocab-dialog-title {
-  margin: 0 0 0.25rem;
-  font-size: var(--text-heading);
-  font-weight: var(--weight-bold);
-  line-height: 1.35;
-}
-
-.vocab-dialog-text {
-  font-size: var(--text-small);
-  overflow-wrap: anywhere;
-}
+/* ---------- 删除、导入的确认框（外壳是 hub.css 的 .dialog） ---------- */
 
 .vocab-dialog-preview {
   display: flex;
@@ -470,17 +410,6 @@
   white-space: pre-line;
 }
 
-.vocab-dialog-problem {
-  font-size: var(--text-small);
-}
-
-.vocab-dialog-foot {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
 /* ---------- 动效：出现时从下面浮上来一点；刚加的词底色亮一下再退回去 ---------- */
 
 @keyframes vocab-rise {
@@ -500,9 +429,7 @@
 @media (prefers-reduced-motion: reduce) {
   .vocab-composer,
   .vocab-selection,
-  .vocab-term[data-fresh],
-  .vocab-dialog[open],
-  .vocab-dialog::backdrop {
+  .vocab-term[data-fresh] {
     animation: none;
   }
 
@@ -510,11 +437,5 @@
   .vocab-term-tools,
   .vocab-support-row {
     transition: none;
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .vocab-dialog::backdrop {
-    backdrop-filter: none;
   }
 }

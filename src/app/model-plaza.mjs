@@ -219,19 +219,28 @@ const HOPS = Object.freeze({
 export const hopsOf = (route) => HOPS[route.mode](route);
 
 /**
- * 一种识别方式的样子。差什么只列看得见的：本机模型没下载好、要的那家没有 key、自定义服务没写地址；
- * key 对不对、服务够不够得着，切过去以后由 key 管理去验，结果在 key 的状态里（app/modes.mjs）
- * @param {object | { problem: object }} route 那种方式按设置走的路线；拼不出来时是拼不出来的原因
+ * 一条路线还差什么。只列看得见的：本机模型没下载好、要的那家没有 key、自定义服务没写地址；
+ * key 对不对、服务够不够得着，切过去以后由 key 管理去验，结果在 key 的状态里（app/modes.mjs）。历史里重跑也按它（app/rerun.mjs）
+ * @param {object} route
+ * @param {{ keys: Record<string, string | null>, status: Record<string, object> }} state 每家的 key 在哪、本机模型的状态
  */
-function wayOf(route, { keys, status }) {
-  if (route.problem) return { problem: route.problem, hops: [], needs: [] };
+export function needsOf(route, { keys, status }) {
   const needs = [];
   if (usesLocalModel(route) && !status[route.transcriber]?.installed) {
     needs.push({ kind: "download", model: route.transcriber });
   }
   if (route.mode === "local" && route.polish.vendor === "custom" && !route.customUrl) needs.push({ kind: "url" });
   for (const { id } of keyVendorsOf(route)) if (!keys[id]) needs.push({ kind: "key", platform: id });
-  return { hops: hopsOf(route), needs };
+  return needs;
+}
+
+/**
+ * 一种识别方式的样子：一路经过哪几个模型、还差什么
+ * @param {object | { problem: object }} route 那种方式按设置走的路线；拼不出来时是拼不出来的原因
+ */
+function wayOf(route, state) {
+  if (route.problem) return { problem: route.problem, hops: [], needs: [] };
+  return { hops: hopsOf(route), needs: needsOf(route, state) };
 }
 
 /** 每天 100 次的月成本，美元和折成的人民币（界面按语言挑一种）；算不出来是 null */
