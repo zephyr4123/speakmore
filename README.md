@@ -98,9 +98,9 @@
 ## 🚀 安装
 
 <p align="center">
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Apple%20芯片-111?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Apple 芯片）" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Intel）" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/下载-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Windows 版" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Apple%20芯片-111?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Apple 芯片）" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Intel）" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/下载-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Windows 版" /></a>
 </p>
 
 **macOS**

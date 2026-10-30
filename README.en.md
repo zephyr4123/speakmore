@@ -98,9 +98,9 @@ All three start from Right ⌥ (Right Alt on Windows): on its own for voice inpu
 ## 🚀 Installation
 
 <p align="center">
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/Download-Mac%20·%20Apple%20silicon-111?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac with Apple silicon" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/Download-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Intel Mac" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.18.1/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/Download-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/Download-Mac%20·%20Apple%20silicon-111?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac with Apple silicon" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/Download-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Intel Mac" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/Download-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" /></a>
 </p>
 
 **macOS**
