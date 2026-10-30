@@ -27,6 +27,7 @@ const entry = (overrides = {}) => ({
   error: null,
   duration: 4.2,
   audioFile: "a1.webm",
+  rerunOf: null,
   createdAt: "2026-10-13T08:00:00.000Z",
   ...overrides,
 });
@@ -85,6 +86,7 @@ test("搜索：按成品、原文、失败原因找，不分大小写和位置�
   );
   history.add(entry({ id: "a4", refinedText: "100_分_的进度", createdAt: "2026-10-13T11:00:00.000Z" }));
   history.add(entry({ id: "a5", refinedText: "100 分进度", createdAt: "2026-10-13T12:00:00.000Z" }));
+  history.add(entry({ id: "a6", refinedText: "C:\\Users\\me 的目录", createdAt: "2026-10-13T13:00:00.000Z" }));
 
   const ids = (options) => history.list(options).map((row) => row.id);
   assert.deepEqual(ids({ query: "github" }), ["a1"]);
@@ -93,17 +95,22 @@ test("搜索：按成品、原文、失败原因找，不分大小写和位置�
   // LIKE 的通配符要按字面找
   assert.deepEqual(ids({ query: "100%" }), ["a3"]);
   assert.deepEqual(ids({ query: "100_" }), ["a4"]);
-  // 空搜索不过滤
-  assert.deepEqual(ids({ query: "  " }), ["a5", "a4", "a3", "a2", "a1"]);
+  assert.deepEqual(ids({ query: "C:\\Users" }), ["a6"]);
+  // 先搜再取最近几条：列表只显示最近的那些，更老的也搜得到
+  assert.deepEqual(ids({ limit: 1, query: "github" }), ["a1"]);
+  // 空搜索不过滤；条数不限时全拿
+  assert.deepEqual(ids({ query: "  " }), ["a6", "a5", "a4", "a3", "a2", "a1"]);
+  assert.equal(history.list({ limit: null }).length, 6);
   assert.deepEqual(ids({ query: "找不到的字" }), []);
   // 功能筛：和搜索一起用
   assert.deepEqual(ids({ kinds: ["translate"] }), ["a2"]);
   assert.deepEqual(ids({ query: "发布", kinds: ["dictate"] }), []);
   assert.deepEqual(ids({ query: "发布", kinds: ["translate"] }), ["a2"]);
+  assert.deepEqual(ids({ kinds: "translate" }).length, 6);
   history.close();
 });
 
-test("按 id 取一条：带上它的用量；没有的是 null", () => {
+test("按 id 取一条：和列表里的那一项一样，带上用量和用到的型号；没有的是 null", () => {
   const history = openHistory(join(dir, "history.db"));
   history.add(entry());
   history.addCall({
@@ -122,7 +129,7 @@ test("按 id 取一条：带上它的用量；没有的是 null", () => {
   });
   assert.deepEqual(history.get("a1"), {
     ...entry(),
-    usage: { calls: 1, inputTokens: 0, outputTokens: 0, costUsd: 0, latencyMs: 120 },
+    usage: { calls: 1, inputTokens: 0, outputTokens: 0, costUsd: 0, latencyMs: 120, models: ["qwen3-asr-0.6b-q8"] },
   });
   assert.equal(history.get("nope"), null);
   history.close();
@@ -330,6 +337,7 @@ test("0.15 的库（版本 2）打开时升上来，老记录都是语音输入�
   v2.close();
   // 造一个版本 2 的库：先降回去（文件头写的那条命令），再存一条老版本的记录
   const db = new DatabaseSync(path);
+  db.exec("ALTER TABLE history DROP COLUMN rerun_of;");
   db.exec(
     "ALTER TABLE history DROP COLUMN kind; ALTER TABLE history DROP COLUMN source_text; ALTER TABLE history DROP COLUMN output_language; PRAGMA user_version = 2;",
   );
@@ -349,16 +357,17 @@ test("0.15 的库（版本 2）打开时升上来，老记录都是语音输入�
   assert.deepEqual(history.list(), [{ ...entry(), usage: null }]);
   history.close();
   const upgraded = new DatabaseSync(path);
-  assert.equal(upgraded.prepare("PRAGMA user_version").get().user_version, 4);
+  assert.equal(upgraded.prepare("PRAGMA user_version").get().user_version, 5);
   upgraded.close();
 });
 
-test("版本 3 的库打开时升到 4：账原样搬过来，用途多认划词；照文件头写的退回办法降回 3，库照样能读", () => {
+test("版本 3 的库打开时一路升上来：账原样搬过来，用途多认划词；照文件头写的退回办法降回 3，库照样能读", () => {
   const path = join(dir, "history.db");
   openHistory(path).close();
   // 造一个版本 3 的库：账表照版本 3 的样子重建（用途只认三种），存一笔账
   const db = new DatabaseSync(path);
-  db.exec(`DROP TABLE model_calls;
+  db.exec(`ALTER TABLE history DROP COLUMN rerun_of;
+    DROP TABLE model_calls;
     CREATE TABLE model_calls (
       id INTEGER PRIMARY KEY, audio_id TEXT,
       purpose TEXT NOT NULL CHECK (purpose IN ('dictation', 'check', 'cache')),
@@ -377,7 +386,7 @@ test("版本 3 的库打开时升到 4：账原样搬过来，用途多认划词
   assert.equal(history.usage().calls, 2);
   history.close();
   const upgraded = new DatabaseSync(path);
-  assert.equal(upgraded.prepare("PRAGMA user_version").get().user_version, 4);
+  assert.equal(upgraded.prepare("PRAGMA user_version").get().user_version, 5);
   // 索引跟着重建了
   assert.deepEqual(
     upgraded
@@ -386,7 +395,8 @@ test("版本 3 的库打开时升到 4：账原样搬过来，用途多认划词
       .map(({ name }) => name),
     ["model_calls_audio_id", "model_calls_created_at"],
   );
-  // 文件头写的退回办法
+  // 文件头写的退回办法（先从 5 退回 4）
+  upgraded.exec("ALTER TABLE history DROP COLUMN rerun_of; PRAGMA user_version = 4;");
   upgraded.exec("DELETE FROM model_calls WHERE purpose = 'lookup'; PRAGMA user_version = 3;");
   assert.equal(upgraded.prepare("SELECT count(*) AS n FROM model_calls").get().n, 1);
   upgraded.close();
@@ -465,6 +475,7 @@ test("历史里每一条带上它的用量：重来过的几次调用加在一�
       outputTokens: 10,
       costUsd: 0,
       latencyMs: 2700,
+      models: ["gemini-3.6-flash"],
     },
   );
   close(row.usage.costUsd, 0.003);
@@ -575,6 +586,36 @@ test("划词的账单独一类：用量里另报几次划词，听写次数和�
   const deepseek = models.find(({ provider }) => provider === "deepseek");
   assert.deepEqual([deepseek.dictations, deepseek.lookups, deepseek.latenciesMs], [0, 2, []]);
   history.close();
+});
+
+test("重跑出来的记录不算又说了一次：首页统计、用量里的听写次数和等待时间都不数它，钱照算；退回 4 时只丢掉这个标记", () => {
+  const path = join(dir, "history.db");
+  const history = openHistory(path);
+  history.add(entry());
+  history.addCall(call({ latencyMs: 1500 }));
+  history.add(entry({ id: "r1", refinedText: "我们后天开会", rerunOf: "a1", createdAt: "2026-10-14T08:00:00.000Z" }));
+  history.addCall(call({ audioId: "r1", model: "gemini-3.6-pro", latencyMs: 9000, costUsd: 0.004 }));
+
+  assert.deepEqual(
+    history.list().map(({ id, rerunOf, usage }) => [id, rerunOf, usage.models]),
+    [
+      ["r1", "a1", ["gemini-3.6-pro"]],
+      ["a1", null, ["gemini-3.6-flash"]],
+    ],
+  );
+  const { dictations, characters, seconds } = history.stats();
+  assert.deepEqual({ dictations, characters, seconds }, { dictations: 1, characters: 7, seconds: 4.2 });
+  assert.equal(history.dictations().length, 1);
+  const usage = history.usage();
+  assert.deepEqual([usage.calls, usage.dictations, usage.latenciesMs], [2, 1, [1500]]);
+  close(usage.costUsd, 0.005);
+  history.close();
+
+  // 文件头写的退回办法
+  const db = new DatabaseSync(path);
+  db.exec("ALTER TABLE history DROP COLUMN rerun_of; PRAGMA user_version = 4;");
+  assert.equal(db.prepare("SELECT count(*) AS n FROM history").get().n, 2);
+  db.close();
 });
 
 test("本机转写那一跳也记账：一次听写不数两次；整次等了多久是两跳加起来，按型号分开时各算各的", () => {
