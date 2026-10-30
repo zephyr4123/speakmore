@@ -1,7 +1,7 @@
 {
   "name": "speakmore",
   "productName": "SpeakMore",
-  "version": "0.18.1",
+  "version": "0.19.0",
   "private": true,
   "description": "macOS 上的语音输入：按一下热键说话，整理好的文字贴进当前输入框。用你自己的 Gemini 或 OpenAI 的 key",
   "license": "MIT",
