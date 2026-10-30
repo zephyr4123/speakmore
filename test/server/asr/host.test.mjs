@@ -27,6 +27,13 @@ test("在子进程里装上模型，样本原样（Float32Array）交过去，�
   await assert.rejects(transcriber.transcribe(new Float32Array(8)), /已经关了/);
 });
 
+test("一个子进程一次只转写一段：同时来的排着队，不让同一个模型同时跑两份推理（预览、整理、历史里重跑都走这里）", async (t) => {
+  const transcriber = await spawn();
+  t.after(() => transcriber.dispose());
+  const results = await Promise.all([1, 2, 3].map(() => transcriber.transcribe(new Float32Array(10))));
+  assert.deepEqual(results.at(-1), { text: "most:1" });
+});
+
 test("用户词典随这一次转写交给子进程", async () => {
   const transcriber = await spawn();
   assert.deepEqual(await transcriber.transcribe(new Float32Array(8), { vocabulary: ["Runzo", "埋点"] }), {
