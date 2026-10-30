@@ -16,6 +16,6 @@ metadata:
 
 - **#21 隐藏的悬浮条和划词卡片不让 Chromium 降频**：他在 Windows 上量到按热键后条最长 13 秒才出来。10-30 合并，改成在 `main.mjs` 定义一次 `popupPreferences`（`backgroundThrottling: false`）两个窗口共用，去掉了 62 行只守这个开关的测试（+67/−2 → +5/−2）；随 0.18.1 发布。
 
-- **#22 历史记录 2.0（搜索、播放录音、换模型重跑、导出）**：他 +1631 行。10-30 用 workflow 审了一轮（8 个 agent）后修完再合：重跑记 `rerun_of`（表结构 5），统计不数重跑；本机转写在 `asr/host.mjs` 排队；重跑路线改用 patchSettings+routeOf、还差什么用引擎页的 needsOf；对话框改成分段选方式加下拉；导出在保存窗口里选格式；对话框和工具栏提成通用的 `.dialog`、`.toolbar`。源码净增约 1100 → 835 行。他在开发版看过导出的格式下拉，随 0.19.0 发布。
+- **#22 历史记录 2.0（搜索、播放录音、换模型重跑、导出）**：他 +1631 行。10-30 用 workflow 审了一轮（8 个 agent）后修完再合：重跑记 `rerun_of`（表结构 5），统计不数重跑；本机转写在 `asr/host.mjs` 排队；重跑路线改用 patchSettings+routeOf、还差什么用引擎页的 needsOf；对话框改成分段选方式加下拉；导出在保存窗口里选格式；对话框和工具栏提成通用的 `.dialog`、`.toolbar`。源码净增约 1100 → 835 行。他在开发版看过导出的格式下拉，10-30 随 0.19.0 发布、PR 已回复。
 
 #19、#20 随 0.18.0（10-30）发布。相关：[[review-includes-conciseness]]、[[speakmore-release-on-cos]]
