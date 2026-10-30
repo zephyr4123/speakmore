@@ -266,15 +266,24 @@
     0 0 0 4px color-mix(in oklch, var(--primary) 18%, transparent);
 }
 
-/* 列表上面的一条工具（词典页的搜索和计数） */
+/* 列表上面的一条工具（词典页、历史页）：搜索、计数挨着，最后那个按钮靠右 */
 .toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
+  gap: 0.75rem 1.25rem;
   min-height: var(--control-md);
   margin: 1.25rem 0 1.5rem;
+}
+
+.toolbar > :last-child {
+  margin-left: auto;
+}
+
+.toolbar-count {
+  font-size: var(--text-small);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
 }
 
 /* 数后面小一号的单位（首页的数、推荐组合的月成本） */
@@ -1066,33 +1075,24 @@
   cursor: help;
 }
 
-/* 历史页的工具列：搜索和条数在左，导出在最右 */
-.history-toolbar {
-  justify-content: flex-start;
+/* 正在放的那一条：按钮一直显示，播放键亮着 */
+.entry:has(.play[data-playing]) .entry-actions {
+  opacity: 1;
 }
 
-.history-toolbar .search {
-  flex: 0 1 20rem;
-}
-
-.history-count {
-  margin: 0;
-  font-size: var(--text-small);
-  color: var(--ink-2);
-}
-
-.history-toolbar > .button {
-  margin-left: auto;
-}
-
-/* 正在放的那一条 */
 .play[data-playing] {
   color: var(--primary);
 }
 
-/* 重跑、导出：照词典对话框的样子（vocabulary.css 的 vocab-dialog） */
-.history-dialog {
-  width: min(30rem, 100vw - 4rem);
+/* 这一条没有的按钮（划词没有录音，失败的没有可复制的）只占着位置：各行的按钮竖着对齐 */
+.entry-actions > [data-absent] {
+  visibility: hidden;
+}
+
+/* ---------- 对话框：词典的删除、导入确认，历史的重跑 ---------- */
+
+.dialog {
+  width: min(26rem, 100vw - 4rem);
   padding: 0;
   color: var(--ink);
   background: var(--glass-strong);
@@ -1105,92 +1105,45 @@
   -webkit-app-region: no-drag;
 }
 
-.history-dialog[open] {
+.dialog[open] {
   animation: dialog-in var(--dur-slow) var(--ease-out);
 }
 
-.history-dialog::backdrop {
+.dialog::backdrop {
   background: oklch(0 0 0 / 0.18);
   backdrop-filter: blur(6px);
   animation: fade-in var(--dur-slow) var(--ease-out);
 }
 
-.history-dialog-form {
+.dialog-form {
   display: grid;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: 0.5rem;
+  padding: 1.5rem 1.5rem 1.25rem;
 }
 
-.history-dialog-title {
-  margin: 0;
+.dialog-title {
+  margin: 0 0 0.25rem;
   font-size: var(--text-heading);
   font-weight: var(--weight-bold);
   line-height: 1.35;
 }
 
-.history-dialog-text {
-  margin: 0;
+.dialog-text,
+.dialog-problem {
   font-size: var(--text-small);
-  color: var(--ink-2);
+  overflow-wrap: anywhere;
 }
 
-.history-dialog-problem {
-  margin: 0;
-}
-
-.history-dialog-foot {
+.dialog-foot {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  margin-top: 0.25rem;
+  margin-top: 1rem;
 }
 
-/* 重跑：一种模式一格，里面是这一条要选的东西 */
-.history-rerun-modes {
-  display: grid;
-  gap: 0.625rem;
-}
-
-.history-rerun-mode {
-  display: grid;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-}
-
-.history-rerun-mode[data-supported="false"] {
-  opacity: 0.55;
-}
-
-.history-rerun-mode > label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: var(--weight-medium);
-}
-
-.history-rerun-fields {
-  display: grid;
-  gap: 0.5rem;
-  padding-left: 1.5rem;
-}
-
-.history-rerun-field {
-  display: grid;
-  gap: 0.25rem;
-  font-size: var(--text-small);
-  color: var(--ink-2);
-}
-
-.history-rerun-field .select {
-  width: 100%;
-}
-
-.history-export-formats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+/* 对话框里的分段控件（重跑选识别方式）照本身的宽度，不撑满 */
+.dialog-form > .segmented {
+  justify-self: start;
 }
 
 /* ---------- 一路经过的模型（route-view.mjs）：引擎页的推荐组合用 ---------- */
@@ -1297,7 +1250,8 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .settings::backdrop {
+  .settings::backdrop,
+  .dialog::backdrop {
     backdrop-filter: none;
   }
 }
@@ -1556,7 +1510,9 @@ code.setting-value {
   }
 
   .settings[open],
-  .settings::backdrop {
+  .settings::backdrop,
+  .dialog[open],
+  .dialog::backdrop {
     animation: none;
   }
 

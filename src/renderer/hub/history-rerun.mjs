@@ -1,181 +1,135 @@
-import { fillSelect, h } from "../shared/dom.mjs";
+import { fillSelect, h, platformName } from "../shared/dom.mjs";
 import { t } from "../shared/i18n.mjs";
 import { describeError } from "../shared/setup-text.mjs";
+import { modeName, roleName } from "./engine/plaza-view.mjs";
+import { slidingIndicators } from "./indicators.mjs";
+import { needText } from "./route-view.mjs";
 import { toast } from "./toast.mjs";
 
-// 重跑对话框：拿这条记录的录音、按另一条路线再跑一次（app/rerun.mjs）。能选什么由主进程给（history:rerun-options），
-// 这里只负责画、把选的那一项交回去；跑完关掉，列表自己重读。
-// 三种模式各一格：直出挑一个模型；混合挑转文字和润色；离线挑本机模型。没装好、没 key 的选项灰着，鼠标停上去说原因。
+// 重跑对话框：拿这条记录的录音换个模型再跑一次（app/rerun.mjs）。能选什么由主进程给（history:rerun-options）：
+// 上面是三种识别方式（做不了这个功能的灰着，悬停说原因），下面一行一项能换的模型；名字和"还差什么"照引擎页的写法，
+// 还差东西时不让跑。点了重跑就关上，跑完成没成都用一句提示说，结果另存一条，列表随主进程的"历史变了"重读。
 
-/** 一格模式：单选框加它自己的几个下拉 */
-function modeBlock(mode, supported) {
-  const block = h("div", { class: "history-rerun-mode", "data-mode": mode, "data-supported": String(supported) });
-  const radio = h("input", { type: "radio", name: "history-rerun-mode", value: mode });
-  radio.disabled = !supported;
-  block.append(h("label", {}, radio, h("span", { text: t(`rerun.modes.${mode}`) })));
-  const fields = h("div", { class: "history-rerun-fields" });
-  block.append(fields);
-  if (!supported) fields.append(h("p", { class: "history-dialog-text", text: t("rerun.unsupported") }));
-  return { block, radio, fields, selects: [] };
-}
-
-/** 一个下拉：标签、选项（没就绪的灰着、写明原因）、默认选第一个就绪的 */
-function selectField(label, options, current) {
-  const field = h("label", { class: "history-rerun-field" }, h("span", { text: label }));
-  const select = h("select", { class: "select" });
-  const picked =
-    options.find((option) => option.value === current && option.ready) ?? options.find((option) => option.ready);
-  fillSelect(
-    select,
-    options.map((option) => [option.value, option.name]),
-    picked?.value ?? current,
-  );
-  for (const option of select.querySelectorAll("option")) {
-    const source = options.find(({ value }) => value === option.value);
-    if (source && !source.ready) {
-      option.disabled = true;
-      option.title = t.text(source.problem);
-    }
-  }
-  field.append(select);
-  return { field, select };
-}
-
-/** 一个模式的几个下拉都跟着这个模式开、关 */
-function syncFields(current) {
-  for (const [mode, { radio, selects }] of current.blocks) {
-    const active = radio.checked;
-    for (const select of selects) select.disabled = !active || !current.options[mode].supported;
-  }
-}
+const $ = (id) => document.getElementById(id);
 
 /**
- * @param {{ onDone: () => void }} deps onDone：重跑成功之后让列表重读
+ * @param {{ getSetup: () => object | null }} deps 最近一次拿到的状态（平台的名字在 plaza.platforms 里）
  */
-export function createRerunDialog({ onDone }) {
-  const dialog = document.getElementById("history-rerun");
-  const form = document.getElementById("history-rerun-form");
-  const modes = document.getElementById("history-rerun-modes");
-  const problem = document.getElementById("history-rerun-problem");
-  const runButton = document.getElementById("history-rerun-run");
-  /** 这一次开着的：{ id, options, blocks: Map<mode, { radio, selects }> } */
+export function createRerunDialog({ getSetup }) {
+  const dialog = $("history-rerun");
+  const modes = $("history-rerun-modes");
+  const needs = $("history-rerun-needs");
+  const indicators = slidingIndicators(dialog);
+  /** 开着的这一次：{ id, options, mode, picked: { 设置名: 选的值 } } */
   let current = null;
-  let running = false;
 
-  const showProblem = (message, tone = "") => {
-    problem.textContent = message ?? "";
-    problem.dataset.tone = tone;
-    problem.hidden = !message;
-  };
+  const platformOf = (id) => getSetup()?.plaza.platforms.find((platform) => platform.id === id) ?? { id, name: id };
 
-  function build(options) {
-    modes.replaceChildren();
-    const blocks = new Map();
-
-    const native = modeBlock("native", options.native.supported);
-    blocks.set("native", native);
-    if (options.native.supported) {
-      const model = selectField(t("rerun.model"), options.native.models, options.native.current);
-      native.fields.append(model.field);
-      native.selects.push(model.select);
-    }
-    modes.append(native.block);
-
-    const local = modeBlock("local", options.local.supported);
-    blocks.set("local", local);
-    if (options.local.supported) {
-      const transcriber = selectField(
-        t("rerun.transcriber"),
-        options.local.transcribers,
-        options.local.current.transcriber,
-      );
-      const polish = selectField(t("rerun.polish"), options.local.polishes, options.local.current.polish);
-      local.fields.append(transcriber.field, polish.field);
-      local.selects.push(transcriber.select, polish.select);
-    }
-    modes.append(local.block);
-
-    const offline = modeBlock("private", options.private.supported);
-    blocks.set("private", offline);
-    if (options.private.supported) {
-      const model = selectField(t("rerun.model"), options.private.models, options.private.current);
-      offline.fields.append(model.field);
-      offline.selects.push(model.select);
-    }
-    modes.append(offline.block);
-
-    // 默认选现在用的那种模式；那种模式做不了这个功能时，退到第一种做得了的
-    const preferred = blocks.get(options.mode)?.radio;
-    const fallback = [...blocks.values()].find(({ radio }) => !radio.disabled)?.radio;
-    const chosen = preferred && !preferred.disabled ? preferred : fallback;
-    if (chosen) chosen.checked = true;
-    return blocks;
+  /** 一项模型的名字：本机的写模型名，云端的写"平台 · 模型" */
+  function labelOf({ hop }) {
+    if (hop.platform === "local") return hop.name;
+    const where = hop.platform === "custom" ? t("plaza.custom.name") : platformName(platformOf(hop.platform));
+    return `${where} · ${hop.name}`;
   }
 
-  /** 这一次选的是哪条路线 */
-  function targetOf() {
-    const checked = modes.querySelector('input[name="history-rerun-mode"]:checked');
-    if (!checked) return null;
-    const mode = checked.value;
-    const { selects } = current.blocks.get(mode);
-    if (mode === "native") return { mode, model: selects[0].value };
-    if (mode === "local") return { mode, transcriber: selects[0].value, polish: selects[1].value };
-    return { mode, transcriber: selects[0].value };
-  }
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!current || running) return;
-    const target = targetOf();
-    if (!target) return;
-    running = true;
-    runButton.disabled = true;
-    runButton.textContent = t("rerun.running");
-    showProblem(null);
-    try {
-      const result = await window.speakmore.rerunHistory({ id: current.id, target });
-      if (result?.ok) {
-        dialog.close();
-        toast(t("rerun.done"));
-        onDone();
-      } else {
-        showProblem(
-          result?.problem ? t.text(result.problem) : t("rerun.failed", { reason: t("common.unknownReason") }),
-          "problem",
+  /** 选中的那种方式：一行一项设置，下面说还差什么 */
+  function draw() {
+    for (const segment of modes.querySelectorAll(".segment")) {
+      segment.setAttribute("aria-checked", String(segment.dataset.mode === current.mode));
+    }
+    indicators.place();
+    const settings = current.options.modes[current.mode].settings;
+    $("history-rerun-settings").replaceChildren(
+      ...settings.map(({ name, role, choices }) => {
+        const select = h("select", {
+          class: "select",
+          onchange: () => {
+            current.picked[name] = select.value;
+            drawNeeds();
+          },
+        });
+        fillSelect(
+          select,
+          choices.map((choice) => [choice.value, labelOf(choice)]),
+          current.picked[name],
         );
-      }
+        return h("label", { class: "setting" }, h("span", { class: "setting-title", text: roleName(role) }), select);
+      }),
+    );
+    drawNeeds();
+  }
+
+  function drawNeeds() {
+    const picked = current.options.modes[current.mode].settings.map(({ name, choices }) =>
+      choices.find(({ value }) => value === current.picked[name]),
+    );
+    const hops = picked.map(({ hop }) => hop);
+    const missing = picked.flatMap((choice) => choice.needs).map((need) => needText(need, { hops, platformOf }));
+    needs.textContent = missing.join(" · ");
+    needs.hidden = missing.length === 0;
+    $("history-rerun-run").disabled = missing.length > 0;
+  }
+
+  $("history-rerun-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const { id, mode, picked, options } = current;
+    const settings = Object.fromEntries(options.modes[mode].settings.map(({ name }) => [name, picked[name]]));
+    dialog.close();
+    toast(t("rerun.running"));
+    try {
+      const result = await window.speakmore.rerunHistory({ id, mode, settings });
+      toast(result.ok ? t("rerun.done") : t("rerun.failed", { reason: t.text(result.problem) }));
     } catch (error) {
-      showProblem(t("rerun.failed", { reason: describeError(error) }), "problem");
-    } finally {
-      running = false;
-      runButton.disabled = false;
-      runButton.textContent = t("rerun.run");
+      toast(t("rerun.failed", { reason: describeError(error) }));
     }
   });
-
-  document.getElementById("history-rerun-cancel").addEventListener("click", () => dialog.close());
+  $("history-rerun-cancel").addEventListener("click", () => dialog.close());
 
   return {
-    /** 打开某一条的重跑对话框；读不出选项时说一声，不弹一个空的 */
+    /** 打开某一条的重跑对话框；读不出能选什么（记录、录音不在了）时说一声，不弹一个空的 */
     async open(id) {
-      showProblem(null);
-      runButton.disabled = true;
+      let options;
       try {
-        const options = await window.speakmore.rerunOptions(id);
-        if (!options?.hasAudio) {
-          toast(t("rerun.noRecording"));
-          return;
-        }
-        const blocks = build(options);
-        current = { id, options, blocks };
-        for (const { radio } of blocks.values()) radio.addEventListener("change", () => syncFields(current));
-        syncFields(current);
-        dialog.showModal();
+        options = await window.speakmore.rerunOptions(id);
       } catch (error) {
         toast(t("rerun.optionsFailed", { reason: describeError(error) }));
-      } finally {
-        runButton.disabled = false;
+        return;
       }
+      const usable = (mode) => options.modes[mode].problem === null;
+      current = {
+        id,
+        options,
+        // 默认现在用的那种方式；它做不了这个功能时（离线做不了翻译）换成第一种做得了的
+        mode: usable(options.mode) ? options.mode : Object.keys(options.modes).find(usable),
+        picked: Object.fromEntries(
+          Object.values(options.modes).flatMap(({ settings }) =>
+            settings.map(({ name, current: value }) => [name, value]),
+          ),
+        ),
+      };
+      modes.replaceChildren(
+        modes.querySelector(".indicator"),
+        ...Object.entries(options.modes).map(([mode, { problem }]) =>
+          h("button", {
+            type: "button",
+            class: "segment",
+            role: "radio",
+            "data-mode": mode,
+            disabled: problem !== null,
+            title: problem && t.text(problem),
+            text: modeName(mode),
+            onclick: () => {
+              current.mode = mode;
+              draw();
+            },
+          }),
+        ),
+      );
+      dialog.showModal();
+      // 打开以后才量得出分段的宽度，滑块要在这之后放；焦点放在选中的那种方式上
+      indicators.reset();
+      draw();
+      modes.querySelector('[aria-checked="true"]')?.focus();
     },
   };
 }

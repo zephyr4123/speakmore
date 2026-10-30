@@ -7,10 +7,11 @@ import { createRerunDialog } from "./history-rerun.mjs";
 import { slidingIndicators } from "./indicators.mjs";
 import { toast } from "./toast.mjs";
 
-// 历史记录：搜得到、放得出录音、能拿另一条路线再跑一次、能导出。按天分组（今天、昨天、再往前写日期），
-// 一行一条，鼠标移上去才出现播放、复制、重跑和详情。
-// 搜索和按功能筛都在库里做（history:list 的 query、kinds），所以 200 条之外的老记录也搜得到；
-// 导出的就是现在看到的这些（同一个筛选和搜索）。
+// 历史记录：按天分组（今天、昨天、再往前写日期），一行一条，鼠标移上去才出现播放、复制、重跑和详情。
+// 和原版一样一行只有时间和文字；录音时长、模型用时、用到的型号和花费放在详情的悬停提示里。
+// 翻译的那几条正文是译文，下面一行是小标签（功能 · 目标语言）和原文；重跑出来的，小标签写"重跑"。
+// 标题右边按功能筛，下面是搜索：都在库里做（history:list），列表只显示最近 200 条，更老的也搜得到。
+// 导出的是搜索、筛选出来的全部，格式在保存窗口里选。
 
 const $ = (id) => document.getElementById(id);
 
@@ -49,6 +50,7 @@ function detailsOf(row) {
   if (row.usage) {
     const cost = row.usage.costUsd === null ? t("history.unpriced") : formatUsd(row.usage.costUsd);
     lines.push(t("history.model", { latency: formatSeconds(row.usage.latencyMs, t), cost }));
+    lines.push(t("history.models", { models: row.usage.models.join(" · ") }));
     const tokens = { input: formatTokens(row.usage.inputTokens), output: formatTokens(row.usage.outputTokens) };
     lines.push(
       row.usage.calls > 1
@@ -62,74 +64,74 @@ function detailsOf(row) {
 /** 能筛的功能：任何时候都能按的动作（取消不算） */
 const FEATURES = ACTIONS.filter((action) => action.when === "always").map(({ id }) => id);
 
-/** 导出的三种格式（和主进程的 history-export.mjs 一样） */
-const FORMATS = ["markdown", "json", "csv"];
-
-export function createHistory() {
+/**
+ * @param {{ getSetup: () => object | null }} deps 最近一次拿到的状态（重跑对话框要平台的名字）
+ */
+export function createHistory({ getSetup }) {
   const dayTemplate = $("history-day");
   const rowTemplate = $("history-row");
-  /** 最近一次拿到的记录；换筛选、换搜索时重新问主进程要 */
+  /** 最近一次拿到的记录 */
   let latest = [];
   /** 筛的是哪个功能；all 是全部 */
   let filter = "all";
   /** 搜的字；空的不过滤 */
   let search = "";
-  /** 连着打字时前一次的结果可能后到：只认最后一次 */
+  /** 连着打字、连着点时前一次的结果可能后到：只认最后一次 */
   let loadToken = 0;
+  let playToken = 0;
   let searchTimer;
   const indicators = slidingIndicators(document.querySelector('.page[data-route="history"]'));
+  const rerunDialog = createRerunDialog({ getSetup });
 
   // ---------- 播放录音 ----------
 
   const player = new Audio();
-  /** 正在放的那条：{ id, button, url } */
+  /** 正在放的那条：{ id, url } */
   let playing = null;
 
-  /** 停下、把按钮还原；换歌、重画、放完都走这里 */
-  function stopPlayback() {
+  /** 按钮跟着正在放的那条走：列表重画了，新画的那一行照样是"停止" */
+  function markPlaying() {
+    for (const button of $("history-days").querySelectorAll(".play")) {
+      const on = playing?.id === button.closest(".entry").dataset.id;
+      button.toggleAttribute("data-playing", on);
+      button.querySelector("use").setAttribute("href", on ? "#i-square" : "#i-play");
+      button.title = t(on ? "history.stop" : "history.play");
+      button.setAttribute("aria-label", button.title);
+    }
+  }
+
+  function stop() {
     if (playing === null) return;
-    const { button, url } = playing;
-    playing = null;
     player.pause();
     player.removeAttribute("src");
     player.load();
-    URL.revokeObjectURL(url);
-    delete button.dataset.playing;
-    button.querySelector("use").setAttribute("href", "#i-play");
-    button.title = t("history.play");
-    button.setAttribute("aria-label", t("history.play"));
+    URL.revokeObjectURL(playing.url);
+    playing = null;
+    markPlaying();
   }
 
-  player.addEventListener("ended", stopPlayback);
+  player.addEventListener("ended", stop);
 
-  async function togglePlay(row, button) {
-    if (playing?.id === row.id) {
-      stopPlayback();
-      return;
-    }
-    stopPlayback();
+  /** 点正在放的那条是停下；点别的换成放它 */
+  async function togglePlay(id) {
+    const again = playing?.id === id;
+    stop();
+    if (again) return;
+    const token = ++playToken;
     try {
-      const bytes = await window.speakmore.historyAudio(row.id);
-      if (!bytes) throw new Error(t("rerun.noRecording"));
-      const url = URL.createObjectURL(new Blob([bytes], { type: "audio/webm" }));
-      playing = { id: row.id, button, url };
-      player.src = url;
+      const bytes = await window.speakmore.historyAudio(id);
+      if (token !== playToken) return;
+      playing = { id, url: URL.createObjectURL(new Blob([bytes], { type: "audio/webm" })) };
+      player.src = playing.url;
+      markPlaying();
       await player.play();
-      button.dataset.playing = "";
-      button.querySelector("use").setAttribute("href", "#i-pause");
-      button.title = t("history.pause");
-      button.setAttribute("aria-label", t("history.pause"));
     } catch (error) {
-      stopPlayback();
+      stop();
       toast(t("history.playFailed", { reason: describeError(error) }));
     }
   }
 
-  // ---------- 重跑 ----------
-
-  const rerunDialog = createRerunDialog({ onDone: () => refresh() });
-
-  // ---------- 搜索、按功能筛 ----------
+  // ---------- 按功能筛、搜索、导出 ----------
 
   // 分段控件：全部，加每个功能一个
   $("history-filter").append(
@@ -162,13 +164,13 @@ export function createHistory() {
     }, 120);
   });
 
-  /** 现在要的是哪些：搜索的字、只看哪几个功能（都是 null 时不过滤） */
-  const request = () => ({ query: search.trim() === "" ? null : search, kinds: filter === "all" ? null : [filter] });
+  /** 现在要的是哪些：搜索的字、只看哪几个功能 */
+  const filtered = () => ({ query: search, kinds: filter === "all" ? null : [filter] });
 
   async function refresh() {
     const token = ++loadToken;
     try {
-      const rows = await window.speakmore.listHistory(request());
+      const rows = await window.speakmore.listHistory(filtered());
       if (token !== loadToken) return;
       latest = rows;
       $("history-error").hidden = true;
@@ -178,57 +180,27 @@ export function createHistory() {
     }
   }
 
-  // ---------- 导出 ----------
-
-  function showNote(id, message, tone = "") {
-    const node = $(id);
-    node.textContent = message ?? "";
-    node.dataset.tone = tone;
-    node.hidden = !message;
-  }
-
-  $("history-export").addEventListener("click", () => {
-    showNote("history-export-problem", null);
-    $("history-export-scope").textContent = t("history.exportScope", { count: latest.length });
-    $("history-export-dialog").showModal();
-  });
-  $("history-export-cancel").addEventListener("click", () => $("history-export-dialog").close());
-
-  async function exportAs(format, button) {
-    button.disabled = true;
-    showNote("history-export-problem", null);
+  $("history-export").addEventListener("click", async () => {
     try {
-      const result = await window.speakmore.exportHistory({ format, ...request() });
-      if (result) {
-        $("history-export-dialog").close();
-        toast(t("history.exportDone", { path: result.path }));
-      }
+      const done = await window.speakmore.exportHistory(filtered());
+      if (done) toast(t("history.exportDone", { count: done.count }));
     } catch (error) {
-      showNote("history-export-problem", t("history.exportFailed", { reason: describeError(error) }), "problem");
-    } finally {
-      button.disabled = false;
+      toast(t("history.exportFailed", { reason: describeError(error) }));
     }
-  }
-
-  for (const format of FORMATS) {
-    const button = h("button", {
-      type: "button",
-      class: "button",
-      text: t(`history.formats.${format}`),
-      onclick: () => exportAs(format, button),
-    });
-    $("history-export-formats").append(button);
-  }
+  });
 
   // ---------- 画列表 ----------
 
-  /** 翻译的那几条：功能和目标语言的小标签，后面是原文。不是翻译的（没有目标语言）不画 */
+  /** 小标签：重跑出来的写"重跑"，翻译的写功能和目标语言、后面是原文。都不是的不画 */
   function renderSource(node, row) {
-    if (!row.outputLanguage) return;
+    const tags = [
+      row.rerunOf && t("history.rerun"),
+      row.outputLanguage && `${t(`actions.${row.kind}.name`)} · ${t(`languages.${row.outputLanguage}`)}`,
+    ].filter(Boolean);
+    if (tags.length === 0) return;
     const source = node.querySelector(".entry-source");
     source.hidden = false;
-    source.querySelector(".tag").textContent =
-      `${t(`actions.${row.kind}.name`)} · ${t(`languages.${row.outputLanguage}`)}`;
+    source.querySelector(".tag").textContent = tags.join(" · ");
     const original = source.querySelector(".entry-original");
     original.textContent = row.sourceText ?? "";
     original.title = row.sourceText ?? "";
@@ -236,6 +208,7 @@ export function createHistory() {
 
   function renderRow(row) {
     const node = rowTemplate.content.firstElementChild.cloneNode(true);
+    node.dataset.id = row.id;
     const time = node.querySelector("time");
     time.dateTime = row.createdAt;
     time.textContent = clock.format(new Date(row.createdAt));
@@ -247,12 +220,12 @@ export function createHistory() {
       // 失败的原因是当时界面上的那句话，记在历史里，不随语言再变
       text.dataset.prefix = t("history.failed");
       text.textContent = row.error;
-      copy.hidden = true;
+      copy.dataset.absent = "";
     } else if (row.refinedText === "") {
       // 原版的说法：hub__history__item__empty__text
       node.dataset.kind = "silent";
       text.textContent = t("history.silent");
-      copy.hidden = true;
+      copy.dataset.absent = "";
     } else {
       text.textContent = row.refinedText;
       copy.addEventListener("click", async () => {
@@ -275,11 +248,11 @@ export function createHistory() {
     const play = node.querySelector(".play");
     const rerun = node.querySelector(".rerun");
     if (row.audioFile) {
-      play.addEventListener("click", () => togglePlay(row, play));
+      play.addEventListener("click", () => togglePlay(row.id));
       rerun.addEventListener("click", () => rerunDialog.open(row.id));
     } else {
-      play.hidden = true;
-      rerun.hidden = true;
+      play.dataset.absent = "";
+      rerun.dataset.absent = "";
     }
 
     renderSource(node, row);
@@ -290,16 +263,8 @@ export function createHistory() {
   }
 
   function draw() {
-    // 列表要整块换掉：正在放的那条按钮会跟着没掉，先停下
-    stopPlayback();
-    const empty = latest.length === 0;
-    $("history-empty").hidden = !empty;
+    $("history-empty").hidden = latest.length > 0;
     $("history-empty").textContent = search.trim() === "" ? t("history.empty") : t("history.noResults");
-    $("history-count").textContent = empty ? "" : t("history.count", { count: latest.length });
-    if (empty) {
-      $("history-days").replaceChildren();
-      return;
-    }
 
     const now = new Date();
     const groups = [];
@@ -317,6 +282,9 @@ export function createHistory() {
         return node;
       }),
     );
+    // 正在放的那条还在列表里就接着放（重跑途中每记一笔账都会重画），不在了才停
+    if (latest.some((row) => row.id === playing?.id)) markPlaying();
+    else stop();
   }
 
   function showError(message) {
@@ -325,7 +293,7 @@ export function createHistory() {
   }
 
   return {
-    /** 重读一遍（主进程说历史变了、换了筛选或搜索、重跑完） */
+    /** 重读一遍（主进程说历史变了） */
     refresh,
 
     /** 页面切到前台时，分段控件的底块要按真实宽度重新放（藏着时量不出来） */

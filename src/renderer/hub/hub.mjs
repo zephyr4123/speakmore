@@ -19,7 +19,7 @@ const ROUTES = ["home", "models", "history", "vocabulary"];
 localize();
 
 const home = createHome();
-const history = createHistory();
+const history = createHistory({ getSetup: () => setup });
 const vocabulary = createVocabulary();
 const settings = createSettings({ refresh: refreshSetup });
 const engine = createEngine({ refresh: refreshSetup });
