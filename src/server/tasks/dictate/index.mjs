@@ -6,8 +6,29 @@ import { nativePromptWith, TASK_REMINDER } from "./prompt.mjs";
 // 语音输入：他说什么，就写成他想打出来的那段字（删口头禅、改口，分段分点）。
 // 三种识别方式都能做，各步用的提示词和收尾都在这个目录里，别的任务不引用这里的东西。
 
+/**
+ * 本机模型会把"3D"写成"三D"（"二D"、"四K"也一样）：中文数字紧挨着一个拉丁字母时换成阿拉伯数字。
+ * 只换单个字的中文数字；"二百六十RPM"这种成串的数不动——那要把整段读成数才做得对，不在这里猜。
+ * "一"不换：粤语里"一D"是"一啲"的写法，换成 1D 反而错
+ */
+const DIGITS = Object.freeze({
+  零: "0",
+  二: "2",
+  兩: "2",
+  两: "2",
+  三: "3",
+  四: "4",
+  五: "5",
+  六: "6",
+  七: "7",
+  八: "8",
+  九: "9",
+});
+const NUMBER_BEFORE_LATIN = /[零二兩两三四五六七八九](?=[A-Za-z])/g;
+const digitsBeforeLatin = (text) => text.replace(NUMBER_BEFORE_LATIN, (digit) => DIGITS[digit]);
+
 /** 成品只有一段字，没有另外要存的原文 */
-const done = (text) => ({ text, source: null });
+const done = (text) => ({ text: digitsBeforeLatin(text), source: null });
 
 /** 直出：录音交给听音频的模型 */
 const NATIVE = Object.freeze({
