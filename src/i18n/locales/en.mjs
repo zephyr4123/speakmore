@@ -263,6 +263,7 @@ export default {
         "Whether dictated Chinese comes out simplified or traditional: English, numbers, and Cantonese-only characters stay as they are",
       livePreview:
         "Whether the voice bar shows provisional text while you speak, updated every few seconds: only on-device recognition has this, and the finished result still comes out the usual way",
+      dockIcon: "Whether SpeakMore shows in the Mac Dock: on to show, off to stay in the menu bar only",
       lookup: {
         to: "What selection translation translates into: one language; the card can switch to another for one go",
         model:
@@ -525,6 +526,23 @@ export default {
     updateAvailable: "Version {version} is available…",
     quit: "Quit SpeakMore",
     fallbackTitle: "Dictate",
+  },
+
+  appMenu: {
+    about: "About SpeakMore",
+    hide: "Hide SpeakMore",
+    hideOthers: "Hide Others",
+    showAll: "Show All",
+    edit: "Edit",
+    undo: "Undo",
+    redo: "Redo",
+    cut: "Cut",
+    copy: "Copy",
+    paste: "Paste",
+    selectAll: "Select All",
+    window: "Window",
+    minimize: "Minimize",
+    close: "Close",
   },
 
   notes: {
@@ -962,6 +980,8 @@ export default {
     livePreview: "Preview words on the voice bar while speaking",
     livePreviewFailed: "Preview setting not changed: {reason}",
     openAtLogin: "Launch at login",
+    dockIcon: "Show in Dock",
+    dockIconFailed: "Dock setting not changed: {reason}",
     themeFailed: "Theme not changed: {reason}",
     languageFailed: "Language not changed: {reason}",
     loginFailed: "Couldn't set launch at login: {reason}",

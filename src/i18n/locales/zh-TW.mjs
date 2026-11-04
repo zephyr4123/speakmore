@@ -380,6 +380,7 @@ export default {
       "barHint": "懸浮條上方那行操作提示（再按一下 … 完成 · esc 取消）顯示不顯示：on 顯示，off 不顯示",
       "outputScript": "聽寫出來的中文字用簡體還是繁體；英文、數字、粵語用字不動",
       "livePreview": "開口說話時在懸浮條上顯示暫定的文字，每隔幾秒更新一次：只有本機識別才有，最終結果照舊交出去",
+      "dockIcon": "Mac 的程式塢裡顯示不顯示 SpeakMore：on 顯示，off 只待在選單欄",
       "translate": {
         "to": "語音翻譯譯成什麼：一種或幾種語言（en、ja，逗號隔開），第一種是預設，懸浮條上能臨時換成別的幾種"
       },
@@ -628,6 +629,22 @@ export default {
     "updateAvailable": "新版本 {version} 可用…",
     "quit": "退出 SpeakMore",
     "fallbackTitle": "聽寫"
+  },
+  "appMenu": {
+    "about": "關於 SpeakMore",
+    "hide": "隱藏 SpeakMore",
+    "hideOthers": "隱藏其他",
+    "showAll": "全部顯示",
+    "edit": "編輯",
+    "undo": "撤銷",
+    "redo": "重做",
+    "cut": "剪下",
+    "copy": "複製",
+    "paste": "貼上",
+    "selectAll": "全選",
+    "window": "視窗",
+    "minimize": "最小化",
+    "close": "關閉"
   },
   "notes": {
     "settingNotSaved": "已經換上，但 {name} 沒存進設定（{reason}）· 下次啟動換回原來的",
@@ -1126,6 +1143,8 @@ export default {
     "livePreview": "說話時在懸浮條上預覽文字",
     "livePreviewFailed": "預覽設定未能更換：{reason}",
     "openAtLogin": "開機啟動",
+    "dockIcon": "在程式塢中顯示",
+    "dockIconFailed": "程式塢設定未能更改：{reason}",
     "themeFailed": "主題沒換成：{reason}",
     "languageFailed": "語言沒換成：{reason}",
     "loginFailed": "開機啟動沒設上：{reason}",

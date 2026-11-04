@@ -61,6 +61,7 @@ test("没有文件也没有环境变量时全用默认值", () => {
     barHint: { value: "on", source: "default" },
     outputScript: { value: "simplified", source: "default" },
     livePreview: { value: "on", source: "default" },
+    dockIcon: { value: "on", source: "default" },
     theme: { value: "ink", source: "default" },
     language: { value: "system", source: "default" },
   });
@@ -191,6 +192,16 @@ test("说话时在悬浮条上预览暂定文字：默认开，能关掉；大�
     source: "env",
   });
   assert.throws(() => saveSetting(file, "livePreview", "yes"), /on \/ off/);
+});
+
+test("Mac 程序坞里显示图标：默认显示，关掉就只待在菜单栏；环境变量 SPEAKMORE_DOCK_ICON 优先", () => {
+  assert.equal(resolveSettings({ file: join(dir, "none.json"), env: {} }).dockIcon.value, "on");
+  saveSetting(file, "dockIcon", "off");
+  assert.deepEqual(resolveSettings({ file, env: {} }).dockIcon, { value: "off", source: "file" });
+  assert.deepEqual(resolveSettings({ file, env: { SPEAKMORE_DOCK_ICON: "on" } }).dockIcon, {
+    value: "on",
+    source: "env",
+  });
 });
 
 test("模型：写成 厂商/模型，只写厂商就用它的默认模型；存下来的都是 厂商/模型", () => {

@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { floatAboveAll, showAboveAll } from "../on-top.mjs";
+import { floatAboveAll, floatingWindowOptions, showAboveAll } from "../on-top.mjs";
 import { placeCard } from "./place.mjs";
 
 // 划词卡片的窗口（主进程这一头）：做法同悬浮条——透明、不抢焦点、整个窗口点不到，卡片上按钮的点击由小帮手截下来
@@ -53,10 +53,10 @@ export function createCardWindow({
     // 不抢焦点：用户正在用的那个应用留着焦点和选区，看完接着用
     focusable: false,
     webPreferences,
+    ...floatingWindowOptions({ mac: !windows }),
   });
   // 点击由小帮手截；鼠标移动照样转给页面（悬停的样子、译文太长时滚动要它）
   window.setIgnoreMouseEvents(true, { forward: true });
-  window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   // 同悬浮条：浮在一切之上，露出来时再顶一次（app/on-top.mjs）
   floatAboveAll(window, { mac: !windows });
   window.loadFile(join(sourceDir, "renderer", "lookup", "card.html"));

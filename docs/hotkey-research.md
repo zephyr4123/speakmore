@@ -727,7 +727,7 @@ AltTab 就是这么分的：普通键快捷键用 Carbon `RegisterEventHotKey` �
 - 录制期间吞不吞键：
   - Windows：吞掉全部键盘事件，包括修饰键，免得录 Win 时弹开始菜单、录 Alt 时窗口进菜单模式。PowerToys 设置页的快捷键控件也是用低级钩子录的。结束时确认没有吞了一半的键。
   - macOS：有辅助功能权限时（贴字本来就要），录制期间打开吞键 tap，吞掉全部 keyDown、keyUp；修饰键的 flagsChanged 照规则放行。没有权限时，主进程给设置窗口加 `webContents.on("before-input-event", (e) => e.preventDefault())`，渲染层的 `keydown` 也一律 `preventDefault`（Typeless 的做法）。
-  - 为什么 Mac 也要吞：录 ⌘Space、⌃Space、⌘Tab 这类键时，系统自己先执行了，焦点一被抢走，录制就因为失焦取消，用户连"已被系统占用"的提示都看不到。App 没设应用菜单（`src/` 下没有 `Menu.setApplicationMenu`，只有托盘菜单的 accelerator，`src/app/main.mjs:1328`、`1340`），Electron 的默认菜单还在，⌘W、⌘Q、⌘H、⌘R 可能直接作用在设置窗口上。渲染层的 `preventDefault` 拦不拦得住菜单快捷键，`before-input-event` 拦不拦得住，都未验证（V25）。session 层主动 tap 能不能抢在 ⌘Space 之前，也未验证（V6）；抢不到时，"系统已占用"的提示要靠 5.5 的静态表和 `probe` 事先给出。
+  - 为什么 Mac 也要吞：录 ⌘Space、⌃Space、⌘Tab 这类键时，系统自己先执行了，焦点一被抢走，录制就因为失焦取消，用户连"已被系统占用"的提示都看不到。应用菜单只有应用、编辑、窗口三栏（`src/app/app-menu.mjs`，11-04 起），⌘,、⌘W、⌘Q、⌘H 这些菜单快捷键会作用在设置窗口上。渲染层的 `preventDefault` 拦不住菜单快捷键；`before-input-event` 里 `preventDefault` 按 Electron 文档会连菜单快捷键一起挡住，没实测（V25）。session 层主动 tap 能不能抢在 ⌘Space 之前，也未验证（V6）；抢不到时，"系统已占用"的提示要靠 5.5 的静态表和 `probe` 事先给出。
   - 分歧说明：分路笔记 04 主张录制时全吞，05 主张不吞，03 主张可吞可不吞。本文两个平台都吞，Mac 没权限时退到窗口内拦截。
 - 为什么必须经小帮手录，不能用渲染进程的 `keydown`：Chromium 的表里 `Fn` 在 Mac 上不映射（`dom_code_data.inc:112`），页面收不到 fn；Windows 的 Win 系列组合在送到页面之前就被 shell 截走；页面录到的码和小帮手认的码也未必是同一套。
 - 隐私：录制是对"不报是哪个键"的一个有边界的例外，性质和现在的 esc 例外一样。日志只记最终录下的组合，不记过程。`main.swift` 顶部说明、`keys.go` 注释和 README 的权限说明要同步改写。

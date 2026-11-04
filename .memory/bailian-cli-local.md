@@ -5,10 +5,10 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 6b5e9ce5-00ff-48cc-99ba-a927306fc7c3
-  modified: 2026-10-16T17:27:06.624Z
+  modified: 2026-11-04T01:21:52.718Z
 ---
 
-2026-10-16 他让照百炼控制台给的 install.md 装 CLI，想看百炼上有多少模型、拿来扩充模型广场。
+2026-10-16 用户让照百炼控制台给的 install.md 装 CLI，想看百炼上有多少模型、拿来扩充模型广场。
 
 - 装法没照文档的 `npm install -g`：装在 `.tools/bailian-cli/`（已被 .gitignore 忽略），版本钉在 2.3.1。运行一律用 `.tools/bailian-cli/bl`，它把 `BAILIAN_CONFIG_DIR` 指到同目录的 `home/`，配置、登录态、telemetry.jsonl、wiki 数据都不进 `~/.bailian`。
 - 没跑 `bl skill init`：`--dry-run` 显示它会往 ~/.agents、~/.claude-jivu、~/.codex、~/.cursor、~/.gemini、~/.copilot 等七个全局 skill 目录写，违反 [[rea-project-level-install]] 的只装本项目。

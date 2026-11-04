@@ -503,6 +503,12 @@
             <label class="setting-title" for="open-at-login" data-i18n="preferences.openAtLogin">Launch at login</label>
             <input type="checkbox" class="switch" id="open-at-login" />
           </div>
+          <!-- 程序坞里显示不显示：只有 Mac 有程序坞，别处整行不显示 -->
+          <div class="setting" id="dock-icon-row">
+            <label class="setting-title" for="dock-icon" data-i18n="preferences.dockIcon">Show in Dock</label>
+            <input type="checkbox" class="switch" id="dock-icon" />
+          </div>
+          <p class="setting-note" id="dock-icon-note" role="status" hidden></p>
           <!-- 存储位置：程序、本机模型、录音和设置所在的那一个文件夹。更改走搬家（src/move），和命令行的 speakmore move 同一套 -->
           <div class="setting update-setting" id="storage-row">
             <div class="setting-text">

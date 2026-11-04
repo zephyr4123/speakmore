@@ -54,8 +54,7 @@ export async function packageMacApp({ packageDir, arch, out, signing }) {
       afterExtract: [({ buildPath }) => trimMacLocales(join(buildPath, "Electron.app"))],
       ...(existsSync(join(packageDir, "assets", "icon.icns")) ? { icon: join(packageDir, "assets", "icon.icns") } : {}),
       extendInfo: {
-        // 只待在菜单栏，不占程序坞
-        LSUIElement: true,
+        // 不写 LSUIElement：程序坞里显示不显示由设置 dockIcon 管（默认显示，app/main.mjs 启动时按它藏）
         NSMicrophoneUsageDescription: "听写需要用麦克风录下你说的话。",
       },
       ...(signing && { osxSign: osxSignOptions(signing.identity) }),

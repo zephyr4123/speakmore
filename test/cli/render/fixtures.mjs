@@ -60,6 +60,7 @@ export const settings = {
   barHint: { value: "on", source: "default" },
   outputScript: { value: "simplified", source: "default" },
   livePreview: { value: "on", source: "default" },
+  dockIcon: { value: "on", source: "default" },
   theme: { value: "ink", source: "default" },
   language: { value: "system", source: "default" },
 };

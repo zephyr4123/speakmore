@@ -99,6 +99,8 @@ contextBridge.exposeInMainWorld("speakmore", {
   setLocalModelMemory: (id) => ipcRenderer.invoke("setup:set-local-model-memory", id),
   // 录音时在悬浮条上预览暂定文字：开 / 关
   setLivePreview: (on) => ipcRenderer.invoke("setup:set-live-preview", on),
+  // Mac 的程序坞里显示不显示：开 / 关
+  setDockIcon: (on) => ipcRenderer.invoke("setup:set-dock-icon", on),
   // 本机模型：用户点了才下载；取消、删除（正在用的删不了）
   downloadModel: (id) => ipcRenderer.invoke("setup:download-model", id),
   cancelDownload: (id) => ipcRenderer.invoke("setup:cancel-download", id),

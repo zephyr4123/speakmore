@@ -69,7 +69,9 @@ import { estimateTime } from "../usage/estimate.mjs";
 import { dayKey, insights } from "../usage/insights.mjs";
 import { usageReport } from "../usage/report.mjs";
 import { MAX_TERM_LENGTH, MAX_TERMS } from "../vocabulary/terms.mjs";
+import { appMenuTemplate } from "./app-menu.mjs";
 import { createDelivery } from "./delivery.mjs";
+import { createDockIcon } from "./dock-icon.mjs";
 import { chooseHome, needsHomeChoice } from "./first-run.mjs";
 import { helperPaths, startHelper } from "./helper.mjs";
 import { EXPORTS } from "./history-export.mjs";
@@ -83,7 +85,7 @@ import { createLookupSetup } from "./lookup/setup.mjs";
 import { describePlaza, loadPriceBook } from "./model-plaza.mjs";
 import { createModeSwitch } from "./modes.mjs";
 import { MOVE_TO, startMoveWindow } from "./move-window.mjs";
-import { floatAboveAll, showAboveAll } from "./on-top.mjs";
+import { floatAboveAll, floatingWindowOptions, showAboveAll } from "./on-top.mjs";
 import { createRerun, recordingOf } from "./rerun.mjs";
 import { startService } from "./service.mjs";
 import { createSessionGate } from "./session-gate.mjs";
@@ -415,7 +417,8 @@ function removeOldTemporaryProfiles() {
 }
 
 async function main() {
-  app.dock?.hide();
+  // 程序坞里显示不显示看设置（dockIcon）：打包时没写只待在菜单栏，系统先按普通应用起来，关着的在这里藏起来
+  if (SETTINGS.dockIcon.value === "off") app.dock?.hide();
 
   // 搬家进行到一半（另一个进程正在搬）就不在这里启动；上次断在半路的先收拾好（src/move）
   await settleMove({
@@ -666,13 +669,13 @@ async function main() {
       // 不能抢焦点：焦点一旦离开用户正在用的输入框，文字就贴不进去了
       focusable: false,
       webPreferences: popupPreferences,
+      ...floatingWindowOptions({ mac: !WINDOWS }),
     });
     // 整个窗口都点不到，鼠标事件原样落到它下面的应用上。条上的两个按钮不靠这个窗口收点击：
     // 点击一旦落在我们的窗口上，系统就会把我们切到最前面（面板类型的窗口也一样，实测过），输入框照样丢焦点。
     // 所以点击是原生小帮手在事件到达任何窗口之前截下来的，见下面的 bar:capture。
     // 鼠标移动照样转给页面（forward）：语音翻译的语言胶囊要靠悬停展开，点选项还是小帮手截
     bar.setIgnoreMouseEvents(true, { forward: true });
-    bar.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     // 浮在一切之上，露出来时再顶一次（on-top.mjs，GitHub issue #16）
     floatAboveAll(bar, { mac: !WINDOWS });
     bar.loadFile(join(sourceDir, "renderer", "bar", "bar.html"));
@@ -695,6 +698,10 @@ async function main() {
   /** 录音时要不要在悬浮条上显示暂定文字（设置里的 livePreview）。每次现读：设置里换了，下一次录音就按新的 */
   const currentLivePreview = () =>
     resolveSettings({ file: PATHS.settingsFile, env: process.env }).livePreview.value === "on";
+  /** 程序坞里显示不显示（设置里的 dockIcon）。只有 Mac 有程序坞 */
+  const currentDockIcon = () => resolveSettings({ file: PATHS.settingsFile, env: process.env }).dockIcon.value === "on";
+  /** 设置里换了就调：程序坞里的图标跟着亮出来、藏起来（dock-icon.mjs） */
+  const syncDockIcon = createDockIcon({ dock: app.dock, wanted: currentDockIcon });
   /**
    * 小帮手现在替谁截着 esc 和点击：bar（悬浮条，说话时）、lookup（划词卡片开着时）或 null。同一时间只有一个：
    * 开始说话时卡片收起；正在说话时不理划词。esc、截到的点击按它转给谁
@@ -1310,6 +1317,8 @@ async function main() {
       barHint: currentBarHint(),
       // 录音时在悬浮条上预览暂定文字：只有本机识别有，云端没有
       livePreview: currentLivePreview(),
+      // 程序坞里显示不显示：只有 Mac 有程序坞，别处这一行不显示
+      dockIcon: { supported: Boolean(app.dock), shown: currentDockIcon() },
       // 语音翻译译成哪几种（第一种是默认）、能选哪些、最多几种
       translate: { to: currentTranslateTo(), choices: LANGUAGES.map(({ id }) => id), max: MAX_TRANSLATE_TARGETS },
       // 听写成品的中文字形、能选哪些（简体，繁体香港、台湾字形）
@@ -1606,6 +1615,15 @@ async function main() {
     const variable = overridingEnv("livePreview", process.env);
     return variable === null ? {} : { note: msg("notes.envRemove", { variable }) };
   });
+  // 设置 › 通用：程序坞里显示不显示，当场换
+  handle("setup:set-dock-icon", async (_event, wanted) => {
+    saveSetting(PATHS.settingsFile, "dockIcon", wanted ? "on" : "off");
+    log.info("dock_icon_changed", { dockIcon: currentDockIcon() });
+    await syncDockIcon();
+    setupChanged();
+    const variable = overridingEnv("dockIcon", process.env);
+    return variable === null ? {} : { note: msg("notes.envRemove", { variable }) };
+  });
   // 设置 › 通用：听写成品的中文字形。悬浮条每次开口现读，下一次说话就按新的
   handle("setup:set-output-script", (_event, wanted) => {
     saveSetting(PATHS.settingsFile, "outputScript", wanted);
@@ -1664,6 +1682,7 @@ async function main() {
       locale = next;
       t = createTranslator(locale);
       refreshTrayMenu();
+      refreshAppMenu();
       tellBar("locale:changed", locale);
       card.localeChanged(locale);
       if (hubWindow !== null) {
@@ -1773,7 +1792,7 @@ async function main() {
       hubWindow.webContents.send("hub:navigate", target);
     }
     hubWindow.show();
-    // 这是个没有程序坞图标的应用，不主动要一下焦点的话窗口会开在别的应用后面
+    // 程序坞里没有图标时（设置关了），不主动要一下焦点的话窗口会开在别的应用后面
     app.focus({ steal: true });
   }
 
@@ -1896,9 +1915,16 @@ async function main() {
       ]),
     );
   }
+  /** Mac 屏幕顶上的应用菜单（app-menu.mjs）。换了界面语言要重设 */
+  function refreshAppMenu() {
+    if (WINDOWS) return;
+    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "general" }), dev: !app.isPackaged });
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  }
   // Windows 上点通知区域的图标是打开主窗口（右键才是菜单），macOS 上点它就是菜单
   if (WINDOWS) tray.on("click", () => showMain());
   refreshTrayMenu();
+  refreshAppMenu();
   localModelChanged = () => setupChanged();
 
   // 没有窗口时也继续待在菜单栏里
