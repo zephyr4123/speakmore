@@ -19,6 +19,14 @@ test("应用菜单只有三栏：应用、编辑、窗口；没有 Electron 自�
   assert.ok(!JSON.stringify(menu).includes("toggleDevTools"));
 });
 
+test("从源码运行时多一栏显示（刷新、开发者工具），打好的包里没有", () => {
+  const dev = appMenuTemplate({ t: zh, openSettings: () => {}, dev: true });
+  assert.deepEqual(
+    dev.map((item) => item.role ?? item.label),
+    ["SpeakMore", "编辑", "viewMenu", "窗口"],
+  );
+});
+
 test("每一项都按界面语言写；设置…是 ⌘, 打开设置", () => {
   let opened = 0;
   const [app, edit] = appMenuTemplate({ t: zh, openSettings: () => opened++ });

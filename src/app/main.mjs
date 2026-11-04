@@ -71,6 +71,7 @@ import { usageReport } from "../usage/report.mjs";
 import { MAX_TERM_LENGTH, MAX_TERMS } from "../vocabulary/terms.mjs";
 import { appMenuTemplate } from "./app-menu.mjs";
 import { createDelivery } from "./delivery.mjs";
+import { createDockIcon } from "./dock-icon.mjs";
 import { chooseHome, needsHomeChoice } from "./first-run.mjs";
 import { helperPaths, startHelper } from "./helper.mjs";
 import { EXPORTS } from "./history-export.mjs";
@@ -699,6 +700,8 @@ async function main() {
     resolveSettings({ file: PATHS.settingsFile, env: process.env }).livePreview.value === "on";
   /** 程序坞里显示不显示（设置里的 dockIcon）。只有 Mac 有程序坞 */
   const currentDockIcon = () => resolveSettings({ file: PATHS.settingsFile, env: process.env }).dockIcon.value === "on";
+  /** 设置里换了就调：程序坞里的图标跟着亮出来、藏起来（dock-icon.mjs） */
+  const syncDockIcon = createDockIcon({ dock: app.dock, wanted: currentDockIcon });
   /**
    * 小帮手现在替谁截着 esc 和点击：bar（悬浮条，说话时）、lookup（划词卡片开着时）或 null。同一时间只有一个：
    * 开始说话时卡片收起；正在说话时不理划词。esc、截到的点击按它转给谁
@@ -1615,10 +1618,8 @@ async function main() {
   // 设置 › 通用：程序坞里显示不显示，当场换
   handle("setup:set-dock-icon", async (_event, wanted) => {
     saveSetting(PATHS.settingsFile, "dockIcon", wanted ? "on" : "off");
-    const shown = currentDockIcon();
-    log.info("dock_icon_changed", { dockIcon: shown });
-    if (shown) await app.dock?.show();
-    else app.dock?.hide();
+    log.info("dock_icon_changed", { dockIcon: currentDockIcon() });
+    await syncDockIcon();
     setupChanged();
     const variable = overridingEnv("dockIcon", process.env);
     return variable === null ? {} : { note: msg("notes.envRemove", { variable }) };
@@ -1917,7 +1918,7 @@ async function main() {
   /** Mac 屏幕顶上的应用菜单（app-menu.mjs）。换了界面语言要重设 */
   function refreshAppMenu() {
     if (WINDOWS) return;
-    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "general" }) });
+    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "general" }), dev: !app.isPackaged });
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
   // Windows 上点通知区域的图标是打开主窗口（右键才是菜单），macOS 上点它就是菜单

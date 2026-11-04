@@ -1,13 +1,15 @@
 // Mac 屏幕顶上的应用菜单。程序坞里有图标时我们是普通应用，主窗口在前面时菜单栏上显示的就是这一份；
 // 不设的话是 Electron 自带的那份（带开发者工具、Electron 官网的链接）。照原版 Typeless 只留三栏：
-// 应用（关于、设置、隐藏、退出）、编辑（输入框里的拷贝、粘贴、撤销这些快捷键靠它）、窗口
+// 应用（关于、设置、隐藏、退出）、编辑（输入框里的拷贝、粘贴、撤销这些快捷键靠它）、窗口。
+// 从源码运行时多一栏 Electron 自带的显示（刷新、开发者工具），开发时要用
 
 /**
  * @param {object} options
  * @param {(key: string, params?: object) => string} options.t 按界面语言写
  * @param {() => void} options.openSettings 打开设置（同菜单栏图标菜单里的"设置…"）
+ * @param {boolean} [options.dev] 从源码运行（没打包）
  */
-export function appMenuTemplate({ t, openSettings }) {
+export function appMenuTemplate({ t, openSettings, dev = false }) {
   const separator = { type: "separator" };
   return [
     {
@@ -37,6 +39,7 @@ export function appMenuTemplate({ t, openSettings }) {
         { role: "selectAll", label: t("appMenu.selectAll") },
       ],
     },
+    ...(dev ? [{ role: "viewMenu" }] : []),
     {
       label: t("appMenu.window"),
       submenu: [
