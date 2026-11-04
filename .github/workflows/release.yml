@@ -1,71 +1,38 @@
-# GitHub 上的代码发版：推版本标签时先跑一遍检查（ci.yml），过了再建这一版的 Release。
-# Release 里只有源码和说明（scripts/release/release-notes.mjs 生成），安装包照旧只在下载地址上，由本机 npm run ship 传。
-# 下载地址上这一版的包齐了才公开：没齐（平常推完标签就是这样）建成草稿，ship 传完、核对好以后公开
-# （scripts/release/github-release.sh）；已经齐了（ship 先跑完了，或者补发以前的版本）直接公开。
-#
-# 补发已经发过的版本：gh workflow run release.yml -f tag=v0.20.0
+# GitHub 上的代码发版：推版本标签时先跑一遍检查（ci.yml），过了建这一版 Release 的草稿（只有源码和说明）。
+# 安装包照旧由本机 npm run ship 传到下载地址；传完、核对好以后 ship 把草稿公开（scripts/release/github-release.sh publish）。
+# 这里不判断包齐了没有：CI 跑的时候 ship 多半还在打包，判断只放在 ship 那头。
+# 补发以前的版本不走这里：scripts/release/github-release.sh publish v0.20.0
 name: Release
 
 on:
   push:
     tags: ["v*"]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 补发哪个版本标签（比如 v0.20.0）
-        required: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: release-${{ github.ref_name }}
 
 jobs:
   check:
     uses: ./.github/workflows/ci.yml
-    with:
-      ref: ${{ inputs.tag || github.ref_name }}
 
-  release:
-    name: 建 Release
+  draft:
+    name: 建 Release 草稿
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     env:
-      TAG: ${{ inputs.tag || github.ref_name }}
       GH_TOKEN: ${{ github.token }}
     steps:
-      # 用这个工作流所在的提交（生成说明的脚本在这里），历史取全：说明列的是上一个版本标签到这一个之间的提交
+      # 历史和标签取全：说明列的是上一个版本标签到这一个之间的提交，开头那句取自标签说明
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      # checkout 取标签时会把带说明的标签换成不带说明的，说明那句要重新取
-      - run: git fetch --force origin "refs/tags/${TAG}:refs/tags/${TAG}"
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: 建或更新 Release
-        run: |
-          version="${TAG#v}"
-          node scripts/release/release-notes.mjs "${TAG}" > notes.md
-          # 包齐了没有：看的和 ship.sh 判断"这一版传过没有"的是同一个文件
-          if curl -fsI "https://dl.zephyrxiang.com/speakmore/${TAG}/speakmore-darwin-arm64.tar.xz.sha256" > /dev/null; then
-            live=true
-          else
-            live=false
-          fi
-          case "${version}" in *-*) prerelease=true ;; *) prerelease=false ;; esac
-          if gh release view "${TAG}" > /dev/null 2>&1; then
-            # 重跑（比如标签挪过）：说明换成新的；已经公开的不再收回成草稿
-            gh release edit "${TAG}" --title "SpeakMore ${version}" --notes-file notes.md --prerelease="${prerelease}"
-            if [ "${live}" = true ]; then gh release edit "${TAG}" --draft=false; fi
-          else
-            draft=true
-            if [ "${live}" = true ]; then draft=false; fi
-            gh release create "${TAG}" --verify-tag --title "SpeakMore ${version}" --notes-file notes.md \
-              --draft="${draft}" --prerelease="${prerelease}"
-          fi
-          echo "包已上线：${live}；Release：$(gh release view "${TAG}" --json url,isDraft --jq '"\(.url)（草稿：\(.isDraft)）"')"
+      - run: scripts/release/github-release.sh draft "${GITHUB_REF_NAME}"

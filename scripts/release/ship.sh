@@ -40,6 +40,8 @@ git tag --points-at HEAD | grep -qx "${tag}" || fail "HEAD 上没有标签 ${tag
 remote="$(git ls-remote origin "refs/tags/${tag}^{}" | cut -f 1)"
 [ -n "${remote}" ] || remote="$(git ls-remote origin "refs/tags/${tag}" | cut -f 1)"
 [ "${remote}" = "$(git rev-parse HEAD)" ] || fail "标签 ${tag} 还没推到 GitHub，或者那边指的不是这个提交"
+# 最后要用 gh 公开 GitHub 上的 Release：账号不对的话要等打完包、传完才发现，先查
+scripts/checks/check-gh-account.sh || fail "核对 gh 账号没通过（原因在上一行）"
 
 # 这个版本传过（哪怕只传了一部分）就不能重打：打出来的包每次都不一样，会被当成改了已发布的版本，版本号只能作废。
 # 断在上传的话照上面说的再跑 publish-release
@@ -90,6 +92,9 @@ for manifest in $(node -p 'Object.values(require("./dist/release/channel.json").
     fail "下载地址上的清单 store/${manifest} 和本机的不一样"
 done
 echo "发好了：${tag}。下载地址上的 channel.json、五份更新清单、Mac 两个包、两个安装包、Windows 的包和两个安装脚本都对得上。"
-# GitHub 上的 Release（源码和说明）：推标签时 CI 建好了草稿，包齐了才公开
-scripts/release/github-release.sh "${tag}"
+# GitHub 上的 Release（源码和说明）：推标签时 CI 建好了草稿，这里公开。没成也不影响已经发好的包
+github="ok"
+scripts/release/github-release.sh publish "${tag}" || github="failed"
 echo "接着部署官网（cd website && npm run deploy），再验收线上的包：scripts/release/accept-mac.sh、scripts/release/accept-win.sh"
+[ "${github}" = ok ] ||
+  fail "包已经发好了，不用重跑 ship；只是 GitHub 上的 Release 没公开（原因在上面），处理好后单独跑：scripts/release/github-release.sh publish ${tag}"

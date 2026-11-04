@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { changesIn, releaseNotes, summaryOf } from "../../../scripts/release/release-notes.mjs";
 
-test("改动只取合进主干的分支和 PR：发版分支、记忆、版本号和直接提交的都不列", () => {
+test("改动只取合进主干的分支和 PR：发版分支（release-版本号）、记忆、版本号和直接提交的都不列", () => {
   const subjects = [
     "版本号 0.18.0：录音时在悬浮条上预览文字；README 下载链接换成 0.18.0",
     "记忆：PR #18 到 #20 的处理",
@@ -10,10 +10,12 @@ test("改动只取合进主干的分支和 PR：发版分支、记忆、版本�
     "合并 codesign-retry：签名碰到时间戳服务没连上自动重签",
     "README：三张图加 ?v=2 让它重取",
     "合并 release-0.17.2：听写成品可选简体或繁体；版本号 0.17.2",
+    "合并 release-accept：发完版的验收挪进 scripts/release/",
   ];
   assert.deepEqual(changesIn(subjects), [
     "录音时在悬浮条上预览文字（本机识别），合并时改成只转写最近 8 秒并精简（#19）",
     "签名碰到时间戳服务没连上自动重签",
+    "发完版的验收挪进 scripts/release/",
   ]);
 });
 

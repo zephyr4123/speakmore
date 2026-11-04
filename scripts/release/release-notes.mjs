@@ -13,14 +13,14 @@ const CHIP = { arm64: "Apple 芯片", x64: "Intel" };
 
 /**
  * 主干上一串提交的标题 → 这一版的改动。只取"合并 分支：说明"：功能都走分支合进来；
- * 发版分支（release-*）、记忆、版本号和直接提在主干上的文档修补都不算改动。
+ * 发版分支（release-0.20.0 这样带版本号的）、记忆、版本号和直接提在主干上的文档修补都不算改动。
  * "合并 PR #19：说明"写成"说明（#19）"，GitHub 会把 #19 链到那个 PR
  * @param {readonly string[]} subjects
  */
 export function changesIn(subjects) {
   return subjects.flatMap((subject) => {
     const merge = /^合并 (\S+?)(?: #(\d+))?：(.+)$/.exec(subject);
-    if (!merge || merge[1].startsWith("release-")) return [];
+    if (!merge || /^release-\d/.test(merge[1])) return [];
     const [, , pr, text] = merge;
     return [pr ? `${text}（#${pr}）` : text];
   });
@@ -65,7 +65,7 @@ export function releaseNotes({ version, summary, changes }) {
   ].join("\n");
 }
 
-const git = (...args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+const git = (...args) => execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 
 /** 从 git 里取这个标签的说明和改动：改动是上一个版本标签到它之间主干上的提交 */
 function releaseOf(tag) {
@@ -75,8 +75,9 @@ function releaseOf(tag) {
   let range = tag;
   try {
     range = `${git("describe", "--tags", "--abbrev=0", "--match", "v[0-9]*", `${tag}^`)}..${tag}`;
-  } catch {
-    // 前面没有版本标签：这是第一个，从头列
+  } catch (error) {
+    // 前面没有版本标签：这是第一个，从头列。别的错（浅克隆取不到历史之类）照常抛
+    if (!/No names found|No tags can describe/.test(String(error.stderr))) throw error;
   }
   const subjects = git("log", "--first-parent", "--format=%s", range).split("\n");
   return { version, summary: summaryOf(subject, version), changes: changesIn(subjects) };

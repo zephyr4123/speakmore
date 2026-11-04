@@ -7,12 +7,8 @@ on:
   pull_request:
   push:
     branches: [main]
+  # 被调用时检出的是调用方那次推的提交（推标签就是标签指的那个）
   workflow_call:
-    inputs:
-      ref:
-        description: 要检查的标签或提交
-        type: string
-        required: true
 
 permissions:
   contents: read
@@ -24,12 +20,10 @@ jobs:
     timeout-minutes: 40
     # 同一个 PR 又推了新的提交：旧的那次不用跑完
     concurrency:
-      group: ci-${{ github.ref }}-${{ inputs.ref }}
+      group: ci-${{ github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ inputs.ref }}
       - uses: actions/setup-node@v7
         with:
           # 和 Electron 自带的 Node 同一个大版本：装到使用者手里的命令行和 App 都跑在那上面
