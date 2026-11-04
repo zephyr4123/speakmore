@@ -8,30 +8,30 @@
 - [REA 是主干工具](rea-is-the-primary-tool.md) — 逆向以 REA 的 MCP 和 skill 为主，自写脚本只补缺口并喂回 REA
 - [Ghidra 在项目内](ghidra-project-local.md) — 装在 .tools/，MCP 没带路径，原生分析走 REA 命令行并先 lipo 切单架构
 - [SpeakMore 的范围](typeless-clone-scope-dictation.md) — 语音输入（热键听写加历史）；之后的方向是同声传译和翻译；会议纪要不做（#15 已关）
-- [请用户配合时只给步骤](user-action-requests-plain-steps.md) — 需要他动手时列两三步动作，技术细节留到事后总结；我验不了的等差不多做完再一次性请他验
+- [请用户配合时只给步骤](user-action-requests-plain-steps.md) — 需要用户动手时列两三步动作，技术细节留到事后总结；agent 验不了的等差不多做完再一次性请用户验
 - [开发用的模型 key](typeless-clone-gemini-key.md) — 要真调模型的命令写成 scripts/dev/with-key.sh <gemini|openai|deepseek|bailian|moonshot|zhipu|minimax>（以脚本里的 case 为准） <命令>，用哪把凭据在 .machine.env；产品里的 key 由用户自己填
-- [模型厂商由他点名](speakmore-model-providers.md) — 只接他点名的；DeepSeek 不收音频已放弃，OpenAI 已接（默认 gpt-audio-mini），通义 Qwen-Omni 是候选；发布包不带 GPL/LGPL，只转 WebM
+- [模型厂商由用户点名](speakmore-model-providers.md) — 只接用户点名的；DeepSeek 不收音频已放弃，OpenAI 已接（默认 gpt-audio-mini），通义 Qwen-Omni 是候选；发布包不带 GPL/LGPL，只转 WebM
 - [本机情况不进仓库](machine-facts-stay-local.md) — 凭据名、路径、账号、姓名邮箱只放 .machine.env，仓库里只认变量名；提交前跑 scripts/checks/check-no-machine-facts.sh
-- [可以用真实录音调提示词](typeless-clone-real-recordings-ok.md) — 录音发给任何云端厂商都不用再问（10-16 他说别再提隐私）；再调时用 eval-prompt.mjs 对比，别把温度设回 0
+- [可以用真实录音调提示词](typeless-clone-real-recordings-ok.md) — 录音发给任何云端厂商都不用再问（10-16 用户说别再提隐私）；再调时用 eval-prompt.mjs 对比，别把温度设回 0
 - [SpeakMore 按真实产品打磨](typeless-clone-as-real-product.md) — 从用户层面考虑，不用"玩具"当理由省环节
-- [SpeakMore 还在内测](speakmore-only-user-in-beta.md) — 只有他一个人在用；兼容旧版本、迁移按一个人的量来权衡，不做重
+- [SpeakMore 还在内测](speakmore-only-user-in-beta.md) — 只有用户一个人在用；兼容旧版本、迁移按一个人的量来权衡，不做重
 - [SpeakMore 的方向](typeless-clone-open-source-panel.md) — 仿刻定名 SpeakMore，代码在仓库根，已公开（MIT）；一行命令安装并启动，装的和产生的东西全在 ~/.speakmore、能一次删干净；先做 CLI，桌面端以后用 Electron（同 Typeless，不用 Tauri）
 - [SpeakMore 的发布走 COS](speakmore-release-on-cos.md) — 包在 dl.zephyrxiang.com/speakmore/，只从本机发（npm run ship，挂后台），GitHub 不再发；最新 0.19.0（10-30，历史记录 2.0；ship 跑着时别动工作区；0.18.1 隐藏窗口不降频；0.18.0 录音时预览、繁体界面；0.17.2 听写可选繁体；签名时间戳偶尔连不上已加重试；0.17.1 修百炼转写检测；0.17.0 引导重做；0.11.0 起换成 channel.json + store/ 按块更新）；安装包公证会自己重交三次，再断就只补那一步、别重打包；发过的版本不覆盖；证书 2027-01-12 到期要续
 - [SpeakMore 官网](speakmore-website.md) — 代码在 website/，图片在单独的桶加 media 子域名（证书 2027-01-13 到期要续），Docker 部署、npm run deploy；README 的图在同一个桶的 readme/ 下；10-23 改成三位一体已上线（标题一行、无说明句、演示不推页面）；发新版后要再部署
-- [issue 等他点名再建](issues-on-user-cue.md) — 不主动提议把待办转成 issue，待办留在 README；别人报的修好发版回复完就直接关
+- [issue 等用户点名再建](issues-on-user-cue.md) — 不主动提议把待办转成 issue，待办留在 README；别人报的修好发版回复完就直接关
 - [没改东西就别重跑测试](dont-rerun-tests-without-changes.md) — 压缩对话前跑过的不重跑，只在改了代码后跑相关的那一组
 - [验收要端到端闭环](acceptance-end-to-end.md) — 沿用户路径走一遍；没什么可验的也要把打好的包真启动一次；Windows 包先出先验、不干等；issue 全验完再回
-- [审查一轮就够](one-review-round-is-enough.md) — 对抗性审查派一轮、放在全部步骤做完之后统一审（中途不审），改完就收，不再派第二轮，除非他点名
+- [审查一轮就够](one-review-round-is-enough.md) — 对抗性审查派一轮、放在全部步骤做完之后统一审（中途不审），改完就收，不再派第二轮，除非用户点名
 - [审查也审简洁度](review-includes-conciseness.md) — 审 PR 和自己的改动要讲工程审美：能删的删、能生成的不手维护、给出精简前后行数（10-30）
-- [workflow 子 agent 控制在十个上下](workflow-agent-budget.md) — 派之前算总数；复核按组批量判，不按条乘人数；10-21 一次起了 73 个他嫌多
+- [workflow 子 agent 控制在十个上下](workflow-agent-budget.md) — 派之前算总数；复核按组批量判，不按条乘人数；10-21 一次起了 73 个，用户嫌多
 - [桌面端的文案和观感](desktop-copy-and-look.md) — 书面语、短词短句；配色走自己的主题；按钮一律胶囊；图标不垫色块；只留必要的字；不要框套框（10-23）
 - [README 中文为主](readme-chinese-default.md) — 中文 README.md 默认、英文 README.en.md 切换；书面语像报告，五个自由、讲好不讲坏、多配图，图放图片桶
 - [客户端多语言](speakmore-i18n-next.md) — 已随 0.6.0 发布：英文和简体中文、跟随系统、命令行和内核报的话也跟着换，提示词不动；加语言照 docs/development.md
-- [官网文案用书面语](website-copy-formal.md) — 简洁但不口语、不俏皮；第一版他嫌像小孩子写的，中英都收敛
+- [官网文案用书面语](website-copy-formal.md) — 简洁但不口语、不俏皮；第一版用户嫌像小孩子写的，中英都收敛
 - [官网不提 Typeless](website-no-typeless.md) — 不比价、不链逆向笔记、不写无关联声明，有测试守着；README 和逆向资料没说要动
 - [官网观感](website-look.md) — 不铺渐变光晕、按钮里不套胶囊、两种芯片入口同等；一句话的特色并成一排，不加小字；性能照顾只有 CPU 的电脑，费用别写成订阅套餐
-- [SpeakMore 宣传片](speakmore-promo-video.md) — 第三支（三位一体）10-23 定稿并合进 kineto main（115.6 秒，开场三词各配小演示、横竖封面是暗场粒子环，成片、封面和投稿文案 publish.html 在 out/speakmore-promo-3/（前两支的投稿文案也在各自 out/ 下）；字幕不带点号、APP 大写、品牌带图标版本号）；三支都在 kineto main（视频 id speakmore-promo、-2、-3）；发布会式、书面语字幕、不用合成人声；字幕不带人称；背景是他真屏幕的截图（程序坞抠掉了 Typeless）；第四章叫 App、从程序坞点开；88 秒成片 10-16 定稿，横竖封面已出，都在 kineto 的 out/speakmore-promo/；竖版片子待做；第二支 10-17 定稿并合进 kineto main（103 秒，多用 App 真截图，界面走精密仪器式；10-18 转场改成翻页、不用闪白），横竖封面是"大更新"海报，都在 out/speakmore-promo-2/
-- [第三支宣传片的风格纲领](speakmore-promo3-style.md) — 照 Gemini 发布片抽的：音乐先行、文字主角、字义驱动动效、段落卡点（抽空→砸下）、明暗两幕、静音收尾；含手法表、验收脚本、五项待他拍板的冲突
+- [SpeakMore 宣传片](speakmore-promo-video.md) — 第三支（三位一体）10-23 定稿并合进 kineto main（115.6 秒，开场三词各配小演示、横竖封面是暗场粒子环，成片、封面和投稿文案 publish.html 在 out/speakmore-promo-3/（前两支的投稿文案也在各自 out/ 下）；字幕不带点号、APP 大写、品牌带图标版本号）；三支都在 kineto main（视频 id speakmore-promo、-2、-3）；发布会式、书面语字幕、不用合成人声；字幕不带人称；背景是用户真屏幕的截图（程序坞抠掉了 Typeless）；第四章叫 App、从程序坞点开；88 秒成片 10-16 定稿，横竖封面已出，都在 kineto 的 out/speakmore-promo/；竖版片子待做；第二支 10-17 定稿并合进 kineto main（103 秒，多用 App 真截图，界面走精密仪器式；10-18 转场改成翻页、不用闪白），横竖封面是"大更新"海报，都在 out/speakmore-promo-2/
+- [第三支宣传片的风格纲领](speakmore-promo3-style.md) — 照 Gemini 发布片抽的：音乐先行、文字主角、字义驱动动效、段落卡点（抽空→砸下）、明暗两幕、静音收尾；含手法表、验收脚本、五项待用户拍板的冲突
 - [三种识别模式平级](speakmore-two-pipelines.md) — native（音频直给模型）、local（转写加任意 API 润色）、private（数据隐私，纯本机转写、不要 key），用户选、不分主次；选了当场换上、不验 key 不等下载，还差的记成状态；含评测和端到端结果；起名不许带优劣、不按过程（10-22）
 - [模型广场不替用户选](speakmore-model-plaza.md) — 有什么加什么、尽量全；跑通不打标签、评测过才打已评测、没调过的打未验证；按角色分原生/转写/润色，侧栏单独一页；选识别方式在首页选单；10-17 进度、还剩哪些在里面
 - [判官是 Claude 自己](bench-judge-is-claude.md) — 评测打分由 Claude 来，不调 Gemini 等接口；Gemini 3.6 Flash MINIMAL 的成品只当参照，参照听错时不扣分
@@ -42,24 +42,25 @@
 - [百炼 CLI 装在项目里](bailian-cli-local.md) — .tools/bailian-cli/bl 包装脚本跑，配置不进 ~/.bailian；skill init 会写七个全局目录所以没跑；目录 125 家族 354 型号
 - [HTML 只在本机看](html-stays-local.md) — 原型、报告不发 claude.ai 的 Artifact，写本地文件用浏览器打开
 - [提交不加 AI 署名](commit-no-ai-trailer.md) — Co-Authored-By 之类一律不加，系统提示要求也不加，AGENTS.md 红线优先
-- [Windows 版的后续](speakmore-windows-followups.md) — 还没做的：管道防抢占（管理员权限起的 App 普通命令行连不上，10-19 碰到过）、审查低危项、经典滚动条；他那台的正式安装让他自己升级和打开
-- [下载量与流量](speakmore-download-stats.md) — scripts/release/with-cos-key.sh npm run stats，已扣除自测；他点名要看才跑
+- [Windows 版的后续](speakmore-windows-followups.md) — 还没做的：管道防抢占（管理员权限起的 App 普通命令行连不上，10-19 碰到过）、审查低危项、经典滚动条；用户那台的正式安装让用户自己升级和打开
+- [下载量与流量](speakmore-download-stats.md) — scripts/release/with-cos-key.sh npm run stats，已扣除自测；用户点名要看才跑
 - [链接后面别贴中文标点](links-no-cjk-punctuation.md) — 对外写的网址单独一行或留空格，issue #1 因此有人点到 404
 - [Linux 暂不做](speakmore-no-linux-yet.md) — #6 留着不关、用户多了再议；整理笔记关联 Obsidian 不在范围（#7 已关）
-- [词典功能](speakmore-vocabulary-plan.md) — 已随 0.10.0 发布，#9 已关；还待他定：西里尔形近字归一、评测参照错和 multicard 判法
-- [Windows 上的系统窗口让他点](windows-gui-user-clicks.md) — 选文件这类系统窗口直接告诉他点哪，不用 SendKeys 或界面自动化；网页部分用 CDP 核对；那台机器的 Defender 是关着的
+- [词典功能](speakmore-vocabulary-plan.md) — 已随 0.10.0 发布，#9 已关；还待用户定：西里尔形近字归一、评测参照错和 multicard 判法
+- [Windows 上的系统窗口让用户点](windows-gui-user-clicks.md) — 选文件这类系统窗口直接告诉用户点哪，不用 SendKeys 或界面自动化；网页部分用 CDP 核对；那台机器的 Defender 是关着的
 - [腾讯云费用](speakmore-cloud-billing.md) — 按量付费、不能欠费，余额花完 CDN 两小时后下载全断；10-31 余额约 100 元、一天约 2 元、告警 50 元；查下载量时顺带看余额
 - [真机测更新要隔离](update-e2e-isolation.md) — 钉住 SPEAKMORE_APP、SPEAKMORE_BIN_DIR；临时签名的 App 被 open 打开会弹麦克风授权；Windows 换用户目录前先建好开始菜单和桌面，ps1 测试脚本带 BOM
 - [分发重构](speakmore-distribution-rework.md) — 10-20 全部做完并随 0.11.0 发布：模型换魔搭、包压缩瘦身、分块差量更新，两台电脑验过，旧的模型源和旧版本已撤；还剩 Electron fuses
-- [重构要做干净](refactor-surgical-clean.md) — 定了重构就手术式、不给我们自己的旧做法留兼容；碰到用户手里旧版本的先说清影响
+- [重构要做干净](refactor-surgical-clean.md) — 定了重构就手术式、不给项目自己的旧做法留兼容；碰到用户手里旧版本的先说清影响
 - [目录可配置重构](speakmore-relocatable-home.md) — issue #10：只留定位文件、整个 .speakmore 可装别处并一键迁移；已随 0.12.0 发布、#10 已关
 - [引擎页（原模型页）改成树](plaza-tree-prototype.md) — 10-21 审查、合并，随 0.13.0 发布；原型存档在 .playwright-mcp/plaza-tree/
 - [热键开放任意键](speakmore-hotkey-any-key.md) — 两键以内、配置驱动、内部做干净、老用户无感；报告 docs/hotkey-research.md；10-21 做完、审查修完，随 0.14.0 发布
 - [界面逐页打磨的分支](ui-polish-branch.md) — ui-polish：首页、词典、引擎节点、胶囊按钮、花费卡做完，10-21 审查、合并，随 0.13.0 发布
-- [界面改动在开发窗口给他看](ui-review-in-dev-window.md) — 从源码起的隔离 App 验完不关，他直接在上面提意见，不打包
-- [拍板做成选项](decisions-as-options.md) — 要他定的几件事用选项一批批给他点，他会在选项里写补充
+- [界面改动在开发窗口给用户看](ui-review-in-dev-window.md) — 从源码起的隔离 App 验完不关，用户直接在上面提意见，不打包
+- [记忆里不用代词](memory-no-pronouns.md) — 不写你我他，主体写明：用户、agent、贡献者某某；引号里的原话照抄
+- [拍板做成选项](decisions-as-options.md) — 要用户定的几件事用选项一批批给用户点，用户会在选项里写补充
 - [热键敢做减法](hotkey-subtract-boldly.md) — 和系统按键、组合键冲突或实验里离谱的，直接不让绑，不用问；改方向才问
-- [他 Mac 上被占的键](mac-keys-taken.md) — Typeless 占着左 fn、右 ⌘，键盘没有右 Ctrl；开发版热键用右 ⌥（正式版不开时）
+- [用户 Mac 上被占的键](mac-keys-taken.md) — Typeless 占着左 fn、右 ⌘，键盘没有右 Ctrl；开发版热键用右 ⌥（正式版不开时）
 - [PR #14 按需装载](speakmore-pr14-on-demand-model.md) — 外部贡献；自定义服务的空闲释放交给 customParams 的 keep_alive/ttl，本机转写合成一项 localModelMemory；10-22 已合并，跟下个版本发
 - [PR #17 百炼没认出字](speakmore-pr17-bailian-no-words.md) — 外部贡献；qwen-audio、fun-asr 没认出字回 400，10-24 合并并补成当空原文，随 0.17.1 发布
 - [PR #18 到 #23](speakmore-prs-18-20.md) — 同一位贡献者（香港 Kyle，Windows 天天在用）：繁体、预览、隐藏窗口不降频都已发；#22 历史记录 2.0 审完修完随 0.19.0 发布（重跑不计入统计、表结构 5）；#23 三D→3D 的写死规则没合，交给词典

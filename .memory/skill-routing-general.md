@@ -6,6 +6,8 @@ metadata:
   type: reference
   origin: skills-scaffolding
   scaffold_sha: db890f689b30
+  originSessionId: abb1c590-5137-4efe-b88f-657a8192a95e
+  modified: 2026-11-04T01:21:51.685Z
 ---
 
 遇到下列场景**主动**调用对应 skill，不等用户点名。
@@ -16,7 +18,7 @@ metadata:
 - **Multica 工作区操作**（派 issue 给 agent、看板 / 轨迹 / 汇报、onboarding、贴 multica.ai URL）：`zephyr-multica-collab`
 - **Multica 记忆读取**（把 workspace 的 issue 网络 / 结论 / 轨迹 / 成本读全读透，只读）：`zephyr-multica-read`
 - **多 agent Workflow 编排**（有份量的多步工程活，决定何时上编排、选什么形状；长跑 workflow 卡住或大批失败也走它）：`zephyr-workflow-orchestration` ⚙️CC
-- **让外部长任务跑完来找你**（CI、部署、远程队列这类不会主动通知的活；"静默≠正常"的哨兵纪律）：`zephyr-background-watch` ⚙️CC
+- **让外部长任务跑完来找 agent**（CI、部署、远程队列这类不会主动通知的活；"静默≠正常"的哨兵纪律）：`zephyr-background-watch` ⚙️CC
 - **去 AI 腔、加人味**（编辑 AI 生成的文稿）：`humanizer` ⚙️CC（30 种 AI 写作特征检测改写）
 - **给新项目装上这套红线和记忆**（用户说"安装 zephyr-scaffold-init 脚手架"）：`zephyr-scaffold-init`
 
