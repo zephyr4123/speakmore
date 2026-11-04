@@ -1,6 +1,6 @@
 ---
 name: speakmore-release-on-cos
-description: SpeakMore 的发布包在腾讯云 COS + CDN（dl.zephyrxiang.com/speakmore/），只从本机用 npm run ship 发，GitHub 上的发布流程已删；最新 0.20.0（11-03）；打包用的 Electron 走国内镜像 npmmirror；证书 2027-01-12 到期要续
+description: SpeakMore 的安装包在腾讯云 COS + CDN（dl.zephyrxiang.com/speakmore/），只从本机用 npm run ship 发；GitHub 上的 Release 只放源码和说明（推标签时 CI 建草稿、ship 最后公开）；最新 0.20.1（11-04）；打包用的 Electron 走国内镜像 npmmirror；证书 2027-01-12 到期要续
 metadata:
   node_type: memory
   type: project
@@ -15,7 +15,8 @@ SpeakMore 的发布包放在用户自己的腾讯云 COS，前面是 CDN 域名 
 **How to apply:**
 
 - 发新版本只从本机发（2026-10-13 用户定的："压缩包都在腾讯云上了为啥还要在 github 上弄一份，留一端就好了"）：改 `package.json` 的版本号并提交，打同名的 `v` 开头标签推上去，然后 `npm run ship`（`scripts/release/ship.sh`）。它先把关（工作区干净、HEAD 就是那个标签、标签已推上去），再跑全部检查（含 Electron 自带 Node 上的单测）、打包、上传、从下载地址核对版本号和校验值。合并、推标签前都先问用户。
-- 为什么不用 CI 发：GitHub 的机器在国外，往上海的桶传太慢。0.3.0 传了 28 分半；0.4.0 传了 32 分钟第一个包还没传完，COS 回 "User network is too slow"。本机传两个包 2 分 15 秒。`.github/workflows/release.yml` 已删。
+- 为什么安装包不用 CI 传：GitHub 的机器在国外，往上海的桶传太慢。0.3.0 传了 28 分半；0.4.0 传了 32 分钟第一个包还没传完，COS 回 "User network is too slow"。本机传两个包 2 分 15 秒。10-14 删掉了旧的 `release.yml`。
+- **GitHub 上的代码发版**（2026-11-04 用户要的："这个发版是代码层面的发版,和给使用者的不一样"；用户选了"草稿 + ship 公开"的统一流程、CI 先只跑 Mac）：`.github/workflows/ci.yml` 在 PR、推 main 时跑 `npm run check` 和 `npm run test:electron`（和 ship 跑的同一套，约 1 分钟）；`release.yml` 推 `v*` 标签时先调 ci.yml，过了用 `scripts/release/github-release.sh draft` 建草稿（说明由 `release-notes.mjs` 从标签说明和上一个版本以来的"合并 分支："提交生成，只有源码、不放安装包）。ship 最后跑 `github-release.sh publish`：核对下载地址上这一版最后传的 `SpeakMore-Setup-x64.exe.sha256` 在、CI 没跑完就等、只有 channel.json 上的最新版标 Latest。这一步没成 ship 会说"包已经发好，不用重跑 ship"，单独补 `scripts/release/github-release.sh publish vX`；补发以前的版本也是这一行（CI 没跑过就本机建草稿）。0.20.0 在 11-04 这样补发了；更早的不补（用户说"从0.20.0开始就好"）。ship 开头会核对 gh 账号：别的会话常把 gh 切到别的账号，用户自己跑 `!` 命令时不经过 agent 这边的自动切换，要 `gh auth switch --user` 切回 .machine.env 里那个。
 - 传到一半断了：别重新打包（每次打出来的包字节不同，会被当成改了已发布的版本而拒绝），直接再跑 `scripts/release/with-cos-key.sh npm run publish-release`，传好的会跳过。失败的上传会在桶里留没传完的分片，用本机密钥 `multipartList` / `multipartAbort` 清掉（0.4.0 那个已清）。
 - **0.11.0 起下载地址换成按块的摆法**（2026-10-20 发布）：根上是 `channel.json`（最新版本号、每种装法的清单）、`store/<sha256>`（zstd 压过的块和清单，按内容寻址，传过的不重传）、`v<版本>/`（首次安装用的包和 .sha256）、`install.sh`、`install.ps1`；不再写 `latest`。`speakmore update` 读 channel.json，只下本机缺的块（通常几 MB），拼好交给新版本自带的安装脚本换上。`npm run ship` 传之前先跑 `delta-report.mjs` 和线上比（版本号回退、同号不同内容不许发；Electron 没换却要下 20 MB 以上拦下，确实要发加 `--allow-big`）。0.10.1 及以前的客户端看不到新版本，要重装一次（README 写了）。2026-10-20 已把 `latest` 和 0.11.0 以前的版本目录从桶里删掉、CDN 缓存刷掉；桶里只有 `store/`、`v0.11.0/` 起的版本、`channel.json` 和两个安装脚本。统计按日志折算旧版本的下载靠 `.stats/sizes.json` 里记着的大小（stats.mjs 只往里合并、不删）。
 - （0.10.1 及以前的做法，留作历史）0.6.0 起命令行装的用 `speakmore update` 升级：它读下载地址根上的 `latest`，比自己新就下载根上的 `install.sh`、钉住那个版本号去装；`speakmore status` 一天最多查一次 `latest`，有新版本时提醒一句。所以根上的 `install.sh` 和 `latest` 要一直在、一直是最新的（ship 会传）。从 0.5.0 及更早的升上来，还得再跑一次安装那一行（那些版本里没有 update）。0.6.2 起 update 连 SpeakMore.app 一起换（下载对应芯片的 dmg、验校验值和签名的开发者；App 正在跑就先退出、换完重新打开），所以根上各版本目录里的 dmg 和 .sha256 也要一直在。从 0.6.1 及更早升上来的那一次还是旧逻辑：只换命令行那一份、停掉 App 改启命令行那一份，用 App 的人那一次要手动换 App。
@@ -39,6 +40,7 @@ SpeakMore 的发布包放在用户自己的腾讯云 COS，前面是 CDN 域名 
 - 0.18.1 在 2026-10-30 发布（隐藏的悬浮条和划词卡片不降频，PR #21）：ship 一次跑通，签名重试没触发；官网线上提交 b8d5c61、脚本里版本 0.18.1。只验了 Mac（accept-mac.sh 全过）。
 - 0.19.0 在 2026-10-30 发布（历史记录可搜索、播放、换模型重跑、导出，PR #22；历史库升到表结构 5）。第一次 ship 失败是 agent 的错：它跑到一半，agent 切去 main 提交记忆，工作区换回 0.18.1，上传前的检查拦下了、没传。**ship 跑着的时候不许动工作区（切分支、提交都不行），记忆等它跑完再提**。重跑一次通过（7173 个对象），签名重试没触发；官网线上提交 bfaff2e、脚本里 0.19.0；只验了 Mac（accept-mac.sh 全过）。
 - 0.20.0 在 2026-11-03 发布（Mac 上默认显示在程序坞、设置可关，悬浮条和划词卡片改成面板，补上应用菜单）。第一次 ship 卡在下 Electron：本机 Electron 的下载缓存（~/Library/Caches/electron）被清空了，从 GitHub 下每秒只有约 90 KB；agent 从 npmmirror 下好另外两个平台、按 electron 包的 checksums.json 核对后放进缓存。之后用户要关电脑出门，当时还在本机打包、什么都没传，agent 停掉 ship；回来重跑一次通过（7174 个对象），签名重试没触发。官网线上提交 bfd485c、脚本里 0.20.0；accept-mac.sh 全过，另用同一个 dmg 隔离启动查到 App 登记为 Foreground（在程序坞里）。随后按用户要求把下 Electron 固化成走 npmmirror（`scripts/build/electron-mirror.mjs`，mac-app 和 release 两处共用，环境变量 `ELECTRON_MIRROR` 可换回 GitHub；空缓存实测 darwin-x64 26 秒）。只验了 Mac。
+- 0.20.1 在 2026-11-04 发布（没有功能改动，用来验新的 GitHub 发版流程，用户提的）：推标签后 CI 检查、建草稿约 2 分钟；ship 一次跑通（7174 个对象，约 25 分钟，arm64 dmg 公证第一次连苹果超时、自动重交通过），最后自动公开 Release、标成 Latest。签名重试没触发。官网部署被自动模式拦下、交给用户跑。
 - ship 开头报"标签 vX 还没推到 GitHub"时先看日志上一行：是 `SSL_ERROR_SYSCALL` 之类的网络错误，就用 `git ls-remote origin refs/tags/vX^{}` 确认标签指着 HEAD，直接重跑，不用动标签。
 - 从 ssh 远程跑 Windows 的 `speakmore update`：旧版本目录要等旧进程退出后由后台删，那个后台进程随 ssh 会话一起没了，旧目录会留着（桌面上点更新不会）。确认 current 已指向新版本、没有进程在用旧目录，再手动删。
 - 发版前本机自测打的包在 dist/release，ship 的打包第一步会整个清掉，不会被传上去。
