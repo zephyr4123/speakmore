@@ -29,6 +29,7 @@ import { sha256 as sha256Of } from "../../src/update/chunker.mjs";
 import { chunksIn, describeTree, encodeManifest } from "../../src/update/manifest.mjs";
 import { packObject } from "../../src/update/objects.mjs";
 import { makeDmg } from "../build/dmg.mjs";
+import { ELECTRON_MIRROR } from "../build/electron-mirror.mjs";
 import { packageMacApp } from "../build/mac-app.mjs";
 import { signingConfig } from "../build/signing.mjs";
 import { trimWindowsLocales } from "../build/slim.mjs";
@@ -75,7 +76,13 @@ const electronChecksums = readJson(join(electronDir, "checksums.json"));
 
 /** 下载（有缓存就用缓存）这个系统、这种芯片的 Electron，核对过校验值之后解到 dest 里 */
 async function addRuntime(platform, arch, dest) {
-  const zip = await downloadArtifact({ version: electronVersion, platform, arch, artifactName: "electron" });
+  const zip = await downloadArtifact({
+    version: electronVersion,
+    platform,
+    arch,
+    artifactName: "electron",
+    mirrorOptions: ELECTRON_MIRROR,
+  });
   const name = `electron-v${electronVersion}-${platform}-${arch}.zip`;
   const expected = electronChecksums[name];
   const actual = sha256(zip);

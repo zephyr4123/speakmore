@@ -9,6 +9,7 @@ import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:f
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { packager } from "@electron/packager";
+import { ELECTRON_MIRROR } from "./electron-mirror.mjs";
 import { osxSignOptions, useCodesignRetry } from "./signing.mjs";
 import { trimMacLocales } from "./slim.mjs";
 import { APP_ENTRIES, MAC_APP_IGNORE, stageApp } from "./stage-app.mjs";
@@ -45,6 +46,11 @@ export async function packageMacApp({ packageDir, arch, out, signing }) {
       platform: "darwin",
       arch,
       electronVersion: readJson(join(packageDir, "node_modules/electron/package.json")).version,
+      // Electron 从国内镜像下（electron-mirror.mjs），按 electron 包自带的校验值核对，不信镜像上的 SHASUMS256.txt
+      download: {
+        mirrorOptions: ELECTRON_MIRROR,
+        checksums: readJson(join(packageDir, "node_modules/electron/checksums.json")),
+      },
       // 不打成 asar：原生小帮手要能直接执行，页面和主进程的路径也和开发时保持一致
       asar: false,
       // 依赖在上面已经只装了运行时的那部分
