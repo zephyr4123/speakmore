@@ -295,6 +295,9 @@ export const SETTINGS = {
   },
   // 录音时在悬浮条上显示暂定的听写文字（服务端每来一块跑一次本机转写）。只有本机识别能预览，云端没有
   livePreview: shownSetting("SPEAKMORE_LIVE_PREVIEW"),
+  // Mac 的程序坞里显示不显示：显示时和别的应用一样，有启动动画、运行中的小点，⌘Tab 切得过去；关掉就只待在菜单栏。
+  // 别的系统没有程序坞，这项不起作用
+  dockIcon: shownSetting("SPEAKMORE_DOCK_ICON"),
 };
 
 /** 语音翻译的目标语言：一个、逗号隔开的几个，或者 JSON 数组；规整成去重后的 id 列表。至少一种，最多 MAX_TRANSLATE_TARGETS 种 */

@@ -250,6 +250,7 @@ export default {
       barHint: "悬浮条上方那行操作提示（再按一下 … 完成 · esc 取消）显示不显示：on 显示，off 不显示",
       outputScript: "听写出来的中文字用简体还是繁体；英文、数字、粤语用字不动",
       livePreview: "开口说话时在悬浮条上显示暂定的文字，每隔几秒更新一次：只有本机识别才有，最终结果照旧交出去",
+      dockIcon: "Mac 的程序坞里显示不显示 SpeakMore：on 显示，off 只待在菜单栏",
       translate: {
         to: "语音翻译译成什么：一种或几种语言（en、ja，逗号隔开），第一种是默认，悬浮条上能临时换成别的几种",
       },
@@ -506,6 +507,24 @@ export default {
     updateAvailable: "新版本 {version} 可用…",
     quit: "退出 SpeakMore",
     fallbackTitle: "听写",
+  },
+
+  // Mac 屏幕顶上的应用菜单（app/app-menu.mjs）；设置、退出两项和菜单栏图标的菜单共用
+  appMenu: {
+    about: "关于 SpeakMore",
+    hide: "隐藏 SpeakMore",
+    hideOthers: "隐藏其他",
+    showAll: "全部显示",
+    edit: "编辑",
+    undo: "撤销",
+    redo: "重做",
+    cut: "剪切",
+    copy: "拷贝",
+    paste: "粘贴",
+    selectAll: "全选",
+    window: "窗口",
+    minimize: "最小化",
+    close: "关闭",
   },
 
   notes: {
@@ -927,6 +946,8 @@ export default {
     livePreview: "说话时在悬浮条上预览文字",
     livePreviewFailed: "预览设置未能更换：{reason}",
     openAtLogin: "开机启动",
+    dockIcon: "在程序坞中显示",
+    dockIconFailed: "程序坞设置未能更改：{reason}",
     themeFailed: "主题没换成：{reason}",
     languageFailed: "语言没换成：{reason}",
     loginFailed: "开机启动没设上：{reason}",

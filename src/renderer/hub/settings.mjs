@@ -150,6 +150,8 @@ export function createSettings({ refresh }) {
     );
     $("open-at-login").checked = setup.openAtLogin.enabled;
     $("open-at-login-row").hidden = !setup.openAtLogin.supported;
+    $("dock-icon").checked = setup.dockIcon.shown;
+    $("dock-icon-row").hidden = !setup.dockIcon.supported;
     // 录音时在悬浮条上预览暂定文字：只有本机识别能做
     $("live-preview").checked = setup.livePreview;
   }
@@ -250,6 +252,19 @@ export function createSettings({ refresh }) {
       showNote("live-preview-note", result.note ?? null);
     } catch (error) {
       showNote("general-problem", t("preferences.livePreviewFailed", { reason: describeError(error) }), "problem");
+    }
+    await refresh();
+  });
+
+  // 程序坞里显示不显示：主进程当场换
+  $("dock-icon").addEventListener("change", async (event) => {
+    showNote("general-problem", null);
+    showNote("dock-icon-note", null);
+    try {
+      const result = await window.speakmore.setDockIcon(event.target.checked);
+      showNote("dock-icon-note", result.note ?? null);
+    } catch (error) {
+      showNote("general-problem", t("preferences.dockIconFailed", { reason: describeError(error) }), "problem");
     }
     await refresh();
   });

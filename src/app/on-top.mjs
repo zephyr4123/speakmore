@@ -7,12 +7,21 @@
 const LEVEL = "screen-saver";
 
 /**
+ * 建窗口时并进选项里：Mac 上建成面板。程序坞里有图标时我们是普通应用，普通应用的窗口浮不到别家的全屏应用上面，
+ * 面板可以（原版 Typeless 也是这么做的）
+ * @param {{ mac: boolean }} platform
+ */
+export const floatingWindowOptions = ({ mac }) => (mac ? { type: "panel" } : {});
+
+/**
  * 建好窗口以后调一次
  * @param {import("electron").BrowserWindow} window
  * @param {{ mac: boolean }} platform setHiddenInMissionControl 只有 Mac 上有
  */
 export function floatAboveAll(window, { mac }) {
   window.setAlwaysOnTop(true, LEVEL, 1);
+  // 每个桌面、别家的全屏应用上都看得见。skipTransformProcessType：不带的话 Electron 每调一次就把程序坞图标藏起来
+  window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
   window.setFullScreenable(false);
   // 不进调度中心、不进窗口切换：透明的窗口在那里只是一块黑的
   if (mac) window.setHiddenInMissionControl(true);
