@@ -8,7 +8,7 @@
 - [REA 是主干工具](rea-is-the-primary-tool.md) — 逆向以 REA 的 MCP 和 skill 为主，自写脚本只补缺口并喂回 REA
 - [Ghidra 在项目内](ghidra-project-local.md) — 装在 .tools/，MCP 没带路径，原生分析走 REA 命令行并先 lipo 切单架构
 - [SpeakMore 的范围](typeless-clone-scope-dictation.md) — 语音输入（热键听写加历史）；之后的方向是同声传译和翻译；会议纪要不做（#15 已关）
-- [请用户配合时只给步骤](user-action-requests-plain-steps.md) — 需要他动手时列两三步动作，技术细节留到事后总结
+- [请用户配合时只给步骤](user-action-requests-plain-steps.md) — 需要他动手时列两三步动作，技术细节留到事后总结；我验不了的等差不多做完再一次性请他验
 - [开发用的模型 key](typeless-clone-gemini-key.md) — 要真调模型的命令写成 scripts/dev/with-key.sh <gemini|openai|deepseek|bailian|moonshot|zhipu|minimax>（以脚本里的 case 为准） <命令>，用哪把凭据在 .machine.env；产品里的 key 由用户自己填
 - [模型厂商由他点名](speakmore-model-providers.md) — 只接他点名的；DeepSeek 不收音频已放弃，OpenAI 已接（默认 gpt-audio-mini），通义 Qwen-Omni 是候选；发布包不带 GPL/LGPL，只转 WebM
 - [本机情况不进仓库](machine-facts-stay-local.md) — 凭据名、路径、账号、姓名邮箱只放 .machine.env，仓库里只认变量名；提交前跑 scripts/checks/check-no-machine-facts.sh
