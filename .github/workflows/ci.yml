@@ -1,0 +1,40 @@
+# 检查：PR、推 main 时跑；推版本标签时 release.yml 也调它，检查过了才建 Release。
+# 跑的和本机 npm run ship 发版前跑的是同一套（scripts/release/ship.sh）。
+# 只在 Mac 上跑：两个原生小帮手的测试都在这里（Windows 那个是 Go，哪儿都能跑；Mac 那个是 Swift，只能在 Mac 上）
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+    inputs:
+      ref:
+        description: 要检查的标签或提交
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 检查（Mac）
+    runs-on: macos-latest
+    timeout-minutes: 40
+    # 同一个 PR 又推了新的提交：旧的那次不用跑完
+    concurrency:
+      group: ci-${{ github.ref }}-${{ inputs.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          # 和 Electron 自带的 Node 同一个大版本：装到使用者手里的命令行和 App 都跑在那上面
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run test:electron
