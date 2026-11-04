@@ -46,6 +46,7 @@
     "test:install": "node --test --test-timeout=120000 \"test/install/**/*.test.mjs\"",
     "test:e2e": "node scripts/dev/e2e.mjs",
     "test:native": "node scripts/dev/test-native.mjs",
+    "test:electron": "ELECTRON_RUN_AS_NODE=1 electron --test --test-timeout=5000 \"test/*.test.mjs\" \"test/!(install)/**/*.test.mjs\"",
     "lint": "biome check .",
     "check": "biome check . && npm test && npm run test:native"
   },

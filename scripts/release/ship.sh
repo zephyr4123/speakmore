@@ -1,10 +1,11 @@
 #!/bin/sh
-# 发一个新版本，从这台电脑发：把关 → 检查 → 打包 → 传到下载地址 → 从下载地址核对。
-# 发布包只放在腾讯云 COS 一处。以前推标签由 GitHub 的机器打包再传，那边在国外，传到上海太慢，
+# 发一个新版本，从这台电脑发：把关 → 检查 → 打包 → 传到下载地址 → 从下载地址核对 → 公开 GitHub 上的 Release。
+# 安装包只放在腾讯云 COS 一处；GitHub 上的 Release 只有源码和说明，推标签时 CI 建成草稿，这里最后公开。
+# 以前推标签由 GitHub 的机器打包再传，那边在国外，传到上海太慢，
 # 0.4.0 那次传了 32 分钟一个包都没传上；本机传两个包两分多钟。
 #
 # 用法：改好 package.json 的版本号并提交，打同名的标签推上去，然后发：
-#   git tag -a v0.4.1 -m "…" && git push origin main v0.4.1
+#   git tag -a v0.4.1 -m "…" && git push origin v0.4.1
 #   npm run ship
 #   npm run ship -- --allow-big     Electron 没换、更新却超过 20 MB 时也发（差量报告会拦，见 delta-report.mjs）
 #
@@ -39,6 +40,8 @@ git tag --points-at HEAD | grep -qx "${tag}" || fail "HEAD 上没有标签 ${tag
 remote="$(git ls-remote origin "refs/tags/${tag}^{}" | cut -f 1)"
 [ -n "${remote}" ] || remote="$(git ls-remote origin "refs/tags/${tag}" | cut -f 1)"
 [ "${remote}" = "$(git rev-parse HEAD)" ] || fail "标签 ${tag} 还没推到 GitHub，或者那边指的不是这个提交"
+# 最后要用 gh 公开 GitHub 上的 Release：账号不对的话要等打完包、传完才发现，先查
+scripts/checks/check-gh-account.sh || fail "核对 gh 账号没通过（原因在上一行）"
 
 # 这个版本传过（哪怕只传了一部分）就不能重打：打出来的包每次都不一样，会被当成改了已发布的版本，版本号只能作废。
 # 断在上传的话照上面说的再跑 publish-release
@@ -51,8 +54,8 @@ node --input-type=module -e 'import { signingConfig } from "./scripts/build/sign
   fail "本机没配签名和公证（.machine.env 的 MAC_SIGNING_IDENTITY、MAC_NOTARY_PROFILE，见 .machine.env.example），打不了安装包"
 
 npm run check
-# 程序跑在 Electron 自带的 Node 上，单测在那个版本上也跑一遍
-ELECTRON_RUN_AS_NODE=1 node_modules/.bin/electron --test --test-timeout=5000 "test/*.test.mjs" "test/!(install)/**/*.test.mjs"
+# 程序跑在 Electron 自带的 Node 上，单测在那个版本上也跑一遍。和 CI 跑的是同一套（.github/workflows/ci.yml）
+npm run test:electron
 npm run release
 # 和下载地址上现在的版本比，每种装法要下多少：版本号往回退、Electron 没换却超 20 MB 的，拦下来（delta-report.mjs）
 code=0
@@ -89,4 +92,9 @@ for manifest in $(node -p 'Object.values(require("./dist/release/channel.json").
     fail "下载地址上的清单 store/${manifest} 和本机的不一样"
 done
 echo "发好了：${tag}。下载地址上的 channel.json、五份更新清单、Mac 两个包、两个安装包、Windows 的包和两个安装脚本都对得上。"
+# GitHub 上的 Release（源码和说明）：推标签时 CI 建好了草稿，这里公开。没成也不影响已经发好的包
+github="ok"
+scripts/release/github-release.sh publish "${tag}" || github="failed"
 echo "接着部署官网（cd website && npm run deploy），再验收线上的包：scripts/release/accept-mac.sh、scripts/release/accept-win.sh"
+[ "${github}" = ok ] ||
+  fail "包已经发好了，不用重跑 ship；只是 GitHub 上的 Release 没公开（原因在上面），处理好后单独跑：scripts/release/github-release.sh publish ${tag}"

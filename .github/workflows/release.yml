@@ -1,0 +1,38 @@
+# GitHub 上的代码发版：推版本标签时先跑一遍检查（ci.yml），过了建这一版 Release 的草稿（只有源码和说明）。
+# 安装包照旧由本机 npm run ship 传到下载地址；传完、核对好以后 ship 把草稿公开（scripts/release/github-release.sh publish）。
+# 这里不判断包齐了没有：CI 跑的时候 ship 多半还在打包，判断只放在 ship 那头。
+# 补发以前的版本不走这里：scripts/release/github-release.sh publish v0.20.0
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+
+jobs:
+  check:
+    uses: ./.github/workflows/ci.yml
+
+  draft:
+    name: 建 Release 草稿
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # 历史和标签取全：说明列的是上一个版本标签到这一个之间的提交，开头那句取自标签说明
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: scripts/release/github-release.sh draft "${GITHUB_REF_NAME}"
