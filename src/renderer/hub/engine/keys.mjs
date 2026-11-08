@@ -196,21 +196,26 @@ export function createKeys(ctx) {
       "div",
       { class: "key-row", "data-platform": platform.id, "data-open": open ? "" : null },
       h("span", { class: "logo-tile" }, brand(platform.id)),
+      // 状态跟在名字后面，说明独占下面一整行：抽屉只有 30rem 宽，状态单占一列的话说明被挤到一个词一折
       h(
         "div",
         { class: "key-text" },
-        h("span", { class: "key-name-line" }, h("span", { class: "key-name", text: platformName(platform) })),
+        h(
+          "span",
+          { class: "key-name-line" },
+          h("span", { class: "key-name", text: platformName(platform) }),
+          h(
+            "span",
+            {
+              class: "key-state",
+              "data-tone": filled ? "ok" : null,
+              title: platform.key === "env" ? t("plaza.keys.envTip", { variable: platform.keyEnv }) : null,
+            },
+            h("i", { class: "dot", "data-tone": filled ? "ok" : "none" }),
+            state,
+          ),
+        ),
         h("span", { class: "key-cover", text: coverage(platform) }),
-      ),
-      h(
-        "span",
-        {
-          class: "key-state",
-          "data-tone": filled ? "ok" : null,
-          title: platform.key === "env" ? t("plaza.keys.envTip", { variable: platform.keyEnv }) : null,
-        },
-        h("i", { class: "dot", "data-tone": filled ? "ok" : "none" }),
-        state,
       ),
       h("button", {
         type: "button",

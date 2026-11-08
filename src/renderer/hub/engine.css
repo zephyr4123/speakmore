@@ -1092,7 +1092,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 
 .key-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) 7rem var(--col-action);
+  grid-template-columns: auto minmax(0, 1fr) var(--col-action);
   align-items: center;
   gap: 0.5rem 0.75rem;
   padding: 0.75rem;
@@ -1138,6 +1138,10 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 .key-cover {
   font-size: var(--text-body);
   color: var(--ink-2);
+  /* 中文只在标点处折行，不把「整理」拆到两行 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 /* 状态一行写完（英文的 Not configured 也不折成两行） */
