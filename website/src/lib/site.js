@@ -31,11 +31,11 @@ export function siteLinks(site, version) {
 }
 
 /**
- * 访客是不是在手机、平板上：这些设备装不了安装包。iPadOS 的 Safari 默认自称 Mac，靠触点数认
- * （真的 Mac 没有触屏）；带触屏的 Windows 笔记本能装，不算
+ * 访客是不是在手机、平板上：这些设备装不了安装包。iPadOS 的 Safari 默认自称 Mac、大屏安卓平板的 Chrome 默认自称
+ * Linux 桌面，都靠触点数认（真的 Mac 没有触屏；Linux 本来也没有安装包）；带触屏的 Windows 笔记本能装，不算
  * @param {{ userAgent: string, maxTouchPoints: number }} device 通常就是 navigator
  */
 export function onPhoneOrTablet({ userAgent, maxTouchPoints }) {
   if (/iPhone|iPad|iPod|Android/i.test(userAgent)) return true;
-  return /Macintosh/.test(userAgent) && maxTouchPoints > 1;
+  return /Macintosh|X11|Linux|CrOS/.test(userAgent) && maxTouchPoints > 1;
 }

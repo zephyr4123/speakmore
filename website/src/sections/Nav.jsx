@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import seal from "../../../assets/icon.svg";
 import { links } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
@@ -12,14 +12,16 @@ export function Nav() {
   const { m } = useI18n();
   // 三种样子：停在页面顶上是透明的；滚到深色的段落（性能）上是深色毛玻璃；别处是跟着系统的毛玻璃
   const [look, setLook] = useState("clear");
+  const header = useRef(null);
 
   useEffect(() => {
     let frame = 0;
     const update = () => {
       frame = 0;
       if (window.scrollY <= 24) return setLook("clear");
-      // 导航正下方是哪一段
-      const below = document.elementFromPoint(window.innerWidth / 2, 64)?.closest("section");
+      // 导航正下方是哪一段：窄屏多一行锚点，导航有多高按实际量
+      const bottom = header.current?.getBoundingClientRect().bottom ?? 0;
+      const below = document.elementFromPoint(window.innerWidth / 2, bottom + 8)?.closest("section");
       setLook(below?.matches(".tone-ink") ? "dark" : "glass");
     };
     const schedule = () => {
@@ -57,6 +59,7 @@ export function Nav() {
 
   return (
     <header
+      ref={header}
       className={`fixed inset-x-0 top-0 z-30 text-ink transition-[background-color,box-shadow] duration-300 ${
         {
           clear: "bg-transparent",

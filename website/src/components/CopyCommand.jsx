@@ -1,28 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 import { Icon } from "../icons/Icon.jsx";
+import { useCopy } from "../lib/copy.js";
 
 /** 终端里装的那一行，带一个复制按钮。剪贴板用不了时（老浏览器、非 https）按钮不出来，命令照样能选中复制 */
 export function CopyCommand({ command, copyLabel, copiedLabel }) {
-  const [copied, setCopied] = useState(false);
-  const [canCopy, setCanCopy] = useState(false);
-  const timer = useRef(0);
-
-  useEffect(() => {
-    setCanCopy(Boolean(navigator.clipboard?.writeText));
-    return () => clearTimeout(timer.current);
-  }, []);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(command);
-      setCopied(true);
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => setCopied(false), 1800);
-    } catch (error) {
-      // 浏览器拒绝了（没给权限、页面不在前台）：按钮不变，命令还在，自己选中复制
-      console.warn("复制失败", error);
-    }
-  }
+  const { copied, canCopy, copy } = useCopy(command);
 
   return (
     <div className="flex items-center gap-2 rounded-card bg-surface p-1.5 pl-4 shadow-inset-line">

@@ -72,6 +72,11 @@ test("手机、平板认得出来（装不了安装包，下载换成复制链�
   assert.equal(onPhoneOrTablet({ userAgent: mac, maxTouchPoints: 0 }), false);
   // 带触屏的 Windows 笔记本照样能装
   assert.equal(onPhoneOrTablet({ userAgent: windows, maxTouchPoints: 10 }), false);
+  // 大屏安卓平板上的 Chrome 默认要桌面版网页，自称 Linux 桌面，也靠触点数认
+  const androidDesktop =
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+  assert.equal(onPhoneOrTablet({ userAgent: androidDesktop, maxTouchPoints: 5 }), true);
+  assert.equal(onPhoneOrTablet({ userAgent: androidDesktop, maxTouchPoints: 0 }), false);
 });
 
 test("下载页的地址：给手机访客复制，到电脑上打开", () => {

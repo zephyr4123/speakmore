@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
 import { links } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
 import { Icon } from "../icons/Icon.jsx";
+import { useCopy } from "../lib/copy.js";
 import { onPhoneOrTablet } from "../lib/site.js";
 
 const ON_PHONE = onPhoneOrTablet(navigator);
@@ -54,27 +54,7 @@ export function DownloadButtons({ className = "", style }) {
  */
 function CopyDownloadLink({ className, style }) {
   const { m } = useI18n();
-  const [copied, setCopied] = useState(false);
-  const [canCopy, setCanCopy] = useState(false);
-  const timer = useRef(0);
-
-  useEffect(() => {
-    setCanCopy(Boolean(navigator.clipboard?.writeText));
-    return () => clearTimeout(timer.current);
-  }, []);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(links.downloadPage);
-      setCopied(true);
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => setCopied(false), 1800);
-    } catch (error) {
-      // 浏览器拒绝了：换成把地址写出来
-      console.warn("复制下载链接失败", error);
-      setCanCopy(false);
-    }
-  }
+  const { copied, canCopy, copy } = useCopy(links.downloadPage);
 
   return (
     <div className={`grid w-full max-w-sm justify-items-center gap-3 ${className}`} style={style}>
