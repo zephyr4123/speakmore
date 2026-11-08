@@ -395,17 +395,13 @@
               <svg class="icon" aria-hidden="true"><use href="#i-trash" /></svg><span data-i18n="vocabulary.selection.delete">Delete</span>
             </button>
           </div>
-          <!-- 空的时候一个标题加两个入口；搜不到时只有一句 -->
+          <!-- 空的时候一个标题、一句说明、一个"新词"（导入在标题行，不再摆第二份）；搜不到时只有一句 -->
           <div class="vocab-empty" id="vocabulary-empty" hidden>
             <p class="vocab-empty-title" id="vocabulary-empty-title"></p>
-            <div class="vocab-empty-actions" id="vocabulary-empty-actions">
-              <button type="button" class="button" id="vocabulary-empty-import">
-                <svg class="icon" aria-hidden="true"><use href="#i-file-up" /></svg><span data-i18n="vocabulary.import">Import</span>
-              </button>
-              <button type="button" class="button primary" id="vocabulary-empty-add">
-                <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg><span data-i18n="vocabulary.add">New word</span>
-              </button>
-            </div>
+            <p class="vocab-empty-text" id="vocabulary-empty-text" data-i18n="vocabulary.empty.text">Names and terms, spelled as listed</p>
+            <button type="button" class="button primary vocab-empty-add" id="vocabulary-empty-add">
+              <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg><span data-i18n="vocabulary.add">New word</span>
+            </button>
           </div>
           <ul class="vocab-grid" id="vocabulary-grid" data-i18n-aria-label="vocabulary.title"></ul>
         </section>

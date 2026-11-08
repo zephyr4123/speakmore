@@ -869,8 +869,7 @@ export default {
     title: "Dictionary",
     add: "New word",
     import: "Import",
-    local: "Stored on this device only",
-    localMeta: { device: "Never uploaded", cloud: "Sent with dictation requests" },
+    local: { device: "Stored on this device, never uploaded", cloud: "Stored on this device, sent to the model when you dictate" },
     localTip:
       "The dictionary is saved in {file} and is never uploaded or synced. When you dictate, the words your model can take are sent along with that request; in Offline mode they never leave this device",
     composer: { placeholder: "Type a new word", close: "Close" },
@@ -898,7 +897,7 @@ export default {
     },
     search: "Search",
     count: { one: "{count} word", other: "{count} words" },
-    empty: { title: "No words yet" },
+    empty: { title: "No words yet", text: "Names and terms, spelled as listed" },
     noResults: "No matching words",
     loadError: "Couldn't read the dictionary: {reason}",
     editHint: "Enter to save · Esc to cancel",

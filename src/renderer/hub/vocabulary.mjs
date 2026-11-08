@@ -122,8 +122,7 @@ export function createVocabulary() {
     $("vocabulary-local").title = t("vocabulary.localTip", { file: data.file });
     // 当前方式里有收词典的云端模型，词就会随听写的请求发出去：照实写
     const leaves = data.current.hops.some(({ platform, kind }) => platform !== "local" && kind !== null);
-    $("vocabulary-local-text").textContent =
-      `${t("vocabulary.local")} · ${t(`vocabulary.localMeta.${leaves ? "cloud" : "device"}`)}`;
+    $("vocabulary-local-text").textContent = t(`vocabulary.local.${leaves ? "cloud" : "device"}`);
     // 文件坏了不能改：先照提示修好文件，免得把它覆盖掉
     const full = data.terms.length >= data.limits.maxTerms;
     // 置灰的按钮悬停时说为什么
@@ -133,10 +132,8 @@ export function createVocabulary() {
       $(id).disabled = blocked !== null || full;
       $(id).title = blocked ?? fullText ?? "";
     }
-    for (const id of ["vocabulary-import", "vocabulary-empty-import"]) {
-      $(id).disabled = blocked !== null;
-      $(id).title = blocked ?? "";
-    }
+    $("vocabulary-import").disabled = blocked !== null;
+    $("vocabulary-import").title = blocked ?? "";
     if (full || data.problem) closeComposer();
     renderSupport();
     if (editing !== null) deferred = true;
@@ -195,7 +192,8 @@ export function createVocabulary() {
     $("vocabulary-empty").hidden = !empty;
     $("vocabulary-empty").dataset.kind = searching ? "search" : "first";
     $("vocabulary-empty-title").textContent = searching ? t("vocabulary.noResults") : t("vocabulary.empty.title");
-    $("vocabulary-empty-actions").hidden = searching;
+    $("vocabulary-empty-text").hidden = searching;
+    $("vocabulary-empty-add").hidden = searching;
     const grid = $("vocabulary-grid");
     // 重画前焦点在哪个词的哪个按钮上，画完放回去（键盘操作不会掉到页面最前面）
     const focused = grid.contains(document.activeElement) ? document.activeElement.dataset.focus : undefined;
@@ -528,7 +526,7 @@ export function createVocabulary() {
   }
 
   for (const id of ["vocabulary-add", "vocabulary-empty-add"]) $(id).addEventListener("click", openComposer);
-  for (const id of ["vocabulary-import", "vocabulary-empty-import"]) $(id).addEventListener("click", openImport);
+  $("vocabulary-import").addEventListener("click", openImport);
   $("vocabulary-search").addEventListener("input", () => data && renderTerms());
   $("vocabulary-select-clear").addEventListener("click", () => {
     selected.clear();

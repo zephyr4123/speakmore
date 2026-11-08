@@ -192,9 +192,12 @@
   font-weight: var(--weight-semibold);
 }
 
-.vocab-empty-actions {
-  display: flex;
-  gap: 0.5rem;
+.vocab-empty-text {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.vocab-empty-add {
   margin-top: 1.25rem;
 }
 

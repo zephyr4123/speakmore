@@ -1012,10 +1012,9 @@ export default {
     "title": "詞典",
     "add": "新詞",
     "import": "匯入",
-    "local": "僅儲存在本機",
-    "localMeta": {
-      "device": "不上傳",
-      "cloud": "隨聽寫請求發出"
+    "local": {
+      "device": "存在本機，不上傳",
+      "cloud": "存在本機，聽寫時隨請求發給識別模型"
     },
     "localTip": "詞典儲存在 {file}，不上傳、不同步。聽寫時，所用模型收得下的那部分詞隨這次請求一併發出；離線方式下不離開本機",
     "composer": {
@@ -1056,7 +1055,8 @@ export default {
     "search": "搜尋",
     "count": "{count} 個詞",
     "empty": {
-      "title": "還沒有詞彙"
+      "title": "還沒有詞彙",
+      "text": "人名與術語，按詞典寫法輸出"
     },
     "noResults": "沒有匹配的詞",
     "loadError": "讀不出詞典：{reason}",
