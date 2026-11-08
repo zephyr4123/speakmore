@@ -1,6 +1,6 @@
 ---
 name: speakmore-release-on-cos
-description: SpeakMore 的安装包在腾讯云 COS + CDN（dl.zephyrxiang.com/speakmore/），只从本机用 npm run ship 发；GitHub 上的 Release 只放源码和说明（推标签时 CI 建草稿、ship 最后公开）；最新 0.20.1（11-04）；打包用的 Electron 走国内镜像 npmmirror；证书 2027-01-12 到期要续
+description: SpeakMore 的安装包在腾讯云 COS + CDN（dl.zephyrxiang.com/speakmore/），只从本机用 npm run ship 发；GitHub 上的 Release 只放源码和说明（推标签时 CI 建草稿、ship 最后公开）；最新 0.21.0（11-08）；打包用的 Electron 走国内镜像 npmmirror；证书 2027-01-12 到期要续
 metadata:
   node_type: memory
   type: project
@@ -41,6 +41,7 @@ SpeakMore 的发布包放在用户自己的腾讯云 COS，前面是 CDN 域名 
 - 0.19.0 在 2026-10-30 发布（历史记录可搜索、播放、换模型重跑、导出，PR #22；历史库升到表结构 5）。第一次 ship 失败是 agent 的错：它跑到一半，agent 切去 main 提交记忆，工作区换回 0.18.1，上传前的检查拦下了、没传。**ship 跑着的时候不许动工作区（切分支、提交都不行），记忆等它跑完再提**。重跑一次通过（7173 个对象），签名重试没触发；官网线上提交 bfaff2e、脚本里 0.19.0；只验了 Mac（accept-mac.sh 全过）。
 - 0.20.0 在 2026-11-03 发布（Mac 上默认显示在程序坞、设置可关，悬浮条和划词卡片改成面板，补上应用菜单）。第一次 ship 卡在下 Electron：本机 Electron 的下载缓存（~/Library/Caches/electron）被清空了，从 GitHub 下每秒只有约 90 KB；agent 从 npmmirror 下好另外两个平台、按 electron 包的 checksums.json 核对后放进缓存。之后用户要关电脑出门，当时还在本机打包、什么都没传，agent 停掉 ship；回来重跑一次通过（7174 个对象），签名重试没触发。官网线上提交 bfd485c、脚本里 0.20.0；accept-mac.sh 全过，另用同一个 dmg 隔离启动查到 App 登记为 Foreground（在程序坞里）。随后按用户要求把下 Electron 固化成走 npmmirror（`scripts/build/electron-mirror.mjs`，mac-app 和 release 两处共用，环境变量 `ELECTRON_MIRROR` 可换回 GitHub；空缓存实测 darwin-x64 26 秒）。只验了 Mac。
 - 0.20.1 在 2026-11-04 发布（没有功能改动，用来验新的 GitHub 发版流程，用户提的）：推标签后 CI 检查、建草稿约 2 分钟；ship 一次跑通（7174 个对象，约 25 分钟，arm64 dmg 公证第一次连苹果超时、自动重交通过），最后自动公开 Release、标成 Latest。签名重试没触发。官网部署被自动模式拦下、交给用户跑。
+- 0.21.0 在 2026-11-08 发布（设计第二步：统一字号、字重、字体，设置七栏并成五栏，README 和官网截图重截）。先推标签（CI 建草稿），用户用一行 `nohup sh -c 'npm run ship && git checkout main && git push origin main && cd website && npm run deploy' > /tmp/sm-ship.log 2>&1 &` 挂后台，发版、推 main、部署官网一次跑通；两个 dmg 公证一次通过，Release 自动公开、标成 Latest。发版前 `npm run check` 被主干上 climb-vocabulary-pack.mjs 的两处 lint 拦着，先修了才打标签。accept-mac.sh、accept-win.sh（0.20.1 → 0.21.0）都过、日志零报错。
 - ship 开头报"标签 vX 还没推到 GitHub"时先看日志上一行：是 `SSL_ERROR_SYSCALL` 之类的网络错误，就用 `git ls-remote origin refs/tags/vX^{}` 确认标签指着 HEAD，直接重跑，不用动标签。
 - 从 ssh 远程跑 Windows 的 `speakmore update`：旧版本目录要等旧进程退出后由后台删，那个后台进程随 ssh 会话一起没了，旧目录会留着（桌面上点更新不会）。确认 current 已指向新版本、没有进程在用旧目录，再手动删。
 - 发版前本机自测打的包在 dist/release，ship 的打包第一步会整个清掉，不会被传上去。
