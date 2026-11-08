@@ -315,6 +315,7 @@ export default {
     lead: "Free download. macOS 12 or later; Windows 10 or later (64-bit).",
     buttons: { arm64: "Download for Apple silicon", windows: "Download for Windows" },
     intel: "Mac with Intel",
+    phone: { copy: "Copy download link", hint: "Open it on a Mac or Windows computer" },
     terminal: { mac: "macOS · Terminal", windows: "Windows · PowerShell" },
     copy: "Copy",
     copied: "Copied",

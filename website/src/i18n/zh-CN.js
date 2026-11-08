@@ -264,6 +264,8 @@ export default {
     lead: "免费下载。macOS 12 及以上；Windows 10 及以上（64 位）。",
     buttons: { arm64: "下载 Apple 芯片版", windows: "下载 Windows 版" },
     intel: "Intel 芯片 Mac 版",
+    // 手机、平板上装不了：复制下载页的地址，到电脑上打开
+    phone: { copy: "复制下载链接", hint: "请在 Mac 或 Windows 电脑上打开" },
     terminal: { mac: "macOS · 终端", windows: "Windows · PowerShell" },
     copy: "复制",
     copied: "已复制",
