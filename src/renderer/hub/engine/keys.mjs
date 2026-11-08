@@ -1,5 +1,6 @@
 import { $, brand, h, platformName, svg } from "../../shared/dom.mjs";
 import { t } from "../../shared/i18n.mjs";
+import { homeText } from "../../shared/setup-text.mjs";
 import { roleName } from "./plaza-view.mjs";
 
 // 引擎页的密钥面板：配置项不进树，标题行右边"密钥 n/m"点开，从窗口右边滑出（hub.html 的 #keys-sheet）。
@@ -254,7 +255,8 @@ export function createKeys(ctx) {
       h("span", { class: "count", text: `${keyed}/${platforms.length}` }),
     );
     $("keys-meta").textContent = t("plaza.keys.meta", { done: keyed, total: platforms.length });
-    $("keys-home").textContent = t("plaza.keys.local", { home: ctx.setup.home });
+    $("keys-home").textContent = t("plaza.keys.local", { home: homeText(ctx.setup) });
+    $("keys-home").title = ctx.setup.home;
     $("keys-list").replaceChildren(...platforms.map(row));
   }
 

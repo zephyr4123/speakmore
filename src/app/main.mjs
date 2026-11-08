@@ -1332,6 +1332,8 @@ async function main() {
         enabled: loginItemEnabled(),
       },
       home: PATHS.home,
+      // 给人看数据目录时把家目录写成 ~：只有 Mac 这么写，Windows 上没有 ~ 的说法，不给
+      userHome: process.platform === "darwin" ? homedir() : null,
       version: app.getVersion(),
       update: appUpdates.describe(),
       // 正在用 key 的那一家；数据隐私模式不用 key，是 null

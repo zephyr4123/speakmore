@@ -2,7 +2,7 @@ import { LOCALES, SYSTEM_LOCALE } from "../../i18n/index.mjs";
 import { fillSelect } from "../shared/dom.mjs";
 import { createHotkeyEditor, recordBlocker } from "../shared/hotkey-editor.mjs";
 import { t } from "../shared/i18n.mjs";
-import { describeError, keyMissing, permissionDenied, permissionText } from "../shared/setup-text.mjs";
+import { describeError, homeText, keyMissing, permissionDenied, permissionText } from "../shared/setup-text.mjs";
 import { createTranslatePane } from "./translate-pane.mjs";
 
 // 设置对话框：原版的"设置中心"，左边一列菜单，按功能分栏：通用（主题、界面语言、开机启动、存储位置、软件更新、源代码）、
@@ -473,7 +473,7 @@ export function createSettings({ refresh }) {
       renderLookup(setup);
       renderLocalModels(setup);
       renderPermissions(setup);
-      $("storage-path").textContent = setup.home;
+      $("storage-path").textContent = homeText(setup);
       $("storage-path").title = setup.home;
       renderUpdate(setup.update);
       // 菜单上标个点：权限、快捷键这两页有东西要补（红点），通用这一页有更新的事（见下），侧栏的设置图标上也标

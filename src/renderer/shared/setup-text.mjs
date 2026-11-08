@@ -38,3 +38,14 @@ export function permissionText(name, value, t) {
   if (value === null) return [t("permissions.checking"), "pending", t("permissions.openSettings")];
   return value ? granted : denied;
 }
+
+/**
+ * 数据目录给人看的写法：家目录写成 ~（~/.speakmore），悬停再看完整路径。
+ * userHome 由主进程给，只有 Mac 给：Windows 上没有 ~ 这个说法，照写 C:\\Users\\…
+ * @param {{ home: string, userHome: string | null }} setup
+ */
+export function homeText({ home, userHome }) {
+  if (!userHome) return home;
+  if (home === userHome) return "~";
+  return home.startsWith(`${userHome}/`) ? `~${home.slice(userHome.length)}` : home;
+}
