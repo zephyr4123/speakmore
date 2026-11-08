@@ -168,7 +168,7 @@ test("搜索：名字、厂商、型号的写法都算，大小写不论；一�
   assert.deepEqual(searchPlaza(data, "没有这个模型"), []);
 });
 
-test("适应画布：居中放下整棵树，倍数不超过用户调过的（没调过不超过 100%），也不小于下限", () => {
+test("适应画布：横向居中、贴顶放下整棵树，倍数不超过用户调过的（没调过不超过 100%），也不小于下限", () => {
   const box = { cw: 800, ch: 600 };
   const big = fitView({ w: 2000, h: 600, ...box, userK: null });
   assert.ok(big.k < 1 && big.k >= 0.4);
@@ -176,6 +176,9 @@ test("适应画布：居中放下整棵树，倍数不超过用户调过的（�
   assert.ok(Math.abs(big.x + 2000 * big.k - (800 - big.x)) < 1e-6);
   const small = fitView({ w: 300, h: 200, ...box, userK: null });
   assert.equal(small.k, 1);
+  // 画布比树高：树贴着顶上那条边，多出来的高度都留在底下（不上下平分，标题和树之间不空出一大块）
+  assert.equal(small.y, 24);
+  assert.equal(big.y, 24);
   assert.equal(fitView({ w: 300, h: 200, ...box, userK: 0.8 }).k, 0.8);
   assert.equal(fitView({ w: 90000, h: 200, ...box, userK: null }).k, 0.4);
   assert.equal(clampZoom(9), 1.6);
