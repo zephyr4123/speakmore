@@ -1,14 +1,12 @@
 import { Heading, Section } from "../components/Section.jsx";
-import { Shot } from "../components/Shot.jsx";
+import { PHOTO_PAD, Shot } from "../components/Shot.jsx";
 import { readme } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
 
-/** 实拍图四周给阴影留的边（website/scripts/readme-scenes.mjs 的 photo） */
-const PHOTO_PAD = 28;
-
 /**
  * 划词翻译：真截图说话（README 那批，在 Mac 上截的；中英文各截了自己语言的三张，名单在文案 lookup.shots）。
- * 一张网页的大图，下面两张小的（PDF、终端或备忘录），各配一个名字；最后一行三条要点，之间一道细线
+ * 一张网页的大图，下面两张小的（PDF、终端或备忘录），各配一个名字；最后一行三条要点，之间一道细线。
+ * 小的两张用裁到选区和卡片的那块（<名字>-crop），窄屏只要卡片（<名字>-card）：整张缩进半栏，卡片上的字太小
  */
 export function Lookup() {
   const { m, locale } = useI18n();
@@ -21,7 +19,7 @@ export function Lookup() {
     const { width, height } = readme(name, locale);
     return (width - PHOTO_PAD * 2) / (height - PHOTO_PAD * 2);
   };
-  const columns = rest.map((shot) => `minmax(0, ${aspect(shot.name).toFixed(3)}fr)`).join(" ");
+  const columns = rest.map((shot) => `minmax(0, ${aspect(`${shot.name}-crop`).toFixed(3)}fr)`).join(" ");
   return (
     <Section id="lookup" labelledBy="lookup-title">
       <Heading id="lookup-title" title={text.title} />
@@ -36,7 +34,7 @@ export function Lookup() {
       >
         {rest.map((shot) => (
           <li key={shot.name}>
-            <Shot name={shot.name} alt={shot.alt} pad={PHOTO_PAD} flush />
+            <Shot name={`${shot.name}-crop`} small={`${shot.name}-card`} alt={shot.alt} pad={PHOTO_PAD} flush />
             <p className="mt-3 text-center text-label font-medium text-ink-2">{shot.caption}</p>
           </li>
         ))}

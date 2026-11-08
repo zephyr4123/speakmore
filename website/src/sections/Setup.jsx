@@ -1,12 +1,15 @@
 import { useRef } from "react";
 import { Heading, Section } from "../components/Section.jsx";
-import { Shot } from "../components/Shot.jsx";
+import { PHOTO_PAD, Shot } from "../components/Shot.jsx";
 import { useI18n } from "../i18n/index.jsx";
 import { Icon } from "../icons/Icon.jsx";
 import { fillText } from "../lib/text.js";
 
-/** 首次引导的四步截图和最后弹出的推荐组合（README 那批），和文案里 setup.steps 一一对应 */
-const SHOTS = ["onboarding-features", "onboarding-keys", "onboarding-permissions", "onboarding-engine", "presets"];
+/**
+ * 首次引导的四步和最后弹出的推荐组合，和文案里 setup.steps 一一对应。图是 README 那批截图裁出来的局部（setup-<步>，
+ * website/scripts/readme-shots.mjs）：整个窗口缩进一张卡片字太小，只留这一步要看的那块；窄屏换成裁得更紧的 -sm
+ */
+const SHOTS = ["features", "keys", "permissions", "engine", "presets"];
 /** 推荐组合是引导走完以后在主窗口弹出来的，不算引导的一步：不编号，写"引导之后"（标题说的是四步） */
 const AFTER = "presets";
 
@@ -47,7 +50,9 @@ export function Setup() {
             return (
               <li key={name} className="w-[min(82vw,34rem)] shrink-0 snap-start">
                 <Shot
-                  name={name}
+                  name={`setup-${name}`}
+                  small={`setup-${name}-sm`}
+                  pad={PHOTO_PAD}
                   alt={after ? fillText(m.setup.afterAlt, { step }) : fillText(m.setup.alt, { n: index + 1, step })}
                 />
                 <p className="mt-3 flex items-baseline gap-3">

@@ -35,19 +35,19 @@
     "height": 750
   },
   "bar-ink.en": {
-    "path": "shots/bar-ink.en.25f94dde.webp",
-    "width": 230,
-    "height": 107
+    "path": "shots/bar-ink.en.ab7ae761.webp",
+    "width": 246,
+    "height": 108
   },
   "bar-cinnabar.en": {
-    "path": "shots/bar-cinnabar.en.a268f494.webp",
-    "width": 230,
-    "height": 107
+    "path": "shots/bar-cinnabar.en.ac387daf.webp",
+    "width": 246,
+    "height": 108
   },
   "bar-indigo.en": {
-    "path": "shots/bar-indigo.en.a866c5cc.webp",
-    "width": 230,
-    "height": 107
+    "path": "shots/bar-indigo.en.98ee9b83.webp",
+    "width": 246,
+    "height": 108
   },
   "home-light-ink.zh-CN": {
     "path": "shots/home-light-ink.zh-CN.a12f656c.webp",
@@ -85,18 +85,18 @@
     "height": 750
   },
   "bar-ink.zh-CN": {
-    "path": "shots/bar-ink.zh-CN.ad961277.webp",
+    "path": "shots/bar-ink.zh-CN.56441e79.webp",
     "width": 211,
-    "height": 107
+    "height": 108
   },
   "bar-cinnabar.zh-CN": {
-    "path": "shots/bar-cinnabar.zh-CN.ce516746.webp",
+    "path": "shots/bar-cinnabar.zh-CN.cdaba48b.webp",
     "width": 211,
-    "height": 107
+    "height": 108
   },
   "bar-indigo.zh-CN": {
-    "path": "shots/bar-indigo.zh-CN.cc6ea5fc.webp",
+    "path": "shots/bar-indigo.zh-CN.abd37195.webp",
     "width": 211,
-    "height": 107
+    "height": 108
   }
 }

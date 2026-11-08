@@ -1,6 +1,6 @@
 import { LogoLoop } from "../components/LogoLoop.jsx";
 import { Heading, Section } from "../components/Section.jsx";
-import { Shot } from "../components/Shot.jsx";
+import { PHOTO_PAD, Shot } from "../components/Shot.jsx";
 import { useI18n } from "../i18n/index.jsx";
 import { Cost } from "./Cost.jsx";
 
@@ -33,7 +33,8 @@ export function Models() {
       </div>
 
       <div className="mt-flow-6 grid items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-16">
-        <Shot name="polish" alt={m.models.shotAlt} className="reveal" />
+        {/* 引擎页裁出来的一条：厂商 → 型号 → 详情卡；窄屏只要详情卡 */}
+        <Shot name="polish-crop" small="polish-card" pad={PHOTO_PAD} alt={m.models.shotAlt} className="reveal" />
         <ul className="reveal divide-y divide-line border-y border-line">
           {m.models.points.map((point) => (
             <li key={point.title} className="py-6">

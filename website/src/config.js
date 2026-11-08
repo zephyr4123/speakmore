@@ -20,7 +20,7 @@ export function shot(name, locale) {
 
 /**
  * 一张 README 用的图（图片桶的 readme/ 下，清单是仓库的 docs/media.json）：真窗口截图带着 Mac 窗口的外框和阴影，
- * 四周留了 40 像素给阴影；也有下载速度对比图。宽高是 CSS 像素，文件是两倍图
+ * 四周留了 40 像素给阴影；截图裁出来的局部、划词的实拍四周留 28；也有下载速度对比图。宽高是 CSS 像素，文件是两倍图
  * @returns {{ src: string, width: number, height: number }}
  */
 export function readme(name, locale) {

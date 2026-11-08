@@ -56,6 +56,26 @@
   }
 }
 
+/* README 那批截图（Shot.jsx）：图四周留着给阴影的边往外撑，图本身的左右边和这一栏对齐；窄屏换成裁得更紧的那张，比例跟着换。
+   百分比的外边距都按这一栏的宽算，上下也一样 */
+.shot {
+  width: calc(100% * var(--shot-scale));
+  margin-inline: calc(-100% * var(--shot-edge));
+
+  &[data-flush] {
+    margin-block: calc(-100% * var(--shot-edge));
+  }
+
+  @media (width < 48rem) {
+    width: calc(100% * var(--shot-scale-sm));
+    margin-inline: calc(-100% * var(--shot-edge-sm));
+
+    &[data-flush] {
+      margin-block: calc(-100% * var(--shot-edge-sm));
+    }
+  }
+}
+
 /* 大标题：英文收紧字距；中文字距本来就匀，收紧了挤 */
 @utility display {
   font-family: var(--font-display);
