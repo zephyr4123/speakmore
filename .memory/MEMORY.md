@@ -65,3 +65,4 @@
 - [PR #17 百炼没认出字](speakmore-pr17-bailian-no-words.md) — 外部贡献；qwen-audio、fun-asr 没认出字回 400，10-24 合并并补成当空原文，随 0.17.1 发布
 - [PR #18 到 #23](speakmore-prs-18-20.md) — 同一位贡献者（香港 Kyle，Windows 天天在用）：繁体、预览、隐藏窗口不降频都已发；#22 历史记录 2.0 审完修完随 0.19.0 发布（重跑不计入统计、表结构 5）；#23 三D→3D 的写死规则没合，交给词典
 - [翻译功能的形态](speakmore-translation-features.md) — 语音输入、语音翻译、划词翻译；规格在 .playwright-mcp/translate-proto/README.md；随 0.16.0 发布；引导重做随 0.17.0 发布、README 三位一体、#16、官网都在 10-23 做完
+- [修复自己直接改](fix-directly-no-subagents.md) — 清单定了的修复不派子 agent 并行，自己改、最后审一轮（11-08）

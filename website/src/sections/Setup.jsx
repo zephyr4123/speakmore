@@ -28,8 +28,9 @@ export function Setup() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     element.scrollBy({ left: direction * (item.offsetWidth + gap), behavior: reduced ? "auto" : "smooth" });
   };
+  // 底色和上面的隐私一段（surface）错开：整页靠深浅交替分段，连着两段同色中间没有分界
   return (
-    <Section id="setup" tone="surface" labelledBy="setup-title">
+    <Section id="setup" labelledBy="setup-title">
       <Heading id="setup-title" title={m.setup.title} />
 
       <div className="reveal mt-flow-2">
