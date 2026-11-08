@@ -1277,7 +1277,7 @@ export default {
     "where": "隨時可在 {place} 中修改",
     "back": "返回",
     "next": "繼續",
-    "skip": "跳過",
+    "skip": "稍後配置",
     "skipAll": "跳過引導",
     "scene": {
       "spoken": "口述",

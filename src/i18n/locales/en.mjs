@@ -1114,7 +1114,7 @@ export default {
     where: "Change anytime in {place}",
     back: "Back",
     next: "Continue",
-    skip: "Skip",
+    skip: "Set up later",
     skipAll: "Skip setup",
     // 功能演示（onboarding/scene.mjs）：一个聊天窗口、一个文档窗口里的字
     scene: {

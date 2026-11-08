@@ -1080,7 +1080,8 @@ export default {
     where: "随时可在 {place} 中修改",
     back: "返回",
     next: "继续",
-    skip: "跳过",
+    // 这一步没做完时的"继续"：和旁边的"跳过引导"分开说，一个只跳这一步、一个结束整个引导
+    skip: "稍后配置",
     skipAll: "跳过引导",
     // 功能演示（onboarding/scene.mjs）：一个聊天窗口、一个文档窗口里的字
     scene: {
