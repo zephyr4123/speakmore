@@ -1425,6 +1425,17 @@ code.setting-value {
 }
 
 /* 设置 › 语音翻译：一行一种语言，第一行是默认；别的行悬停时出现"设为默认"和 ×，底下一个"添加" */
+/* 一页里分两段时每段的小标题（翻译一页：语音翻译、划词翻译） */
+.pane-section {
+  margin: 1.5rem 0 0.25rem;
+  font-size: var(--text-heading);
+  font-weight: var(--weight-semibold);
+}
+
+.pane-title + .pane-section {
+  margin-top: 0;
+}
+
 .setting-label {
   margin: 0.25rem 0 0;
   font-size: var(--text-body);

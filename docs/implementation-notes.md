@@ -143,7 +143,7 @@ SpeakMore 是照着对 Typeless 2.8.1 的[逆向分析](../targets/typeless/READ
 选中文字后按右⌥回车（Windows 右 Alt+回车），在选区下方弹一张卡片：译文和复制。卡片上原来还有"替换选中文字"（选区能改时把译文贴回原处），10-23 他定了砍掉：划词多半是在网页、App 里看东西，选区不一定能改，往原处贴会出各种问题。小帮手判断"能不能改"的那部分也一起删了。和语音的两个功能是两套：
 
 - **内核**在 `src/server/lookup/`（提示词、收尾、判断原文语言、翻译器、出厂模型），和语音的任务（`src/server/tasks/`）互不引用，只共用底层的 `src/server/chat/client.mjs`。账照记，用途是 `lookup`，历史库因此升到第 4 版（退回办法在 `src/storage/history.mjs` 文件头）。首页的口述统计不算它。
-- **设置**是划词自己的四项：`lookup.to`、`lookup.model`（出厂 DeepSeek V4.1 Flash）、`lookup.customUrl`、`lookup.customParams`。选自定义服务时 key 另存一把（`lookupcustom-key.bin`，环境变量 `SPEAKMORE_LOOKUP_CUSTOM_API_KEY`），和语音那边的自定义服务不相干；清单里厂商的 key 同一家只有一把，两边共用。主窗口里在设置的"划词翻译"一栏改译成，在引擎页的"划词"一段换模型、配自定义服务（先验再存，`src/app/lookup/setup.mjs`）。
+- **设置**是划词自己的四项：`lookup.to`、`lookup.model`（出厂 DeepSeek V4.1 Flash）、`lookup.customUrl`、`lookup.customParams`。选自定义服务时 key 另存一把（`lookupcustom-key.bin`，环境变量 `SPEAKMORE_LOOKUP_CUSTOM_API_KEY`），和语音那边的自定义服务不相干；清单里厂商的 key 同一家只有一把，两边共用。主窗口里在设置的"翻译"一栏改译成（和语音翻译同一栏），在引擎页的"划词"一段换模型、配自定义服务（先验再存，`src/app/lookup/setup.mjs`）。
 - **取选区**归小帮手（`selection` 命令）：Mac 先问辅助功能（选中的字和它在屏幕上的框），问不到再模拟 ⌘C 取剪贴板、取完放回原样；Windows 先问 UI Automation，再模拟 Ctrl+C。实测记事本、Edge 都是 UI Automation 拿到的，1–20 毫秒。
 - **卡片不抢焦点**：用户正在看、正在写的那个应用留着焦点和选区。卡片窗口做法同悬浮条，透明、点不到，按钮上的点击由小帮手截下来交给主进程（截的时候顺带报"点在卡片外面"，用来收起）。
 - **语音输入的键是划词组合的一部分**（右⌥ 和 右⌥回车）：按下右⌥ 时先压住，见 `docs/hotkey-research.md` 的 5.3，悬浮条不会闪一下。

@@ -965,7 +965,7 @@ export default {
     sections: "Settings sections",
     general: "General",
     permissions: "Permissions",
-    about: "About",
+    translation: "Translation",
     hotkey: "Shortcut",
     theme: "Theme",
     language: "Interface language",
@@ -996,7 +996,6 @@ export default {
     translateFailed: "Translation languages not changed: {reason}",
     lookupFailed: "Selection translation language not changed: {reason}",
     recheck: "Check again",
-    version: "Version",
     source: "Source code",
     storage: {
       title: "Storage location",

@@ -933,7 +933,7 @@ export default {
     sections: "设置分类",
     general: "通用",
     permissions: "权限",
-    about: "关于",
+    translation: "翻译",
     hotkey: "快捷键",
     theme: "主题",
     language: "界面语言",
@@ -965,7 +965,6 @@ export default {
     translateFailed: "语音翻译的语言未能更改：{reason}",
     lookupFailed: "划词翻译的语言未能更改：{reason}",
     recheck: "重新检查",
-    version: "版本",
     source: "源代码",
     storage: {
       title: "存储位置",

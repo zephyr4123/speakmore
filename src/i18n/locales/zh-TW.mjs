@@ -1129,7 +1129,7 @@ export default {
     "sections": "設定分類",
     "general": "通用",
     "permissions": "權限",
-    "about": "關於",
+    "translation": "翻譯",
     "hotkey": "快捷鍵",
     "theme": "主題",
     "language": "介面語言",
@@ -1160,7 +1160,6 @@ export default {
     "translateFailed": "語音翻譯的語言未能更改：{reason}",
     "lookupFailed": "劃詞翻譯的語言未能更改：{reason}",
     "recheck": "重新檢查",
-    "version": "版本",
     "source": "原始碼",
     "storage": {
       "title": "儲存位置",

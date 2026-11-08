@@ -1899,7 +1899,7 @@ async function main() {
         { label: t("tray.open"), click: () => showHub({ route: "home" }) },
         { label: t("tray.history"), click: () => showHub({ route: "history" }) },
         { type: "separator" },
-        { label: t("tray.settings"), accelerator: "CmdOrCtrl+,", click: () => showHub({ pane: "general" }) },
+        { label: t("tray.settings"), accelerator: "CmdOrCtrl+,", click: () => showHub({ pane: "last" }) },
         { type: "separator" },
         { label: t("tray.version", { version: app.getVersion() }), enabled: false },
         // 有新版本：点了打开设置的通用页，更新按钮在那里
@@ -1918,7 +1918,7 @@ async function main() {
   /** Mac 屏幕顶上的应用菜单（app-menu.mjs）。换了界面语言要重设 */
   function refreshAppMenu() {
     if (WINDOWS) return;
-    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "general" }), dev: !app.isPackaged });
+    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "last" }), dev: !app.isPackaged });
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
   // Windows 上点通知区域的图标是打开主窗口（右键才是菜单），macOS 上点它就是菜单
