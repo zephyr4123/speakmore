@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { test } from "node:test";
-import { APP_CSS, appCss, SITE_CSS, siteCss } from "../../scripts/dev/make-tokens.mjs";
-import { definedVariables } from "../../src/design/css.mjs";
+import { formatted, tokenFiles } from "../../scripts/dev/make-tokens.mjs";
 import { SITE_DARK, SITE_LEGIBILITY, SITE_THEME, SITE_TONE_INK } from "../../src/design/site.mjs";
 import { groupProblems } from "../../src/themes/contract.mjs";
 
@@ -13,18 +12,8 @@ import { groupProblems } from "../../src/themes/contract.mjs";
 const ROOT = join(import.meta.dirname, "../..");
 const read = (path) => readFileSync(join(ROOT, path), "utf8");
 
-test("生成的两份 CSS 和 src/design/ 一致：改了源忘了跑 npm run tokens 会在这里报", () => {
-  for (const [path, css] of [
-    [APP_CSS, appCss()],
-    [SITE_CSS, siteCss()],
-  ]) {
-    const want = definedVariables(css);
-    const got = definedVariables(read(path));
-    assert.deepEqual([...got.keys()], [...want.keys()], `${path} 的选择器对不上`);
-    for (const [selector, variables] of want) {
-      assert.deepEqual(Object.fromEntries(got.get(selector)), Object.fromEntries(variables), `${path} 的 ${selector}`);
-    }
-  }
+test("生成的两份 CSS 和 src/design/ 一致：改了源忘了跑 npm run tokens、手改了生成物，都会在这里报", () => {
+  for (const [path, css] of tokenFiles()) assert.equal(read(path), formatted(path, css), `${path} 和源对不上`);
 });
 
 // ---------- 官网不绕过 token ----------
@@ -85,14 +74,14 @@ test("官网用到的颜色、字号、圆角、阴影、缓动的名字都在 t
   const unknown = new Set();
   for (const { name, lines } of sources) {
     for (const line of lines) {
-      for (const [, , utility, value] of line.matchAll(CLASS)) {
+      for (const [, , utility, value] of line.replaceAll("drop-shadow-", "dropshadow-").matchAll(CLASS)) {
         let ok = true;
         if (utility === "rounded") {
           // rounded-bl-small 这类只圆一个角的：去掉角的那一段再查
           const radius = value.replace(/^[trbl]{1,2}-/, "");
           ok = radius === "full" || radius === "none" || has("radius", radius);
         } else if (utility === "shadow") ok = value === "none" || has("shadow", value);
-        else if (utility === "drop-shadow") ok = value === "none" || has("drop-shadow", value);
+        else if (utility === "dropshadow") ok = value === "none" || has("drop-shadow", value);
         else if (utility === "ease") ok = value === "linear" || value === "initial" || has("ease", value);
         else if (utility === "text") ok = FIXED.text.test(value) || has("text", value) || has("color", value);
         else if (Object.hasOwn(FIXED, utility)) ok = FIXED[utility].test(value) || has("color", value);

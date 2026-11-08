@@ -4,19 +4,21 @@
 // 第一步只收纳、不改观感：值照搬原来写在 JSX 和 styles.css 里的，只并了肉眼看不出的几处（README.md 的合并记录）。
 
 import cinnabar from "../themes/cinnabar.mjs";
-import { BAR_DROP, EASE_OUT, FONT_DISPLAY, FONT_MONO, FONT_ROUNDED, FONT_TEXT, RADIUS } from "./base.mjs";
+import { BAR_DROP, EASE_OUT, FONT_DISPLAY, FONT_MONO, FONT_ROUNDED, FONT_TEXT, RADIUS, SPACE_UNIT } from "./base.mjs";
 import { fluid } from "./css.mjs";
 
 /** @type {{ comment?: string, tokens: [string, string][] }[]} 写进 @theme：Tailwind 按名字生成 text-body、rounded-tile 这类工具类 */
 export const SITE_THEME = [
   {
     comment:
-      "清掉 Tailwind 默认的颜色、字号、圆角、阴影（缓动在下面那组清）：只认下面列的，gray-500、text-sm、rounded-lg 这类写了也不出样式（测试会拦）",
+      "清掉 Tailwind 默认的颜色、字号、圆角、阴影、缓动：只认下面列的，gray-500、text-sm、rounded-lg、drop-shadow-sm 这类写了也不出样式（测试会拦）",
     tokens: [
       ["color-*", "initial"],
       ["text-*", "initial"],
       ["radius-*", "initial"],
       ["shadow-*", "initial"],
+      ["drop-shadow-*", "initial"],
+      ["ease-*", "initial"],
     ],
   },
   {
@@ -41,10 +43,10 @@ export const SITE_THEME = [
       ["color-line", "oklch(0.9 0.008 255)"],
       ["color-link", "oklch(0.47 0.11 255)"],
       ["color-seal", "oklch(0.4 0.075 255)"],
-      // 朱砂就是 App 朱砂主题的主色：浅色的那个、深色下提亮的那个
+      // 朱砂就是 App 朱砂主题的主色：浅色的那个、深色下提亮的那个；cinnabar-text 是朱砂色的字，深色下换成亮的那个才读得清
       ["color-cinnabar", cinnabar.window.light.primary],
       ["color-cinnabar-glow", cinnabar.window.dark.primary],
-      ["color-ochre", "oklch(0.74 0.12 75)"],
+      ["color-cinnabar-text", cinnabar.window.light.primary],
     ],
   },
   {
@@ -77,7 +79,6 @@ export const SITE_THEME = [
   {
     comment: "ease-out 基础的先快后慢、不回弹（和 App 同一条）· expo 更急的收尾 · sweep 长镜头的声波来回扫",
     tokens: [
-      ["ease-*", "initial"],
       ["ease-out", EASE_OUT],
       ["ease-out-expo", "cubic-bezier(0.16, 1, 0.3, 1)"],
       ["ease-sweep", "cubic-bezier(0.45, 0, 0.25, 1)"],
@@ -174,12 +175,13 @@ export const SITE_THEME = [
     ],
   },
   {
-    comment: `间距的基数照 Tailwind 默认的 0.25rem（和 App 的 4px 一致）。下面是流体的留白，clamp(手机, 视口宽度, 宽屏)：
+    comment: `间距的基数和 App 同一个（src/design/base.mjs，0.25rem，也是 Tailwind 默认的）。下面是流体的留白，clamp(手机, 视口宽度, 宽屏)：
      section 区块上下 · hero-top、hero-bottom 首屏上下 · heading-gap 区块标题和内容之间 · intro-gap 功能一段的底边
      card-y 语音方式卡片的上下内边距 · logo-gap 厂商标志之间
-     flow-1 到 flow-8 是各段里块与块之间的间隔，由小到大（第二步再并档）
+     flow-1 到 flow-8 是各段里块与块之间的间隔，由小到大（还没并档，见 README.md）
      nav 吸顶导航那一行的高 · nav-anchors 窄屏导航下面那行锚点的高（44px，手指点得准的下限）；锚点跳过去时让出的高度也按这两个算`,
     tokens: [
+      ["spacing", SPACE_UNIT],
       ["spacing-nav", "3.5rem"],
       ["spacing-nav-anchors", "2.75rem"],
       ["spacing-section", fluid("7rem", 17, "13rem")],
@@ -212,6 +214,7 @@ export const SITE_DARK = [
       ["color-ink-2", "oklch(0.74 0.015 255)"],
       ["color-line", "oklch(0.3 0.015 255)"],
       ["color-link", "oklch(0.8 0.09 255)"],
+      ["color-cinnabar-text", cinnabar.window.dark.primary],
     ],
   },
 ];
@@ -227,6 +230,7 @@ export const SITE_TONE_INK = [
       ["color-ink-2", "oklch(0.78 0.02 255)"],
       ["color-line", "oklch(1 0 0 / 0.14)"],
       ["color-link", "oklch(0.82 0.09 230)"],
+      ["color-cinnabar-text", cinnabar.window.dark.primary],
     ],
   },
   {
@@ -243,6 +247,8 @@ export const SITE_LEGIBILITY = [
   ["ink2", "canvas", 4.5],
   ["ink2", "surface", 4.5],
   ["link", "canvas", 4.5],
-  // 语音方式里选中的那一项：白字叠在朱砂上
+  // 语音方式里选中的那一项：白字叠在朱砂上；线路图上朱砂色的小字
   ["white", "cinnabar", 4.5],
+  ["cinnabar-text", "canvas", 4.5],
+  ["cinnabar-text", "surface", 4.5],
 ];

@@ -154,7 +154,7 @@ function RouteMap({ way, lanes }) {
 
       {carry !== null ? (
         <span
-          className="route-carry absolute top-1/2 flex -translate-y-1/2 items-center gap-1 pl-2.5 text-fine font-semibold whitespace-nowrap text-cinnabar"
+          className="route-carry absolute top-1/2 flex -translate-y-1/2 items-center gap-1 pl-2.5 text-fine font-semibold whitespace-nowrap text-cinnabar-text"
           style={{ left: `${carry}%` }}
           aria-hidden="true"
         >

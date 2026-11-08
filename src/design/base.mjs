@@ -26,7 +26,7 @@ export const FONT_TEXT = `-apple-system, BlinkMacSystemFont, ${CJK_MAC}, "Segoe 
 /** 标题：28px 以上的大字 */
 export const FONT_DISPLAY = `-apple-system, BlinkMacSystemFont, ${CJK_MAC}, "Segoe UI Variable Display", ${CJK_WIN}`;
 
-/** 大号的数字用系统的圆体（SF Pro Rounded），和正文的直角字拉开一点；没有圆体的系统照标题的来 */
+/** 大号的数字用系统的圆体（SF Pro Rounded），和正文的直角字拉开一点。只有 Safari 认 ui-rounded：App（Electron）和 Chrome 里照标题的来 */
 export const FONT_ROUNDED = `ui-rounded, ${FONT_DISPLAY}`;
 
 export const FONT_MONO = 'ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace';

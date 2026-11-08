@@ -13,12 +13,8 @@ const root = new URL("../../", import.meta.url);
 export const APP_CSS = "src/renderer/shared/tokens.css";
 export const SITE_CSS = "website/src/tokens.css";
 
-/** 深色下覆盖的那一段：两份都有 */
-const dark = (groups) =>
-  `@media (prefers-color-scheme: dark) {\n${block(":root", groups)
-    .split("\n")
-    .map((line) => `  ${line}`)
-    .join("\n")}\n}`;
+/** 深色下覆盖的那一段：两份都有（缩进交给 biome） */
+const dark = (groups) => `@media (prefers-color-scheme: dark) {\n${block(":root", groups)}\n}`;
 
 /** App 的那份：一个 :root，深色下覆盖几项 */
 export function appCss() {
@@ -41,20 +37,22 @@ export function siteCss() {
   ].join("\n\n");
 }
 
-if (import.meta.main) {
-  const files = [
-    [APP_CSS, appCss()],
-    [SITE_CSS, siteCss()],
-  ];
-  for (const [path, css] of files) writeFileSync(new URL(path, root), css);
-  // 排版交给 biome：和仓库里别的样式一个样子，npm run check 不报
-  execFileSync(
-    fileURLToPath(new URL("node_modules/.bin/biome", root)),
-    ["format", "--write", ...files.map(([p]) => p)],
-    {
-      cwd: fileURLToPath(root),
-      stdio: "inherit",
-    },
-  );
-  console.log(`生成了 ${files.map(([path]) => path).join("、")}`);
+/** 交给 biome 排版后的样子：和仓库里别的样式一个样子，npm run check 不报。落盘和测试都按它，测试逐字比 */
+export const formatted = (path, css) =>
+  execFileSync(fileURLToPath(new URL("node_modules/.bin/biome", root)), ["format", `--stdin-file-path=${path}`], {
+    cwd: fileURLToPath(root),
+    input: css,
+    encoding: "utf8",
+  });
+
+/** 两份文件和各自的内容 */
+export const tokenFiles = () => [
+  [APP_CSS, appCss()],
+  [SITE_CSS, siteCss()],
+];
+
+// 直接运行时落盘（import.meta.main 要 Node 22.18 起，engines 允许更早的）
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  for (const [path, css] of tokenFiles()) writeFileSync(new URL(path, root), formatted(path, css));
+  console.log(`生成了 ${APP_CSS}、${SITE_CSS}`);
 }
