@@ -196,6 +196,8 @@ body[data-shown="false"] .shell {
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
+  /* 最后一行别只剩一个字 */
+  text-wrap: pretty;
   max-width: 320px;
   height: calc(2 * 1.35em + 10px);
   margin: 0;
