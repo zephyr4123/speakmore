@@ -14,8 +14,12 @@
     color-scheme: light dark;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    /* 吸顶导航的高度：锚点跳过去时标题不被它挡住 */
-    scroll-padding-top: 4rem;
+    /* 吸顶导航的高度：锚点跳过去时标题不被它挡住。窄屏的导航多一行锚点，高一些 */
+    scroll-padding-top: 6.5rem;
+
+    @media (width >= 48rem) {
+      scroll-padding-top: 4rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

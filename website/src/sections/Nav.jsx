@@ -6,7 +6,7 @@ import { Icon } from "../icons/Icon.jsx";
 
 /**
  * 吸顶导航。停在页面顶上时是透明的；往下滚了换成半透明的毛玻璃，经过深色的段落时玻璃也是深色。
- * 窄屏只留标志、GitHub 和下载。换语言在页脚
+ * 窄屏：标志、GitHub 和下载一行，各段的锚点另起一行、横着滑（整页十几屏，没有锚点只能一直往下滚）。换语言在页脚
  */
 export function Nav() {
   const { m } = useI18n();
@@ -44,6 +44,13 @@ export function Nav() {
     ["privacy", m.nav.privacy],
     ["developers", m.nav.developers],
   ];
+  const anchors = items.map(([id, label]) => (
+    <li key={id} className="shrink-0">
+      <a href={`#${id}`} className="inline-block py-1.5 transition-colors duration-150 hover:text-ink">
+        {label}
+      </a>
+    </li>
+  ));
 
   return (
     <header
@@ -64,15 +71,7 @@ export function Nav() {
           <img src={seal} alt="" width="28" height="28" className="size-7" />
           SpeakMore
         </a>
-        <ul className="ml-auto hidden items-center gap-7 text-label text-ink-2 md:flex">
-          {items.map(([id, label]) => (
-            <li key={id}>
-              <a href={`#${id}`} className="transition-colors duration-150 hover:text-ink">
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <ul className="ml-auto hidden items-center gap-7 text-label text-ink-2 md:flex">{anchors}</ul>
         <div className="ml-auto flex items-center gap-1 md:ml-0">
           <a
             href={links.repository}
@@ -89,6 +88,9 @@ export function Nav() {
           </a>
         </div>
       </nav>
+      <ul className="no-scrollbar flex gap-6 overflow-x-auto px-5 pb-1.5 text-label whitespace-nowrap text-ink-2 sm:px-8 md:hidden">
+        {anchors}
+      </ul>
     </header>
   );
 }
