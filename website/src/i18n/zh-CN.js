@@ -20,7 +20,8 @@ export default {
   },
   hero: {
     title: "口述成文，划词即译",
-    lead: "Mac 与 Windows 上的语音输入与翻译，开源免费",
+    // 手机上不在「Windows／上的」之间折：那里用不换行的空格，{wbr} 是可以折的地方（Hero.jsx 换成 <wbr>）
+    lead: "Mac 与 Windows\u00a0上的{wbr}语音输入与翻译，开源免费",
     shotAlt: "SpeakMore 主窗口首页：三项功能的快捷键、字数、省时、语速与每日热力图，右上角为当前识别方式",
     barAlt: "口述时的悬浮条：左侧取消，中间为随语音起伏的声波，右侧完成",
   },
@@ -192,7 +193,8 @@ export default {
     text: "模型费用按用量，直接付给厂商；划词翻译每次约 ¥0.0008。",
     per: "/ 月",
     paid: { name: "混合", note: "每天 100 次语音输入" },
-    free: { name: "离线", note: "模型下载到本机，在自己的电脑上运行 AI" },
+    // 「运行 AI」之间不折：AI 单独掉到第三行
+    free: { name: "离线", note: "模型下载到本机，在自己的电脑上运行\u00a0AI" },
   },
   setup: {
     title: "首次引导\n四步上手",

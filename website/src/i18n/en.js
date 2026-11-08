@@ -21,7 +21,8 @@ export default {
   },
   hero: {
     title: "Speak it written. Select to translate.",
-    lead: "Free, open-source voice input and translation for Mac and Windows",
+    // {wbr}：可以折行的地方（Hero.jsx 换成 <wbr>）。英文在空格处本来就能折，这里放一个只为和中文的占位一致
+    lead: "Free, open-source voice input and translation{wbr} for Mac and Windows",
     shotAlt:
       "SpeakMore's home window: the hotkeys of the three features, words, time saved, pace and a daily heatmap, with the active mode at the top right",
     barAlt: "The floating bar during dictation: cancel, a live waveform, done",

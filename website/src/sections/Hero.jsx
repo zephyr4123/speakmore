@@ -3,6 +3,7 @@ import { DownloadButtons } from "../components/DownloadButtons.jsx";
 import { Shot } from "../components/Shot.jsx";
 import { shot } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
+import { fill } from "../lib/text.js";
 
 /**
  * 首屏：图标、口号一行、副标题一行、下载，一张主窗口的图（跟着系统深浅换），说话时的悬浮条浮在窗口正下方。
@@ -24,7 +25,7 @@ export function Hero() {
           className="rise mt-5 text-subhead leading-snug font-medium text-balance break-keep text-ink-2"
           style={{ "--d": "160ms" }}
         >
-          {m.hero.lead}
+          {fill(m.hero.lead, { wbr: <wbr key="wbr" /> })}
         </p>
         <DownloadButtons className="rise mt-10" style={{ "--d": "240ms" }} />
       </div>

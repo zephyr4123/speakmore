@@ -35,6 +35,12 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* 段落各行尽量一样长，末行不剩一两个字。写在这里管全站，不逐个元素加；
+     太长的段落浏览器会退回普通折行，不会多出行 */
+  main :is(p, dd) {
+    text-wrap: balance;
+  }
+
   ::selection {
     background: var(--color-selection);
   }
