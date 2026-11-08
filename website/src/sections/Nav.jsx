@@ -46,7 +46,7 @@ export function Nav() {
   ];
   const anchors = items.map(([id, label]) => (
     <li key={id} className="shrink-0">
-      <a href={`#${id}`} className="inline-block py-1.5 transition-colors duration-150 hover:text-ink">
+      <a href={`#${id}`} className="inline-flex h-nav-anchors items-center transition-colors duration-150 hover:text-ink">
         {label}
       </a>
     </li>
@@ -62,7 +62,7 @@ export function Nav() {
         }[look]
       }`}
     >
-      <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-5 sm:px-8">
+      <nav className="mx-auto flex h-nav max-w-6xl items-center gap-6 px-5 sm:px-8">
         <a
           href="#top"
           className="flex items-center gap-2.5 font-display text-body font-semibold tracking-brand"
@@ -82,13 +82,13 @@ export function Nav() {
           </a>
           <a
             href="#download"
-            className="ml-1.5 inline-flex h-8 items-center rounded-full bg-ink px-3.5 text-code font-semibold text-canvas transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97]"
+            className="ml-1.5 inline-flex h-8 items-center rounded-full bg-ink px-3.5 text-label font-semibold text-canvas transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97]"
           >
             {m.nav.download}
           </a>
         </div>
       </nav>
-      <ul className="no-scrollbar flex gap-6 overflow-x-auto px-5 pb-1.5 text-label whitespace-nowrap text-ink-2 sm:px-8 md:hidden">
+      <ul className="no-scrollbar flex h-nav-anchors gap-6 overflow-x-auto px-5 text-label whitespace-nowrap text-ink-2 sm:px-8 md:hidden">
         {anchors}
       </ul>
     </header>

@@ -177,8 +177,11 @@ export const SITE_THEME = [
     comment: `间距的基数照 Tailwind 默认的 0.25rem（和 App 的 4px 一致）。下面是流体的留白，clamp(手机, 视口宽度, 宽屏)：
      section 区块上下 · hero-top、hero-bottom 首屏上下 · heading-gap 区块标题和内容之间 · intro-gap 功能一段的底边
      card-y 语音方式卡片的上下内边距 · logo-gap 厂商标志之间
-     flow-1 到 flow-8 是各段里块与块之间的间隔，由小到大（第二步再并档）`,
+     flow-1 到 flow-8 是各段里块与块之间的间隔，由小到大（第二步再并档）
+     nav 吸顶导航那一行的高 · nav-anchors 窄屏导航下面那行锚点的高（44px，手指点得准的下限）；锚点跳过去时让出的高度也按这两个算`,
     tokens: [
+      ["spacing-nav", "3.5rem"],
+      ["spacing-nav-anchors", "2.75rem"],
       ["spacing-section", fluid("7rem", 17, "13rem")],
       ["spacing-hero-top", fluid("7rem", 13, "9.5rem")],
       ["spacing-hero-bottom", fluid("8rem", 15, "11rem")],
