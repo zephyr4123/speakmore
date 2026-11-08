@@ -30,7 +30,7 @@ body {
   justify-content: flex-end;
   /* 窗口贴着屏幕可用区域的底边放。条离底边这么远，这段空也是留给阴影的地方 */
   padding-bottom: 28px;
-  font: var(--text-small) / 1.35 var(--font);
+  font: var(--text-body) / 1.35 var(--font);
   color: var(--bar-ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -137,7 +137,7 @@ body[data-shown="false"] .shell {
   padding: 5px 8px;
   border-radius: 8px;
   color: var(--bar-ink);
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   white-space: nowrap;
 }
 
@@ -204,7 +204,7 @@ body[data-shown="false"] .shell {
   background: var(--bar-surface);
   border-radius: 12px;
   box-shadow: 0 0 0 1px var(--bar-edge);
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.35;
 }
 

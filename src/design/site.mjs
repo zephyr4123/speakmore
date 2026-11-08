@@ -4,14 +4,14 @@
 // 第一步只收纳、不改观感：值照搬原来写在 JSX 和 styles.css 里的，只并了肉眼看不出的几处（README.md 的合并记录）。
 
 import cinnabar from "../themes/cinnabar.mjs";
-import { BAR_DROP, RADIUS } from "./base.mjs";
+import { BAR_DROP, EASE_OUT, FONT_DISPLAY, FONT_MONO, FONT_ROUNDED, FONT_TEXT, RADIUS } from "./base.mjs";
 import { fluid } from "./css.mjs";
 
 /** @type {{ comment?: string, tokens: [string, string][] }[]} 写进 @theme：Tailwind 按名字生成 text-lead、rounded-tile 这类工具类 */
 export const SITE_THEME = [
   {
     comment:
-      "清掉 Tailwind 默认的颜色、字号、圆角、阴影：只认下面列的，gray-500、text-sm、rounded-lg 这类写了也不出样式（测试会拦）",
+      "清掉 Tailwind 默认的颜色、字号、圆角、阴影（缓动在下面那组清）：只认下面列的，gray-500、text-sm、rounded-lg 这类写了也不出样式（测试会拦）",
     tokens: [
       ["color-*", "initial"],
       ["text-*", "initial"],
@@ -20,22 +20,12 @@ export const SITE_THEME = [
     ],
   },
   {
+    comment: "字体：正文、标题、圆体（大号的数字，和 App 首页一样）、等宽。和 App 同一份（src/design/base.mjs）",
     tokens: [
-      [
-        "font-sans",
-        '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif',
-      ],
-      [
-        "font-display",
-        '-apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif',
-      ],
-    ],
-  },
-  {
-    comment: "大号的数字用系统的圆体，和 App 首页一样",
-    tokens: [
-      ["font-rounded", 'ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", system-ui, sans-serif'],
-      ["font-mono", 'ui-monospace, "SF Mono", Menlo, Consolas, monospace'],
+      ["font-sans", FONT_TEXT],
+      ["font-display", FONT_DISPLAY],
+      ["font-rounded", FONT_ROUNDED],
+      ["font-mono", FONT_MONO],
     ],
   },
   {
@@ -51,14 +41,15 @@ export const SITE_THEME = [
       ["color-line", "oklch(0.9 0.008 255)"],
       ["color-link", "oklch(0.47 0.11 255)"],
       ["color-seal", "oklch(0.4 0.075 255)"],
-      ["color-cinnabar", "oklch(0.55 0.17 33)"],
-      ["color-cinnabar-glow", "oklch(0.74 0.17 32)"],
+      // 朱砂就是 App 朱砂主题的主色：浅色的那个、深色下提亮的那个
+      ["color-cinnabar", cinnabar.window.light.primary],
+      ["color-cinnabar-glow", cinnabar.window.dark.primary],
       ["color-ochre", "oklch(0.74 0.12 75)"],
     ],
   },
   {
     comment: "纯白：深色插画（终端）里的字和半透明的刻线、语音方式徽标上的字",
-    tokens: [["color-white", "#fff"]],
+    tokens: [["color-white", "oklch(1 0 0)"]],
   },
   {
     comment: "演示用的悬浮条照 App 的朱砂主题画：颜色从 src/themes/cinnabar.mjs 取，App 改色这里跟着变",
@@ -80,13 +71,14 @@ export const SITE_THEME = [
     tokens: [
       ["color-nav-glass", "oklch(0.13 0.008 255 / 0.72)"],
       ["color-signal", "oklch(0.72 0.17 150)"],
-      ["color-selection", "oklch(0.74 0.17 32 / 0.3)"],
+      ["color-selection", "color-mix(in oklch, var(--color-cinnabar-glow) 30%, transparent)"],
     ],
   },
   {
-    comment: "先快后慢，不回弹 · 长镜头的声波来回扫",
+    comment: "ease-out 基础的先快后慢、不回弹（和 App 同一条）· expo 更急的收尾 · sweep 长镜头的声波来回扫",
     tokens: [
-      ["ease-out-quint", "cubic-bezier(0.22, 1, 0.36, 1)"],
+      ["ease-*", "initial"],
+      ["ease-out", EASE_OUT],
       ["ease-out-expo", "cubic-bezier(0.16, 1, 0.3, 1)"],
       ["ease-sweep", "cubic-bezier(0.45, 0, 0.25, 1)"],
     ],
@@ -130,8 +122,8 @@ export const SITE_THEME = [
     ],
   },
   {
-    comment: "大标题的字重：苹方最粗到 Semibold，英文的 SF Pro 是可变字体、650 介于 Semibold 和 Bold 之间",
-    tokens: [["font-weight-display", "650"]],
+    comment: "大标题的字重：Semibold，和 App 的标题一样。苹方 600 以上渲染都一样，雅黑 600 以上都落到粗体",
+    tokens: [["font-weight-display", "600"]],
   },
   {
     comment: "字距：大标题英文收紧、中文只收一点（中文字距本来就匀）；数字和标题各一档",
@@ -249,4 +241,6 @@ export const SITE_LEGIBILITY = [
   ["ink2", "canvas", 4.5],
   ["ink2", "surface", 4.5],
   ["link", "canvas", 4.5],
+  // 语音方式里选中的那一项：白字叠在朱砂上
+  ["white", "cinnabar", 4.5],
 ];

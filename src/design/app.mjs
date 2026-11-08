@@ -2,7 +2,7 @@
 // 颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。
 // 生成 src/renderer/shared/tokens.css（npm run tokens）。一组一段注释，照原样写进生成的文件。
 
-import { BAR_DROP, RADIUS, SPACE_UNIT } from "./base.mjs";
+import { BAR_DROP, EASE_OUT, FONT_DISPLAY, FONT_MONO, FONT_ROUNDED, FONT_TEXT, RADIUS, SPACE_UNIT } from "./base.mjs";
 
 const unit = Number.parseFloat(SPACE_UNIT);
 const space = (n) => `${n * unit}rem`;
@@ -10,46 +10,34 @@ const space = (n) => `${n * unit}rem`;
 /** @type {{ comment: string, tokens: [string, string][] }[]} */
 export const APP_TOKENS = [
   {
-    comment: "",
+    comment: "字体：正文、标题（页面和引导的大标题）、圆体（大号的数字）、等宽。和官网同一份（src/design/base.mjs）",
     tokens: [
-      [
-        "font",
-        '-apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif',
-      ],
-      ["font-mono", 'ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace'],
+      ["font", FONT_TEXT],
+      ["font-display", FONT_DISPLAY],
+      ["font-rounded", FONT_ROUNDED],
+      ["font-mono", FONT_MONO],
     ],
   },
   {
-    comment: "大号的数字用系统的圆体（SF Pro Rounded），和正文的直角字拉开一点",
-    tokens: [
-      [
-        "font-rounded",
-        'ui-rounded, -apple-system, "PingFang SC", "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif',
-      ],
-    ],
-  },
-  {
-    comment: `字的层级：一种字体，靠字号、字重、颜色三样一起拉开。各处只用这七档字号、四档字重，样式里不写别的数：
-     12、14 这种夹在两档中间的字号会让名字、说明、标签看起来一样大，层级就糊了。
-     40 页面大标题 · 28 首页的大数字 · 22 对话框每页的标题、次一级的大数字 · 18 区块标题
-     15 正文：列表里的名字、设置项、导航 · 13 说明、状态、按钮、输入框、表格 · 11 标签、单位、刻度、脚注、键名`,
+    comment: `字的层级：一种字体，靠字号、字重、颜色三样一起拉开。各处只用这六档字号、三档字重，样式里不写别的数。
+     相邻两档至少差 2px：差 1px 的两档看起来一样大，层级就糊了。和 Windows 11 的字阶对得上（12 Caption、14 Body、28 Title、40 Title large）。
+     40 引导每一步的大标题 · 28 页面标题、首页的大数字 · 22 对话框每页的标题、次一级的大数字 · 18 区块标题
+     14 正文：名字、设置项、导航、说明、状态、按钮、输入框、表格（名字靠字重、说明靠颜色分主次）· 12 标签、单位、刻度、脚注、键名`,
     tokens: [
       ["text-display", "2.5rem"],
-      ["text-figure", "1.75rem"],
+      ["text-page", "1.75rem"],
       ["text-title", "1.375rem"],
       ["text-heading", "1.125rem"],
-      ["text-body", "0.9375rem"],
-      ["text-small", "0.8125rem"],
-      ["text-micro", "0.6875rem"],
+      ["text-body", "0.875rem"],
+      ["text-micro", "0.75rem"],
     ],
   },
   {
-    comment: "正文 400；按钮、导航、标签 500；名字、区块标题、数值 600；页面和对话框的标题 700",
+    comment: "正文 400；按钮、导航、标签 500；名字、标题、数值 600",
     tokens: [
       ["weight-regular", "400"],
       ["weight-medium", "500"],
       ["weight-semibold", "600"],
-      ["weight-bold", "700"],
     ],
   },
   {
@@ -115,7 +103,7 @@ export const APP_TOKENS = [
     comment: "分类标签的下划线、分段控件的滑块从上一个位置滑过去",
     tokens: [
       ["dur-slide", "280ms"],
-      ["ease-out", "cubic-bezier(0.25, 1, 0.5, 1)"],
+      ["ease-out", EASE_OUT],
     ],
   },
 ];

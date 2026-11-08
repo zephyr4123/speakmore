@@ -39,7 +39,7 @@ body[data-step="splash"] .steps {
   position: relative;
   min-width: 6.5rem;
   padding: 0.6rem 0 0.2rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
   cursor: pointer;
@@ -105,8 +105,9 @@ body[data-step="splash"] .steps {
   margin: 0 0 1rem;
   /* 中文标题只在标点和空格处换行 */
   word-break: keep-all;
+  font-family: var(--font-display);
   font-size: var(--text-display);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   line-height: 1.25;
   letter-spacing: -0.02em;
   text-wrap: balance;
@@ -128,7 +129,7 @@ body[data-step="splash"] .steps {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--ok);
   white-space: nowrap;
@@ -141,7 +142,7 @@ body[data-step="splash"] .steps {
 }
 
 .hint-text {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -367,7 +368,7 @@ body[data-step="splash"] .steps {
 .key-row-note {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--problem);
 }
 
@@ -375,7 +376,7 @@ body[data-step="splash"] .steps {
 .chord-prompt {
   justify-self: start;
   padding: 0.125rem 0;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--primary);
   border-bottom: 2px solid var(--primary);
@@ -444,7 +445,7 @@ body[data-step="splash"] .steps {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -461,7 +462,7 @@ body[data-step="splash"] .steps {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -508,7 +509,7 @@ body[data-step="splash"] .steps {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--problem);
 }
@@ -554,7 +555,7 @@ body[data-step="splash"] .steps {
   align-items: center;
   gap: 0.375rem;
   margin: 0 auto 0 0.5rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 

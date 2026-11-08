@@ -116,7 +116,7 @@
 
 .chord-prompt {
   padding: 0 0.25rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
 }
@@ -124,7 +124,7 @@
 .hotkey-note {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
   text-align: right;
 }

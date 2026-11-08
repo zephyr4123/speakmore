@@ -33,7 +33,7 @@ export function Developers() {
             {text.source}
             <Icon
               name="arrowRight"
-              className="size-4 transition-transform duration-200 ease-out-quint group-hover:translate-x-0.5"
+              className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
             />
           </a>
         </div>

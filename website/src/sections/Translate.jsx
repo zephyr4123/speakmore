@@ -73,7 +73,7 @@ export function Translate() {
                 <p
                   key={round}
                   // token-exempt: 演示里新写出来的字淡入，这段编排只这里用
-                  className="col-start-1 row-start-1 text-ink motion-safe:animate-[fade-in_600ms_var(--ease-out-quint)]"
+                  className="col-start-1 row-start-1 text-ink motion-safe:animate-[fade-in_600ms_var(--ease-out)]"
                 >
                   {chat.written}
                   <span

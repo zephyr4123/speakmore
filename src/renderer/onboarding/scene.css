@@ -68,7 +68,7 @@
 }
 
 .titlebar .title {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
 }
 
@@ -252,7 +252,7 @@
 }
 
 .message-meta b {
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
 }
 
 .message-meta time {
@@ -399,7 +399,7 @@
   align-items: center;
   gap: 6px;
   margin: 0 0 8px;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--ink-2);
   opacity: 0.6;
@@ -492,7 +492,7 @@
 
 .toc span {
   padding: 5px 10px;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -514,7 +514,7 @@
 .page h3 {
   margin: 0 0 12px;
   font-size: var(--text-title);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   letter-spacing: -0.01em;
 }
 

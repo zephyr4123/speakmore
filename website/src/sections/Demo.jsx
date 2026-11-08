@@ -73,7 +73,7 @@ export function Demo() {
                 key={`${index}-${written}`}
                 className={`col-start-1 row-start-1 text-ink ${
                   // token-exempt: 演示里新写出来的字淡入，这段编排只这里用
-                  written ? "motion-safe:animate-[fade-in_600ms_var(--ease-out-quint)]" : "opacity-0"
+                  written ? "motion-safe:animate-[fade-in_600ms_var(--ease-out)]" : "opacity-0"
                 }`}
               >
                 {example.written}

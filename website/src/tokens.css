@@ -1,22 +1,23 @@
 /* 官网的设计 token。由 scripts/dev/make-tokens.mjs 从 src/design/site.mjs 生成，别手改：改了源再跑 npm run tokens */
 
 @theme {
-  /* 清掉 Tailwind 默认的颜色、字号、圆角、阴影：只认下面列的，gray-500、text-sm、rounded-lg 这类写了也不出样式（测试会拦） */
+  /* 清掉 Tailwind 默认的颜色、字号、圆角、阴影（缓动在下面那组清）：只认下面列的，gray-500、text-sm、rounded-lg 这类写了也不出样式（测试会拦） */
   --color-*: initial;
   --text-*: initial;
   --radius-*: initial;
   --shadow-*: initial;
 
+  /* 字体：正文、标题、圆体（大号的数字，和 App 首页一样）、等宽。和 App 同一份（src/design/base.mjs） */
   --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Text", "Segoe UI",
+    "Microsoft YaHei UI", system-ui, sans-serif;
   --font-display:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    system-ui, sans-serif;
-
-  /* 大号的数字用系统的圆体，和 App 首页一样 */
-  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Display", "Segoe UI",
+    "Microsoft YaHei UI", system-ui, sans-serif;
+  --font-rounded:
+    ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Display",
+    "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
 
   /* 颜色从 App 的图标那方印来：靛青的印底、朱砂和赭石两道、浅色的刻痕（assets/icon.svg）。
      大块的底色都是纯色、不铺渐变光晕：跟着系统深浅变，隐私一段固定是近黑（.tone-ink 在下面重新给一遍颜色）。
@@ -29,12 +30,12 @@
   --color-line: oklch(0.9 0.008 255);
   --color-link: oklch(0.47 0.11 255);
   --color-seal: oklch(0.4 0.075 255);
-  --color-cinnabar: oklch(0.55 0.17 33);
+  --color-cinnabar: oklch(0.56 0.19 32);
   --color-cinnabar-glow: oklch(0.74 0.17 32);
   --color-ochre: oklch(0.74 0.12 75);
 
   /* 纯白：深色插画（终端）里的字和半透明的刻线、语音方式徽标上的字 */
-  --color-white: #fff;
+  --color-white: oklch(1 0 0);
 
   /* 演示用的悬浮条照 App 的朱砂主题画：颜色从 src/themes/cinnabar.mjs 取，App 改色这里跟着变 */
   --color-bar-surface: oklch(0.17 0.008 32);
@@ -52,10 +53,11 @@
   /* 吸顶导航在深色段上的半透明底 · 演示里亮着的绿点 · 选中文字的底 */
   --color-nav-glass: oklch(0.13 0.008 255 / 0.72);
   --color-signal: oklch(0.72 0.17 150);
-  --color-selection: oklch(0.74 0.17 32 / 0.3);
+  --color-selection: color-mix(in oklch, var(--color-cinnabar-glow) 30%, transparent);
 
-  /* 先快后慢，不回弹 · 长镜头的声波来回扫 */
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  /* ease-out 基础的先快后慢、不回弹（和 App 同一条）· expo 更急的收尾 · sweep 长镜头的声波来回扫 */
+  --ease-*: initial;
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-sweep: cubic-bezier(0.45, 0, 0.25, 1);
 
@@ -91,8 +93,8 @@
   --text-stat: clamp(5rem, 12vw, 8.5rem);
   --text-stat-sm: clamp(2.25rem, 4.4vw, 3.25rem);
 
-  /* 大标题的字重：苹方最粗到 Semibold，英文的 SF Pro 是可变字体、650 介于 Semibold 和 Bold 之间 */
-  --font-weight-display: 650;
+  /* 大标题的字重：Semibold，和 App 的标题一样。苹方 600 以上渲染都一样，雅黑 600 以上都落到粗体 */
+  --font-weight-display: 600;
 
   /* 字距：大标题英文收紧、中文只收一点（中文字距本来就匀）；数字和标题各一档 */
   --tracking-display: -0.035em;

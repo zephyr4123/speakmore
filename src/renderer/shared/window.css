@@ -113,7 +113,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
   white-space: nowrap;
@@ -192,7 +192,7 @@ p {
   gap: 0.375rem;
   height: var(--control-md);
   padding: 0 0.875rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
@@ -284,7 +284,7 @@ p {
   justify-content: center;
   min-width: 1.75rem;
   padding: 0.0625rem 0.5rem 0.125rem;
-  font: var(--weight-semibold) var(--text-small) / 1.5 var(--font-rounded);
+  font: var(--weight-semibold) var(--text-body) / 1.5 var(--font-rounded);
   white-space: nowrap;
   color: var(--ink);
   background: var(--surface-solid);
@@ -304,14 +304,14 @@ p {
 
 .keycaps-or {
   margin: 0 0.25rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
 .link {
   padding: 0;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink);
   background: none;
   border: none;
@@ -341,7 +341,7 @@ p {
   min-width: 0;
   padding: 0.35rem 0.7rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink);
   background: var(--surface-solid);
   border: 1px solid var(--border);
@@ -367,7 +367,7 @@ p {
   height: var(--control-md);
   min-width: 0;
   padding: 0 0.625rem 0 0.875rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease-out);
 }
@@ -444,7 +444,7 @@ p {
   gap: 1.5rem;
   min-height: var(--control-md);
   padding: 0 0.625rem 0 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   white-space: nowrap;
   border-radius: var(--radius-control);
   cursor: pointer;
@@ -462,7 +462,7 @@ p {
 .select option::checkmark {
   order: 1;
   margin-left: auto;
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   color: var(--primary);
 }
 
@@ -518,7 +518,7 @@ p {
   gap: 0.375rem;
   height: var(--control-md);
   padding: 0 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   line-height: 1;
   color: var(--ink-2);
@@ -562,7 +562,7 @@ p {
   padding: 0 0.625rem;
   overflow: hidden;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink-2);
@@ -671,7 +671,7 @@ button.badge:focus-visible {
   height: var(--control-sm);
   padding: 0 0.625rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink);
@@ -712,7 +712,7 @@ button.badge:focus-visible {
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.5;
   color: var(--ink);
   background: color-mix(in oklch, var(--problem) 9%, transparent);
@@ -847,7 +847,7 @@ button.badge:focus-visible {
   gap: 0.375rem;
   padding: 0 0.875rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink-2);

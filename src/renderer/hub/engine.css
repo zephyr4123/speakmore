@@ -79,7 +79,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 }
 
 .search-hit-name {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
 }
 
@@ -97,7 +97,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 
 .search-empty {
   padding: 0.5rem 0.625rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -294,7 +294,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.35;
   color: var(--ink-2);
 }
@@ -533,7 +533,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   flex: none;
   align-items: center;
   gap: 0.375rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
   white-space: nowrap;
@@ -745,7 +745,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 }
 
 .detail-sub {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -773,7 +773,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.5rem 0.625rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.45;
   color: var(--ink-2);
   background: var(--fill-hover);
@@ -805,7 +805,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 }
 
 .detail-custom {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
   overflow-wrap: anywhere;
 }
@@ -860,7 +860,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 }
 
 .fact-cur {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
 }
@@ -905,7 +905,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -927,7 +927,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   gap: 0.5rem;
   min-height: var(--control-lg);
   padding: 0.375rem 0.375rem 0.375rem 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
   background: color-mix(in oklch, var(--problem) 8%, transparent);
   border-radius: var(--radius-control);
@@ -1053,11 +1053,11 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 .sheet-title {
   margin: 0;
   font-size: var(--text-title);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
 }
 
 .sheet-meta {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -1136,7 +1136,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 }
 
 .key-cover {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -1145,7 +1145,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -1185,7 +1185,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
   white-space: nowrap;

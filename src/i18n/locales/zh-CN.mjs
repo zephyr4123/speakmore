@@ -743,7 +743,7 @@ export default {
   },
 
   home: {
-    title: "口述成文，划词即译",
+    title: "首页",
     words: "字数",
     saved: "省时",
     speed: "语速",
@@ -1044,7 +1044,7 @@ export default {
 
   onboarding: {
     groups: { features: "功能", keys: "快捷键", permissions: "权限", engine: "引擎" },
-    // 口号：开屏、功能两页的大标题，和首页的一样
+    // 口号：开屏、功能两页的大标题，和官网首屏的一样
     intro: { soft: "口述成文，", title: "划词即译" },
     splash: { line: "语音输入、语音翻译、划词翻译，一个快捷键直达", start: "开始" },
     keys: {

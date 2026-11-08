@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | 文案词表 | `test/i18n/copy-lexicon.test.mjs` | 中文词条里出现"不再使用"的说法就失败（口语那几条命令行 `cli.*` 暂不在内；识别方式、步骤的旧叫法哪里都不许有） |
 | 尺寸 token | `test/renderer/shared/control-sizes.test.mjs` | 控件的高度只用 `--control-*`，圆角只用 `--radius-*`，例外写明缘由；按钮一类的圆角只能是全圆 |
-| 字号字重 | `test/renderer/shared/type-scale.test.mjs` | 字号只用七档、字重只用四档 |
+| 字号字重 | `test/renderer/shared/type-scale.test.mjs` | 字号只用六档、字重只用三档 |
 | 颜色 | `test/themes/css-tokens.test.mjs` | 样式里不写死颜色，用到的变量都有出处 |
 
 ## 1. 文案
@@ -37,7 +37,7 @@
 
 - **控件高度三档**：`--control-sm` 28（胶囊、徽标、分段里的项、缩放条）· `--control-md` 32（按钮、输入框、分段控件）· `--control-lg` 40（搜索框、标题行的胶囊按钮）。同一行的控件同一档，字的长短不会把它们撑得参差。
 - **圆角四档**：`--radius-control` 8（输入框等控件）· `--radius-block` 12（区块）· `--radius-card` 16（卡片）· `--radius-full`（胶囊：按钮一类的全用它）。
-- **字号七档、字重四档**：见 `tokens.css`。
+- **字号六档、字重三档**：见 `tokens.css`（源在 `src/design/app.mjs`）。
 - **定宽格**：检测、操作两格各 6rem（`--col-status`、`--col-action`），控件撑满格子；引擎页的详情、推荐组合、密钥面板都照这两格对齐。
 
 ## 3. 按钮

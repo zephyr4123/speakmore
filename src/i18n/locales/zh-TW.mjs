@@ -899,7 +899,7 @@ export default {
     }
   },
   "home": {
-    "title": "口述成文，劃詞即譯",
+    "title": "首頁",
     "words": "字數",
     "saved": "省時",
     "speed": "語速",

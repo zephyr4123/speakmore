@@ -764,7 +764,7 @@ export default {
   },
 
   home: {
-    title: "Speak it written. Select to translate.",
+    title: "Home",
     words: "Words",
     saved: "Time saved",
     speed: "Speed",
@@ -1077,7 +1077,7 @@ export default {
 
   onboarding: {
     groups: { features: "Features", keys: "Shortcuts", permissions: "Permissions", engine: "Engine" },
-    // 口号：开屏、功能两页的大标题，和首页的一样
+    // 口号：开屏、功能两页的大标题，和官网首屏的一样
     intro: { soft: "Speak it written. ", title: "Select to translate." },
     splash: {
       line: "Voice input, voice translation and selection translation, one shortcut away",

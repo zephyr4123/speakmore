@@ -31,7 +31,7 @@ export function Bar({ state = "recording", hint, chip, className = "" }) {
       ) : null}
       <div className="flex h-10 items-center gap-2 rounded-tile bg-bar-surface p-1.5 shadow-bar">
         <span
-          className="grid size-7 place-items-center rounded-full bg-bar-ghost text-bar-ink transition-[opacity,transform] duration-200 ease-out-quint"
+          className="grid size-7 place-items-center rounded-full bg-bar-ghost text-bar-ink transition-[opacity,transform] duration-200 ease-out"
           style={{ opacity: recording ? 1 : 0, transform: recording ? "none" : "scale(0.6)" }}
         >
           <svg
@@ -105,7 +105,7 @@ export function Bar({ state = "recording", hint, chip, className = "" }) {
               className={
                 state === "done"
                   ? // token-exempt: 打勾的描线动画照 App 的悬浮条
-                    "stroke-bar-live motion-safe:animate-[draw_380ms_var(--ease-out-quint)_forwards] motion-reduce:[stroke-dashoffset:0]"
+                    "stroke-bar-live motion-safe:animate-[draw_380ms_var(--ease-out)_forwards] motion-reduce:[stroke-dashoffset:0]"
                   : "stroke-bar-live"
               }
             />
@@ -113,7 +113,7 @@ export function Bar({ state = "recording", hint, chip, className = "" }) {
         </span>
 
         <span
-          className="grid size-7 place-items-center rounded-full bg-bar-live text-bar-surface transition-[opacity,transform] duration-200 ease-out-quint"
+          className="grid size-7 place-items-center rounded-full bg-bar-live text-bar-surface transition-[opacity,transform] duration-200 ease-out"
           style={{
             opacity: recording ? 1 : 0,
             transform: recording ? "none" : "scale(0.6)",

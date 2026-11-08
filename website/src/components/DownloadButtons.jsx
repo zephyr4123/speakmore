@@ -36,7 +36,7 @@ export function DownloadButtons({ className = "", style }) {
         {m.download.intel}
         <Icon
           name="arrowRight"
-          className="size-3.5 transition-transform duration-200 ease-out-quint group-hover:translate-x-0.5"
+          className="size-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
         />
       </a>
     </div>

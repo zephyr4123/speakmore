@@ -61,7 +61,7 @@ test("官网的脚本里不写颜色值：颜色都是 token（悬浮条那组�
   assert.deepEqual(found, []);
 });
 
-// @theme 里清掉了 Tailwind 默认的颜色、字号、圆角、阴影：写了不存在的名字不报错、只是不出样式，所以逐个核对名字
+// @theme 里清掉了 Tailwind 默认的颜色、字号、圆角、阴影、缓动：写了不存在的名字不报错、只是不出样式，所以逐个核对名字
 const defined = new Set(SITE_THEME.flatMap(({ tokens }) => tokens.map(([name]) => name)));
 const has = (namespace, value) => defined.has(`${namespace}-${value}`);
 /** 这些工具类后面跟的不是颜色、字号这类 token，是 Tailwind 自带的固定写法 */
@@ -81,7 +81,7 @@ const FIXED = {
 };
 const CLASS = /(?<![\w-])(?:[\w-]+:)*(-?)([a-z]+(?:-[a-z]+)*?)-([a-z0-9][\w.-]*?)(?:\/[\w.]+)?(?=["'`\s}]|$)/g;
 
-test("官网用到的颜色、字号、圆角、阴影的名字都在 token 里", () => {
+test("官网用到的颜色、字号、圆角、阴影、缓动的名字都在 token 里", () => {
   const unknown = new Set();
   for (const { name, lines } of sources) {
     for (const line of lines) {
@@ -93,6 +93,7 @@ test("官网用到的颜色、字号、圆角、阴影的名字都在 token 里"
           ok = radius === "full" || radius === "none" || has("radius", radius);
         } else if (utility === "shadow") ok = value === "none" || has("shadow", value);
         else if (utility === "drop-shadow") ok = value === "none" || has("drop-shadow", value);
+        else if (utility === "ease") ok = value === "linear" || value === "initial" || has("ease", value);
         else if (utility === "text") ok = FIXED.text.test(value) || has("text", value) || has("color", value);
         else if (Object.hasOwn(FIXED, utility)) ok = FIXED[utility].test(value) || has("color", value);
         if (!ok) unknown.add(`${name}  ${utility}-${value}`);

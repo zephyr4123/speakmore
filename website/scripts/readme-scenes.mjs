@@ -229,7 +229,7 @@ function sceneHtml({ saidLabel, wroteLabel, said, wrote, bar, scheme }) {
     .row { display: grid; grid-template-columns: 1fr 40px 1.1fr; align-items: center; gap: 14px; }
     .side { display: flex; flex-direction: column; gap: 4px; }
     .card { border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--bg); padding: 18px 20px 20px; box-shadow: 0 1px 2px oklch(0 0 0 / 0.05); }
-    .label { display: flex; align-items: center; gap: 6px; font-size: var(--text-small); font-weight: var(--weight-semibold); color: var(--ink-2); margin-bottom: 10px; }
+    .label { display: flex; align-items: center; gap: 6px; font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--ink-2); margin-bottom: 10px; }
     .label svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .said { color: var(--ink-2); font-size: 15px; }
     .arrow { display: grid; place-items: center; color: var(--primary); }

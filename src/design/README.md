@@ -1,13 +1,13 @@
 # 设计 token
 
-官网的字号、颜色、圆角、阴影、字距、行高、间距、动效，App 的字号、字重、间距、控件高度、圆角、阴影、动效，都只在这个目录里写一次，再生成两份 CSS 提交进仓库。App 的字距、行高还写在各个样式里，第二步再定。
+官网的字号、颜色、圆角、阴影、字距、行高、间距、动效，App 的字体、字号、字重、间距、控件高度、圆角、阴影、动效，都只在这个目录里写一次，再生成两份 CSS 提交进仓库。App 的字距、行高还写在各个样式里，第二步再定。
 
 | 生成的文件 | 来自 | 谁用 |
 |---|---|---|
 | `src/renderer/shared/tokens.css` | `app.mjs` | App 的每个页面，排在别的样式前面 |
 | `website/src/tokens.css` | `site.mjs` | 官网的 `styles.css` 里 `@import`，Tailwind 按名字生成 `text-lead`、`rounded-tile` 这类工具类 |
 
-`base.mjs` 放两边值完全相同的（间距基数、三档圆角、悬浮条的投影），`css.mjs` 负责把 token 写成 CSS。App 的颜色不在这里，那是主题的事（`src/themes`，由预加载脚本注入）；官网演示用的悬浮条从朱砂主题取色。
+`base.mjs` 放两边值完全相同的（间距基数、三档圆角、悬浮条的投影、字体、基础缓动），`css.mjs` 负责把 token 写成 CSS。App 的颜色不在这里，那是主题的事（`src/themes`，由预加载脚本注入）；官网演示用的悬浮条从朱砂主题取色。
 
 ## 怎么改
 
@@ -35,20 +35,26 @@
 
 验收：官网由另一个会话把分支和 main 各构建一份，浅色、深色 × 1280、375 四组，逐个比对 1377 个元素的 28 项计算样式和盒子尺寸，另加 60 张截图的像素比对。变化只有上表列的两处，其余是内容下移带来的抗锯齿差异。App 用同一台机器、同样的主题和语言，改前改后各拍一套截图比对。
 
-## 第二步要裁决的：两边不一样的品牌取值
+## 第二步：按裁决改观感（2026-11-08 用户选定）
 
-这些两边现在值不同，第一步没有动。裁决一项，挪进 `base.mjs` 一项；不为了"共用"硬塞两组值。
+两边不一样的品牌取值，裁决一项、挪进 `base.mjs` 一项：
 
-| 项 | 官网 | App | 备注 |
-|---|---|---|---|
-| 字体栈 | `-apple-system`、SF Pro Text / Display、苹方、冬青黑、微软雅黑 | `-apple-system`、苹方、Segoe UI Variable、Microsoft YaHei UI；另有圆体 `ui-rounded` 给大数字 | App 要照顾 Windows 的界面字体 |
-| 缓动 | `ease-out-quint`、`ease-out-expo`、`ease-sweep` 三条 | 一条 `cubic-bezier(0.25, 1, 0.5, 1)` | |
-| 朱砂色 | `oklch(0.55 0.17 33)`，亮的一档 `oklch(0.74 0.17 32)` | 主题的 primary：浅色 `oklch(0.56 0.19 32)`，深色 `oklch(0.74 0.17 32)` | 官网亮的一档和 App 深色的 primary 已经相同 |
-| 中性色 | 偏冷（色相 255），底色 `oklch(0.99 0.002 255)` | 朱砂主题偏暖（色相 32），浅色底是纯白 `oklch(1 0 0)` | |
-| 标题字重 | 650 | 700 | 另一个会话实测：苹方中文 600 到 900 渲染一样；微软雅黑 UI 只有细、常规、粗三档，600 以上都落到粗体。650 只对西文有区别 |
-| 正文字号 | 静态 8 档：18（heading）、17（lead）、16（body）、15、14、13、12、11 | 7 档：40、28、22、18、15（正文）、13、11 | macOS 正文 13pt、Windows 14px；据 Microsoft 的 Windows 11 字体规范，常规字重最小 12px，11px 在下限以下 |
-| 大标题 | 流体 11 档（hero、closing、section、statement……） | 固定的 40、28、22 | |
-| 区块间距 | `flow-1` 到 `flow-8` 八档，相邻的几档只差半个 rem | 4、8、12、16、24、32、48 | |
-| 圆角 | small 6、control 8、block 12、card 16、tile 20、panel 24、stage 28 | 8、12、16、全圆 | 前三档已共用 |
-| 字距 | 7 档 token（display -0.035em 到 brand -0.01em） | 写在样式里：-0.01em 三处、-0.02em、-0.025em 各一处 | 还没收进 token |
-| 阴影 | 卡片、截图窗口各一档 | control 到 dialog 共 10 档 | 官网悬浮条演示和 App 悬浮条的投影已共用 |
+| 项 | 裁决 | 落在哪 |
+|---|---|---|
+| 字体栈 | 正文、标题各一份：`-apple-system`、苹方、冬青黑，Windows 上 Segoe UI Variable Text / Display、Microsoft YaHei UI；去掉一般的 Mac 上没装的 SF Pro Text / Display。圆体、等宽也合成一份 | `base.mjs` 的 `FONT_*`；App 的页面标题、引导标题改用标题那份 |
+| 缓动 | 基础的一条统一成 `cubic-bezier(0.25, 1, 0.5, 1)`；官网的 expo、sweep 两条留给官网自己的特效 | `base.mjs` 的 `EASE_OUT`；官网的 `ease-out-quint` 改名 `ease-out`，Tailwind 默认的缓动清掉 |
+| 朱砂色 | 取 App 朱砂主题的主色：浅色 `oklch(0.56 0.19 32)`，亮的一档是深色的主色 | 官网从 `src/themes/cinnabar.mjs` 读；白字叠朱砂进了对比度检查 |
+| 标题字重 | 统一 600：苹方 600 以上渲染都一样，雅黑 600 以上都落到粗体。英文标题会细一点 | App 删掉 `--weight-bold`，字重三档；官网 `font-weight-display` 650 → 600 |
+| App 字号 | 12、14、18、22、28、40 六档：11 → 12（Windows 11 常规字重的下限），13 和 15 合成 14，名字靠字重、说明靠颜色分主次 | `--text-small` 并进 `--text-body`；`--text-figure` 改名 `--text-page` |
+| 页面标题 | 主窗口四个页面的标题 40 → 28，首页的标题就叫「首页」（和侧栏一样）；引导保持 40 | `.page-title` 用 `--text-page` |
+| 中性色 | 不统一：App 的中性色跟着三套主题走，官网偏冷、贴近系统灰 | |
+
+还没定、留着的：
+
+| 项 | 官网 | App |
+|---|---|---|
+| 大标题 | 流体 11 档（hero、closing、section、statement……） | 固定的 40、28、22 |
+| 区块间距 | `flow-1` 到 `flow-8` 八档，相邻的几档只差半个 rem | 4、8、12、16、24、32、48 |
+| 圆角 | small 6、control 8、block 12、card 16、tile 20、panel 24、stage 28 | 8、12、16、全圆（前三档已共用） |
+| 字距 | 7 档 token（display -0.035em 到 brand -0.01em） | 写在样式里：-0.01em 三处、-0.02em、-0.025em 各一处，还没收进 token |
+| 阴影 | 卡片、截图窗口各一档 | control 到 dialog 共 10 档（悬浮条的投影已共用） |
