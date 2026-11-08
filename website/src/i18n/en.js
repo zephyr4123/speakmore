@@ -131,7 +131,7 @@ export default {
     shotAlt: "The Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details",
   },
   ways: {
-    title: "Three modes.\nSwitch anytime.",
+    title: "Three modes. Switch anytime.",
     lanes: { cloud: "Cloud", device: "Device", offline: "Offline" },
     items: [
       {
@@ -160,7 +160,7 @@ export default {
     ],
   },
   speed: {
-    title: "Fast.\nAnd light.",
+    title: "Fast. And light.",
     headline: {
       label: "Mainstream hardware",
       value: "2",

@@ -53,7 +53,8 @@ export default {
   },
   // 语音翻译的演示：群聊里回外国同事一句。口述和译文是 App 的真实输出（混合方式，DeepSeek V4.1 Flash）
   translate: {
-    title: "开口即译\n语言任选",
+    // 两项并列，不分先后：单色（两色只给"先铺垫、后落点"的句子，Section.jsx 的 Inline）
+    title: "开口即译，语言任选",
     chat: {
       contact: "Emma",
       incoming: "Could you send me the revised schedule this week?",
@@ -108,7 +109,8 @@ export default {
     shotAlt: "引擎页：整理一步展开到 DeepSeek，详情中为渠道、价格与检测",
   },
   ways: {
-    title: "三种识别方式\n按需切换",
+    // "按需切换"是附带的一句，重音不该落在它上面：单色
+    title: "三种识别方式，按需切换",
     lanes: { cloud: "云端", device: "本机", offline: "不联网" },
     items: [
       {
@@ -137,7 +139,8 @@ export default {
     ],
   },
   speed: {
-    title: "速度快\n占用少",
+    // 两项并列：单色
+    title: "速度快，占用少",
     headline: { label: "主流硬件", value: "2", prefix: "<", unit: "秒", text: "松开快捷键到文字出现" },
     stats: [
       { value: "0.23", unit: "秒", label: "本机转文字", note: "Apple 芯片" },
