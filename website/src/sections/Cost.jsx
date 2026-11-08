@@ -24,25 +24,25 @@ export function Cost() {
   return (
     <div
       id="cost"
-      className="reveal mt-[clamp(4rem,9vw,7rem)] grid scroll-mt-24 gap-x-16 gap-y-10 border-t border-line pt-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+      className="reveal mt-flow-6 grid scroll-mt-24 gap-x-16 gap-y-10 border-t border-line pt-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
     >
       <div>
-        <h3 className="text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.02em] text-balance text-ink">
-          {m.cost.title}
-        </h3>
-        <p className="mt-2 text-[1.0625rem] text-ink-2">{m.cost.text}</p>
+        <h3 className="text-title font-semibold tracking-title text-balance text-ink">{m.cost.title}</h3>
+        <p className="mt-2 text-lead text-ink-2">{m.cost.text}</p>
       </div>
       <dl ref={roll.ref} data-roll={roll.stage} className="grid grid-cols-2 gap-x-8 sm:gap-x-12">
         {plans.map(({ id, text, cost }) => (
           // 名字、数、一句话；dt 得写在前面，名字本来就在最上面
           <div key={id}>
             <dt className="font-semibold text-ink">{text.name}</dt>
-            <dd className="mt-2 font-rounded text-[clamp(2.5rem,5vw,3.5rem)] leading-[1.25] font-semibold tracking-[-0.025em] whitespace-nowrap text-ink">
+            <dd className="mt-2 font-rounded text-price leading-figure font-semibold tracking-figure whitespace-nowrap text-ink">
+              {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
               <span className="mr-0.5 text-[0.55em] font-medium text-ink-2">{cost.symbol}</span>
               <Rolling value={cost.value} />
+              {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
               <span className="ml-1.5 text-[0.36em] font-medium tracking-normal text-ink-2">{m.cost.per}</span>
             </dd>
-            <dd className="mt-1 text-[0.9375rem] leading-snug text-balance break-keep text-ink-2">{text.note}</dd>
+            <dd className="mt-1 text-secondary leading-snug text-balance break-keep text-ink-2">{text.note}</dd>
           </div>
         ))}
       </dl>

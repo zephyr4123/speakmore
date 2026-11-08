@@ -15,7 +15,7 @@ const TONES = {
 export function Section({ id, tone = "canvas", className = "", children, labelledBy }) {
   return (
     <section id={id} aria-labelledby={labelledBy} className={`${TONES[tone]} text-ink overflow-clip ${className}`}>
-      <div className="mx-auto max-w-6xl px-5 py-[clamp(7rem,17vw,13rem)] sm:px-8">{children}</div>
+      <div className="mx-auto max-w-6xl px-5 py-section sm:px-8">{children}</div>
     </section>
   );
 }
@@ -64,23 +64,24 @@ export function Heading({ id, title, lead, align = "split" }) {
   if (align === "center") {
     return (
       <header className="reveal mx-auto max-w-3xl text-center">
-        <h2 id={id} className="display text-[clamp(2.4rem,6vw,4.5rem)]">
+        <h2 id={id} className="display text-section-center">
           <Lines text={title} />
         </h2>
       </header>
     );
   }
   const heading = (
-    <h2 id={id} className="display text-[clamp(2.125rem,4.6vw,3.75rem)] break-keep">
+    <h2 id={id} className="display text-section break-keep">
       <Inline text={title} />
     </h2>
   );
-  if (!lead) return <header className="reveal mb-[clamp(0.75rem,2vw,1.75rem)]">{heading}</header>;
+  if (!lead) return <header className="reveal mb-heading-gap">{heading}</header>;
   return (
     <header className="reveal grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
       {heading}
       {/* 中文只在标点和空格处换行，不把一个词拆到两行；几行尽量一样长，不剩一个短尾巴 */}
-      <p className="max-w-[30rem] text-[clamp(1.0625rem,1.6vw,1.3125rem)] leading-relaxed text-balance break-keep wrap-anywhere text-ink-2 lg:justify-self-end lg:pb-[0.3em]">
+      {/* token-exempt: 底边和左边大标题的基线对齐，按字号算 */}
+      <p className="max-w-[30rem] text-subhead leading-relaxed text-balance break-keep wrap-anywhere text-ink-2 lg:justify-self-end lg:pb-[0.3em]">
         {lead}
       </p>
     </header>

@@ -79,15 +79,12 @@ export function Terminal({ sessions, tabs, label, fill = (text) => text }) {
   const idle = now < plan.steps[0].start;
 
   return (
-    <div
-      ref={ref}
-      className="terminal overflow-clip rounded-[1.25rem] bg-[oklch(0.17_0.012_255)] text-[oklch(0.86_0.01_255)] shadow-[0_0_0_1px_oklch(0_0_0/0.06),0_40px_80px_-40px_oklch(0.2_0.03_255/0.55)]"
-    >
+    <div ref={ref} className="terminal overflow-clip rounded-tile bg-terminal text-terminal-ink shadow-window">
       <div
         role="tablist"
         aria-label={label}
         onKeyDown={onKeyDown}
-        className="relative flex gap-6 border-b border-white/10 px-5 text-sm sm:px-6"
+        className="relative flex gap-6 border-b border-white/10 px-5 text-label sm:px-6"
       >
         {ids.map((id) => (
           <button
@@ -122,7 +119,7 @@ export function Terminal({ sessions, tabs, label, fill = (text) => text }) {
         role="tabpanel"
         id="terminal-panel"
         aria-labelledby={`terminal-tab-${tab}`}
-        className="h-[25rem] px-5 py-5 font-mono text-[0.8125rem] leading-[1.7] sm:h-[22rem] sm:px-6 sm:text-[0.875rem]"
+        className="h-[25rem] px-5 py-5 font-mono text-code leading-code sm:h-[22rem] sm:px-6 sm:text-code-wide"
       >
         <div className="sr-only">
           {sessions[tab].map((entry) => (
@@ -142,7 +139,7 @@ export function Terminal({ sessions, tabs, label, fill = (text) => text }) {
                 <div key={entry.command} className="[overflow-wrap:anywhere]">
                   <p className="text-white/45"># {entry.comment}</p>
                   <p className="text-white">
-                    <span className="text-[oklch(0.8_0.07_255)] select-none">$ </span>
+                    <span className="text-terminal-accent select-none">$ </span>
                     {typed}
                     {typing === step ? <Caret /> : null}
                   </p>
@@ -154,7 +151,7 @@ export function Terminal({ sessions, tabs, label, fill = (text) => text }) {
             })}
           {done || idle ? (
             <p className="text-white">
-              <span className="text-[oklch(0.8_0.07_255)] select-none">$ </span>
+              <span className="text-terminal-accent select-none">$ </span>
               <Caret />
             </p>
           ) : null}

@@ -15,13 +15,13 @@ export function Developers() {
     <Section id="developers" tone="surface" labelledBy="developers-title">
       <Heading id="developers-title" title={text.title} />
 
-      <div className="mt-[clamp(3rem,7vw,5rem)] grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
+      <div className="mt-flow-2 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
         <div className="reveal">
           <ul className="divide-y divide-line border-y border-line">
             {text.points.map((point) => (
               <li key={point.title} className="py-5">
                 <h3 className="font-semibold text-ink">{point.title}</h3>
-                <p className="mt-1 text-[0.9375rem] text-ink-2">{point.text}</p>
+                <p className="mt-1 text-secondary text-ink-2">{point.text}</p>
               </li>
             ))}
           </ul>

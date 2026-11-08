@@ -50,21 +50,21 @@ export function Nav() {
       className={`fixed inset-x-0 top-0 z-30 text-ink transition-[background-color,box-shadow] duration-300 ${
         {
           clear: "bg-transparent",
-          dark: "tone-ink bg-[oklch(0.13_0.008_255/0.72)]! shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150",
-          glass: "bg-canvas/72 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150",
+          dark: "tone-ink bg-nav-glass! shadow-underline backdrop-blur-xl backdrop-saturate-150",
+          glass: "bg-canvas/72 shadow-underline backdrop-blur-xl backdrop-saturate-150",
         }[look]
       }`}
     >
       <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-5 sm:px-8">
         <a
           href="#top"
-          className="flex items-center gap-2.5 font-display text-[1.0625rem] font-semibold tracking-[-0.01em]"
+          className="flex items-center gap-2.5 font-display text-lead font-semibold tracking-brand"
           aria-label={m.nav.home}
         >
           <img src={seal} alt="" width="28" height="28" className="size-7" />
           SpeakMore
         </a>
-        <ul className="ml-auto hidden items-center gap-7 text-sm text-ink-2 md:flex">
+        <ul className="ml-auto hidden items-center gap-7 text-label text-ink-2 md:flex">
           {items.map(([id, label]) => (
             <li key={id}>
               <a href={`#${id}`} className="transition-colors duration-150 hover:text-ink">
@@ -83,7 +83,7 @@ export function Nav() {
           </a>
           <a
             href="#download"
-            className="ml-1.5 inline-flex h-8 items-center rounded-full bg-ink px-3.5 text-[0.8125rem] font-semibold text-canvas transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97]"
+            className="ml-1.5 inline-flex h-8 items-center rounded-full bg-ink px-3.5 text-code font-semibold text-canvas transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97]"
           >
             {m.nav.download}
           </a>

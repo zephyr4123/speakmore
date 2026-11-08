@@ -26,26 +26,26 @@ export function Lookup() {
     <Section id="lookup" labelledBy="lookup-title">
       <Heading id="lookup-title" title={text.title} />
 
-      <div className="reveal mx-auto mt-[clamp(3rem,7vw,5rem)]" style={{ maxWidth: `${mainWidth}px` }}>
+      <div className="reveal mx-auto mt-flow-2" style={{ maxWidth: `${mainWidth}px` }}>
         <Shot name={main.name} alt={main.alt} pad={PHOTO_PAD} />
       </div>
 
       <ul
-        className="reveal mt-[clamp(2rem,5vw,3.5rem)] grid gap-x-8 gap-y-10 md:[grid-template-columns:var(--columns)]"
+        className="reveal mt-flow-1 grid gap-x-8 gap-y-10 md:[grid-template-columns:var(--columns)]"
         style={{ "--columns": columns }}
       >
         {rest.map((shot) => (
           <li key={shot.name}>
             <Shot name={shot.name} alt={shot.alt} pad={PHOTO_PAD} flush />
-            <p className="mt-3 text-center text-sm font-medium text-ink-2">{shot.caption}</p>
+            <p className="mt-3 text-center text-label font-medium text-ink-2">{shot.caption}</p>
           </li>
         ))}
       </ul>
 
-      <ul className="reveal mt-[clamp(4rem,9vw,6.5rem)] grid gap-y-8 border-t border-line pt-10 md:grid-cols-3 md:divide-x md:divide-line">
+      <ul className="reveal mt-flow-5 grid gap-y-8 border-t border-line pt-10 md:grid-cols-3 md:divide-x md:divide-line">
         {text.points.map((point) => (
           <li key={point.title} className="md:px-8 md:first:pl-0 md:last:pr-0">
-            <h3 className="text-lg font-semibold text-ink">{point.title}</h3>
+            <h3 className="text-heading font-semibold text-ink">{point.title}</h3>
             <p className="mt-1.5 text-balance break-keep text-ink-2">{point.text}</p>
           </li>
         ))}

@@ -31,16 +31,16 @@ export function Translate() {
       {/* 两块等高、上下边对齐：左边是口述（说的那句和悬浮条，悬浮条贴在底边），右边是群聊窗口。三条要点在下面排一行 */}
       <div
         ref={root}
-        className="reveal mt-[clamp(3rem,7vw,5rem)] grid items-stretch gap-4 md:gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+        className="reveal mt-flow-2 grid items-stretch gap-4 md:gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
-        <div className="flex flex-col rounded-[1.75rem] bg-canvas p-7 sm:p-9">
-          <p className="text-sm font-medium text-ink-2">{chat.saidLabel}</p>
+        <div className="flex flex-col rounded-stage bg-canvas p-7 sm:p-9">
+          <p className="text-label font-medium text-ink-2">{chat.saidLabel}</p>
           <Spoken
             text={chat.said}
             progress={progress}
             written={written}
             talking={phase === "talk"}
-            className="mt-4 text-[clamp(1.125rem,1.9vw,1.375rem)] leading-relaxed text-ink-2"
+            className="mt-4 text-subhead leading-relaxed text-ink-2"
           />
           <div className="mt-auto flex justify-center pt-8">
             <Bar state={bar} chip={chat.chip} />
@@ -51,20 +51,20 @@ export function Translate() {
         <div
           role="img"
           aria-label={chat.alt}
-          className="flex min-w-0 flex-col overflow-clip rounded-[1.75rem] bg-raised shadow-[0_0_0_1px_var(--color-line),0_24px_60px_-28px_oklch(0_0_0/0.35)]"
+          className="flex min-w-0 flex-col overflow-clip rounded-stage bg-raised shadow-card"
         >
           <div className="flex items-center gap-2.5 border-b border-line px-6 py-4">
-            <span className="size-2 rounded-full bg-[oklch(0.72_0.17_150)]" aria-hidden="true" />
+            <span className="size-2 rounded-full bg-signal" aria-hidden="true" />
             <span className="font-semibold text-ink">{chat.contact}</span>
           </div>
           <div className="flex flex-1 flex-col justify-end px-6 pt-6 pb-4">
-            <p className="max-w-[85%] self-start rounded-[1.25rem] rounded-bl-md bg-surface px-4 py-2.5 text-[1.0625rem] leading-relaxed text-ink">
+            <p className="max-w-[85%] self-start rounded-tile rounded-bl-small bg-surface px-4 py-2.5 text-lead leading-relaxed text-ink">
               {chat.incoming}
             </p>
           </div>
           <div className="px-4 pb-4">
             {/* 输入框一开始就按译文写进去的高度占好（垫一层看不见的译文），字落进来时窗口不变高 */}
-            <div className="grid rounded-[1.375rem] px-5 py-3 text-[1.0625rem] leading-relaxed shadow-[inset_0_0_0_1px_var(--color-line)]">
+            <div className="grid rounded-tile px-5 py-3 text-lead leading-relaxed shadow-inset-line">
               <p className="invisible col-start-1 row-start-1" aria-hidden="true">
                 {chat.written}
                 <span className="ml-0.5 inline-block w-0.5" />
@@ -72,10 +72,12 @@ export function Translate() {
               {written ? (
                 <p
                   key={round}
+                  // token-exempt: 演示里新写出来的字淡入，这段编排只这里用
                   className="col-start-1 row-start-1 text-ink motion-safe:animate-[fade-in_600ms_var(--ease-out-quint)]"
                 >
                   {chat.written}
                   <span
+                    // token-exempt: 演示里输入光标的闪烁
                     className="ml-0.5 inline-block h-[1.1em] w-0.5 translate-y-[0.2em] bg-link motion-safe:animate-[caret-blink_1s_steps(1)_infinite]"
                     aria-hidden="true"
                   />
@@ -88,10 +90,10 @@ export function Translate() {
         </div>
       </div>
 
-      <ul className="reveal mt-[clamp(4rem,9vw,6.5rem)] grid gap-y-8 border-t border-line pt-10 md:grid-cols-3 md:divide-x md:divide-line">
+      <ul className="reveal mt-flow-5 grid gap-y-8 border-t border-line pt-10 md:grid-cols-3 md:divide-x md:divide-line">
         {text.points.map((point) => (
           <li key={point.title} className="md:px-8 md:first:pl-0 md:last:pr-0">
-            <h3 className="text-lg font-semibold text-ink">{point.title}</h3>
+            <h3 className="text-heading font-semibold text-ink">{point.title}</h3>
             <p className="mt-1.5 text-balance break-keep text-ink-2">{point.text}</p>
           </li>
         ))}

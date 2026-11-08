@@ -31,7 +31,7 @@ export function DownloadButtons({ className = "", style }) {
       ))}
       <a
         href={links.downloads.x64}
-        className="group inline-flex items-center justify-self-center gap-1 pt-1 text-sm text-ink-2 transition-colors duration-150 hover:text-ink sm:col-start-1 sm:row-start-2"
+        className="group inline-flex items-center justify-self-center gap-1 pt-1 text-label text-ink-2 transition-colors duration-150 hover:text-ink sm:col-start-1 sm:row-start-2"
       >
         {m.download.intel}
         <Icon

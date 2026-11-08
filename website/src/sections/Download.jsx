@@ -11,19 +11,19 @@ export function Download() {
   const { m, switchLocale } = useI18n();
   return (
     <section id="download" className="bg-canvas text-ink" aria-labelledby="download-title">
-      <div className="mx-auto flex max-w-6xl flex-col items-center px-5 pt-[clamp(7rem,17vw,13rem)] text-center sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-5 pt-section text-center sm:px-8">
         <img src={seal} alt="" width="80" height="80" className="reveal size-20" />
-        <h2 id="download-title" className="display reveal mt-8 text-[clamp(2.75rem,7vw,5rem)]">
+        <h2 id="download-title" className="display reveal mt-8 text-closing">
           <Lines text={m.download.title} />
         </h2>
-        <p className="reveal mt-4 text-[clamp(1.0625rem,1.8vw,1.375rem)] font-medium text-ink-2">{m.download.lead}</p>
+        <p className="reveal mt-4 text-subhead font-medium text-ink-2">{m.download.lead}</p>
 
         <DownloadButtons className="reveal mt-12" />
         <div className="reveal mt-6 grid w-full max-w-2xl gap-4 text-left">
           {["mac", "windows"].map((system) => (
             // 网格里的一格默认不比内容窄：不放开的话，长命令会把整页撑宽（窄屏上命令自己横着滑）
             <div key={system} className="min-w-0">
-              <p className="mb-2 pl-1 text-xs font-medium text-ink-2">{m.download.terminal[system]}</p>
+              <p className="mb-2 pl-1 text-fine font-medium text-ink-2">{m.download.terminal[system]}</p>
               <CopyCommand
                 command={links.install[system]}
                 copyLabel={m.download.copy}
@@ -34,7 +34,7 @@ export function Download() {
         </div>
       </div>
 
-      <footer className="mx-auto mt-[clamp(5rem,12vw,9rem)] flex max-w-6xl flex-col items-center justify-between gap-4 border-t border-line px-5 py-8 text-xs text-ink-2 sm:flex-row sm:px-8">
+      <footer className="mx-auto mt-flow-8 flex max-w-6xl flex-col items-center justify-between gap-4 border-t border-line px-5 py-8 text-fine text-ink-2 sm:flex-row sm:px-8">
         <p className="flex items-center gap-2">
           <img src={seal} alt="" width="16" height="16" className="size-4" />
           SpeakMore {links.version}

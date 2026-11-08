@@ -1,64 +1,12 @@
 @import "tailwindcss";
 
-/* 颜色从 App 的图标那方印来：靛青的印底、朱砂和赭石两道、浅色的刻痕（assets/icon.svg）。
-   大块的底色都是纯色、不铺渐变光晕：跟着系统深浅变，隐私一段固定是近黑（.tone-ink 在下面重新给一遍颜色）。
-   用 OKLCH，浅色的底往靛青偏一点点，不往暖色偏。 */
-@theme {
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
-    sans-serif;
-  --font-display:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    system-ui, sans-serif;
-  /* 大号的数字用系统的圆体，和 App 首页一样 */
-  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+/* 设计 token（颜色、字体、字号、字距、行高、圆角、阴影、留白）都在 tokens.css：从 src/design/site.mjs 生成，别在这里另写 */
+@import "./tokens.css";
 
-  --color-canvas: oklch(0.99 0.002 255);
-  --color-surface: oklch(0.962 0.006 255);
-  --color-raised: oklch(1 0 0);
-  --color-ink: oklch(0.21 0.02 255);
-  --color-ink-2: oklch(0.45 0.02 255);
-  --color-line: oklch(0.9 0.008 255);
-  --color-link: oklch(0.47 0.11 255);
-  --color-seal: oklch(0.4 0.075 255);
-  --color-cinnabar: oklch(0.55 0.17 33);
-  --color-cinnabar-glow: oklch(0.74 0.17 32);
-  --color-ochre: oklch(0.74 0.12 75);
-
-  /* 先快后慢，不回弹 */
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-canvas: oklch(0.15 0.012 255);
-    --color-surface: oklch(0.19 0.014 255);
-    --color-raised: oklch(0.22 0.015 255);
-    --color-ink: oklch(0.96 0.005 255);
-    --color-ink-2: oklch(0.74 0.015 255);
-    --color-line: oklch(0.3 0.015 255);
-    --color-link: oklch(0.8 0.09 255);
-  }
-}
-
-/* 固定深色的那一段：里面的组件照样用 text-ink 这些，颜色在这里换掉 */
+/* 固定深色的那一段（隐私）：颜色在 tokens.css 的 .tone-ink 里换，这里只铺底、让表单控件也按深色画 */
 .tone-ink {
-  --color-canvas: oklch(0.13 0.008 255);
-  --color-surface: oklch(1 0 0 / 0.06);
-  --color-raised: oklch(1 0 0 / 0.08);
-  --color-ink: oklch(0.97 0.004 255);
-  --color-ink-2: oklch(0.78 0.02 255);
-  --color-line: oklch(1 0 0 / 0.14);
-  --color-link: oklch(0.82 0.09 230);
-  /* 印章色在近黑上要提亮，不然勾看不见 */
-  --color-seal: oklch(0.8 0.07 255);
+  background: var(--color-canvas);
   color-scheme: dark;
-}
-
-.tone-ink {
-  background: oklch(0.13 0.008 255);
 }
 
 @layer base {
@@ -80,33 +28,35 @@
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    /* 没写字号的字都是它（浏览器默认也是 16px，写出来是为了有个名字） */
+    font-size: var(--text-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background: oklch(0.74 0.17 32 / 0.3);
+    background: var(--color-selection);
   }
 
   :focus-visible {
     outline: 2px solid var(--color-link);
     outline-offset: 3px;
-    border-radius: 6px;
+    border-radius: var(--radius-small);
   }
 }
 
 /* 大标题：英文收紧字距；中文字距本来就匀，收紧了挤 */
 @utility display {
   font-family: var(--font-display);
-  font-weight: 650;
-  letter-spacing: -0.035em;
-  line-height: 1.04;
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
   text-wrap: balance;
 
   &:lang(zh-CN) {
-    letter-spacing: -0.01em;
-    line-height: 1.12;
+    letter-spacing: var(--tracking-display-zh);
+    line-height: var(--leading-display-zh);
   }
 }
 
@@ -235,8 +185,8 @@
 .logo-loop-list {
   display: flex;
   align-items: center;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
-  padding-right: clamp(2.5rem, 5vw, 4.5rem);
+  gap: var(--spacing-logo-gap);
+  padding-right: var(--spacing-logo-gap);
 }
 
 @keyframes logo-loop {
@@ -264,6 +214,7 @@
 .long-take-bars > i {
   flex: 1;
   min-height: 3px;
+  /* token-exempt: 声波竖条两头圆，和 rounded-full 一样 */
   border-radius: 999px;
   background: var(--color-line);
 }
@@ -278,7 +229,7 @@
 
 .long-take[data-play] .long-take-bars + .long-take-bars {
   clip-path: inset(0 0 0 0);
-  transition: clip-path 3.2s cubic-bezier(0.45, 0, 0.25, 1) 0.3s;
+  transition: clip-path 3.2s var(--ease-sweep) 0.3s;
 }
 
 /* ---------- 性能：支持的硬件 ---------- */

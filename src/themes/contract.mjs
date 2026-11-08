@@ -70,8 +70,8 @@ const WINDOW_SCHEMES = { light: "浅色", dark: "深色" };
 /** token 名 → CSS 变量名：onGo → --bar-on-go，ink2 → --ink-2 */
 const cssName = (prefix, name) => `--${prefix}${name.replace(/[A-Z0-9]/g, (char) => `-${char.toLowerCase()}`)}`;
 
-/** 一组 token 的毛病 */
-function groupProblems(where, values, tokens, legibility) {
+/** 一组 token 的毛病。官网的颜色也用它查对比度（test/design/tokens.test.mjs） */
+export function groupProblems(where, values, tokens, legibility) {
   if (values === null || typeof values !== "object") return [`少了${where}这一组`];
   const problems = [];
   const usable = new Set();

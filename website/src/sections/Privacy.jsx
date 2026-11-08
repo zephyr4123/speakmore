@@ -16,22 +16,22 @@ export function Privacy() {
     <Section id="privacy" tone="surface" labelledBy="privacy-title">
       <Heading id="privacy-title" title={text.title} />
 
-      <ul className="reveal mt-[clamp(3.5rem,8vw,6rem)] grid grid-cols-2 gap-y-12 lg:grid-cols-4 lg:divide-x lg:divide-line">
+      <ul className="reveal mt-flow-4 grid grid-cols-2 gap-y-12 lg:grid-cols-4 lg:divide-x lg:divide-line">
         {text.items.map((item) => (
           <li key={item.title} className="flex flex-col gap-4 pr-6 lg:px-8 lg:first:pl-0">
             <Icon name={item.icon} className="size-8 text-seal" />
             <div>
-              <h3 className="text-lg font-semibold text-ink">{item.title}</h3>
-              <p className="mt-1 text-[0.9375rem] text-ink-2">{item.text}</p>
+              <h3 className="text-heading font-semibold text-ink">{item.title}</h3>
+              <p className="mt-1 text-secondary text-ink-2">{item.text}</p>
             </div>
           </li>
         ))}
       </ul>
 
       {/* 速度对比图自己带着白底和细边，外面不再套一层 */}
-      <div className="reveal mt-[clamp(4.5rem,10vw,7.5rem)] grid items-center gap-10 border-t border-line pt-[clamp(3rem,7vw,5rem)] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div className="reveal mt-flow-7 grid items-center gap-10 border-t border-line pt-flow-2 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div>
-          <h3 className="display text-[clamp(2rem,4vw,3rem)]">
+          <h3 className="display text-statement">
             <Lines text={text.mirror.title} muted />
           </h3>
           <p className="mt-5 max-w-sm text-ink-2">{text.mirror.text}</p>

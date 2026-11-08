@@ -18,10 +18,10 @@ export function Trio() {
             <li key={item.id} className="md:px-8 md:first:pl-0 md:last:pr-0">
               <a href={`#${item.id}`} className="group block">
                 <Chord keys={item.chord} />
-                <h3 className="mt-5 text-[clamp(1.25rem,2vw,1.5rem)] font-semibold tracking-[-0.015em] text-ink transition-colors duration-150 group-hover:text-link">
+                <h3 className="mt-5 text-card-title font-semibold tracking-card-title text-ink transition-colors duration-150 group-hover:text-link">
                   {item.name}
                 </h3>
-                <p className="mt-1.5 text-[1.0625rem] text-ink-2">{item.text}</p>
+                <p className="mt-1.5 text-lead text-ink-2">{item.text}</p>
               </a>
             </li>
           ))}

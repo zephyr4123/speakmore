@@ -42,16 +42,16 @@ export function Ways() {
     <Section id="ways" tone="surface" labelledBy="ways-title">
       <Heading id="ways-title" title={m.ways.title} />
 
-      <ol className="mt-[clamp(3.5rem,8vw,6rem)] grid">
+      <ol className="mt-flow-4 grid">
         {m.ways.items.map((way) => (
           <li
             key={way.id}
-            className="reveal grid gap-8 border-t border-line py-[clamp(2.5rem,5vw,3.5rem)] last:pb-0 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-center lg:gap-16"
+            className="reveal grid gap-8 border-t border-line py-card-y last:pb-0 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-center lg:gap-16"
           >
             <div>
-              <h3 className="text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.02em] text-ink">{way.name}</h3>
-              <p className="mt-2 text-[1.0625rem] text-ink-2">{way.text}</p>
-              <ul className="mt-6 grid gap-2.5 text-[0.9375rem]">
+              <h3 className="text-title font-semibold tracking-title text-ink">{way.name}</h3>
+              <p className="mt-2 text-lead text-ink-2">{way.text}</p>
+              <ul className="mt-6 grid gap-2.5 text-secondary">
                 {way.facts.map((fact, index) => (
                   <li key={fact} className="flex items-center gap-2.5 text-ink">
                     <span
@@ -106,8 +106,8 @@ function RouteMap({ way, lanes }) {
       aria-label={`${way.name}：${way.steps.join(" → ")}`}
     >
       {/* 两条泳道：云端是虚线框，本机是实底 */}
-      <div className="absolute inset-x-0 top-0 h-[46%] rounded-[1.25rem] border border-dashed border-ink-2/35" />
-      <div className="absolute inset-x-0 bottom-0 h-[46%] rounded-[1.25rem] bg-raised shadow-[0_0_0_1px_var(--color-line)]" />
+      <div className="absolute inset-x-0 top-0 h-[46%] rounded-tile border border-dashed border-ink-2/35" />
+      <div className="absolute inset-x-0 bottom-0 h-[46%] rounded-tile bg-raised shadow-line" />
       {[
         { lane: "cloud", icon: "cloud", top: "top-0" },
         { lane: "device", icon: "laptop", top: "top-[54%]" },
@@ -118,12 +118,12 @@ function RouteMap({ way, lanes }) {
           aria-hidden="true"
         >
           <Icon name={icon} className="size-5" />
-          <span className="text-xs font-medium">{lanes[lane]}</span>
+          <span className="text-fine font-medium">{lanes[lane]}</span>
         </div>
       ))}
       {offline ? (
         <p
-          className="absolute top-[23%] left-[57.5%] flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 text-sm text-ink-2"
+          className="absolute top-[23%] left-[57.5%] flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 text-label text-ink-2"
           aria-hidden="true"
         >
           <Icon name="offline" className="size-4" />
@@ -154,7 +154,7 @@ function RouteMap({ way, lanes }) {
 
       {carry !== null ? (
         <span
-          className="route-carry absolute top-1/2 flex -translate-y-1/2 items-center gap-1 pl-2.5 text-xs font-semibold whitespace-nowrap text-cinnabar"
+          className="route-carry absolute top-1/2 flex -translate-y-1/2 items-center gap-1 pl-2.5 text-fine font-semibold whitespace-nowrap text-cinnabar"
           style={{ left: `${carry}%` }}
           aria-hidden="true"
         >
@@ -169,7 +169,7 @@ function RouteMap({ way, lanes }) {
             ? "bg-cinnabar text-white"
             : stop.icon === "chip"
               ? "bg-seal text-white"
-              : "bg-canvas text-ink shadow-[0_0_0_1px_var(--color-line)]";
+              : "bg-canvas text-ink shadow-line";
         return (
           <div
             key={stop.icon}
@@ -182,7 +182,7 @@ function RouteMap({ way, lanes }) {
             </span>
             {/* 名字挂在圆外侧：云端的在上面、本机的在下面，不压着两条泳道的边 */}
             <span
-              className={`absolute text-xs font-medium whitespace-nowrap text-ink sm:text-[0.8125rem] ${
+              className={`absolute text-fine font-medium whitespace-nowrap text-ink sm:text-code ${
                 stop.lane === "cloud" ? "bottom-full mb-1.5" : "top-full mt-1.5"
               }`}
             >

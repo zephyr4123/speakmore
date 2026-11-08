@@ -1,11 +1,13 @@
 /* 三个页面共用、不随主题变的 token：字、间距、控件尺寸、圆角、动效。
-   颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。 */
+   颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。
+   由 scripts/dev/make-tokens.mjs 从 src/design/app.mjs 生成，别手改：改了源再跑 npm run tokens */
 
 :root {
   --font:
     -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI",
     system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
+
   /* 大号的数字用系统的圆体（SF Pro Rounded），和正文的直角字拉开一点 */
   --font-rounded:
     ui-rounded, -apple-system, "PingFang SC", "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI", system-ui,
@@ -58,6 +60,7 @@
   --dur-fast: 120ms;
   --dur-base: 200ms;
   --dur-slow: 320ms;
+
   /* 分类标签的下划线、分段控件的滑块从上一个位置滑过去 */
   --dur-slide: 280ms;
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
