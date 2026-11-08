@@ -26,7 +26,7 @@ export function Demo() {
     <Section id="demo" labelledBy="demo-title">
       <Heading id="demo-title" title={m.demo.title} />
 
-      <div ref={root} className="reveal mt-[clamp(3rem,7vw,5rem)]">
+      <div ref={root} className="reveal mt-flow-2">
         <div className="mb-6 flex gap-1.5" role="tablist">
           {examples.map((item, i) => (
             <button
@@ -35,7 +35,7 @@ export function Demo() {
               role="tab"
               aria-selected={i === index}
               onClick={() => setIndex(i)}
-              className={`h-8 cursor-pointer rounded-full px-4 text-sm font-medium transition-colors duration-200 ${
+              className={`h-8 cursor-pointer rounded-full px-4 text-label font-medium transition-colors duration-200 ${
                 i === index ? "bg-ink text-canvas" : "text-ink-2 hover:bg-surface hover:text-ink"
               }`}
             >
@@ -45,25 +45,25 @@ export function Demo() {
         </div>
 
         <div className="grid items-stretch gap-4 md:grid-cols-2 md:gap-6">
-          <div className="relative flex min-h-[17rem] flex-col rounded-[1.75rem] bg-surface p-7 sm:p-9">
-            <p className="text-sm font-medium text-ink-2">{m.demo.said}</p>
+          <div className="relative flex min-h-[17rem] flex-col rounded-stage bg-surface p-7 sm:p-9">
+            <p className="text-label font-medium text-ink-2">{m.demo.said}</p>
             <Spoken
               text={example.said}
               reserve={examples.map((item) => item.said)}
               progress={progress}
               written={written}
               talking={phase === "talk"}
-              className="mt-4 text-[clamp(1.125rem,1.9vw,1.375rem)] leading-relaxed text-ink-2"
+              className="mt-4 text-subhead leading-relaxed text-ink-2"
             />
             <div className="mt-auto flex justify-center pt-8">
               <Bar state={bar} />
             </div>
           </div>
 
-          <div className="relative flex min-h-[17rem] flex-col rounded-[1.75rem] bg-raised p-7 shadow-[0_0_0_1px_var(--color-line),0_24px_60px_-28px_oklch(0_0_0/0.35)] sm:p-9">
-            <p className="text-sm font-medium text-ink-2">{m.demo.written}</p>
+          <div className="relative flex min-h-[17rem] flex-col rounded-stage bg-raised p-7 shadow-card sm:p-9">
+            <p className="text-label font-medium text-ink-2">{m.demo.written}</p>
             {/* 几个例子的成品叠在同一格里占位，按最高的那个撑开：换例子、成品出来时都不把整页往下推 */}
-            <div className="mt-4 grid text-[clamp(1.125rem,1.9vw,1.375rem)] leading-relaxed whitespace-pre-line">
+            <div className="mt-4 grid text-subhead leading-relaxed whitespace-pre-line">
               {examples.map((item) => (
                 <p key={item.label} className="invisible col-start-1 row-start-1" aria-hidden="true">
                   {item.written}
@@ -72,7 +72,8 @@ export function Demo() {
               <p
                 key={`${index}-${written}`}
                 className={`col-start-1 row-start-1 text-ink ${
-                  written ? "motion-safe:animate-[fade-in_600ms_var(--ease-out-quint)]" : "opacity-0"
+                  // token-exempt: 演示里新写出来的字淡入，这段编排只这里用
+                  written ? "motion-safe:animate-[fade-in_600ms_var(--ease-out)]" : "opacity-0"
                 }`}
               >
                 {example.written}

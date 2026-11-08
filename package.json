@@ -38,6 +38,7 @@
     "sync-models": "node scripts/release/sync-models.mjs",
     "stats": "node scripts/ops/stats.mjs",
     "i18n:zh-tw": "node scripts/dev/make-zh-tw.mjs",
+    "tokens": "node scripts/dev/make-tokens.mjs",
     "ship": "sh scripts/release/ship.sh",
     "dist": "node scripts/build/package.mjs",
     "install-app": "sh scripts/build/install-app.sh",

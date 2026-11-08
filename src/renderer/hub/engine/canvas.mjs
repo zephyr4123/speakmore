@@ -30,13 +30,14 @@ const DOCK_GAP = 56;
 export const DOCK_ANCHOR = 34;
 
 /**
- * 整棵树放进画布、居中。左右只留一点边，上下给图例和缩放条留地方（底下多让出 legend）
+ * 整棵树放进画布：横向居中，贴着顶上放。左右只留一点边，上下给图例和缩放条留地方（都在底下）。
+ * 不上下居中：树通常只有三行高、倍数又被宽度卡住，上下平分剩下的高度，标题和树之间会空出一大块
  * @param {{ w: number, h: number, cw: number, ch: number, userK: number | null }} size
  *   w、h 树的大小；cw、ch 画布的大小；userK 用户自己调过的倍数，自动适应时不超过它（没调过不超过 100%）
  */
-export function fitView({ w, h, cw, ch, userK, padX = 12, padY = 56, legend = 24 }) {
+export function fitView({ w, h, cw, ch, userK, padX = 12, padY = 56, top = 24 }) {
   const k = clampZoom(Math.min((cw - padX * 2) / w, (ch - padY * 2) / h, userK ?? 1));
-  return { k, x: (cw - w * k) / 2, y: (ch - legend - h * k) / 2 };
+  return { k, x: (cw - w * k) / 2, y: top };
 }
 
 /** 以画布上的 (cx, cy) 为中心缩放到 k：那一点对着的还是树上同一点 */
@@ -79,7 +80,7 @@ export function createCanvas({ canvas, world, content, zoomValue, onMove, ignore
     onMove(animate ? 360 : 0);
   }
 
-  /** 整棵树放进画布，居中 */
+  /** 整棵树放进画布：横向居中、贴顶 */
   function fit({ animate = true } = {}) {
     // 页面藏着时量不出大小：等显示出来再放
     if (canvas.clientWidth === 0) return;

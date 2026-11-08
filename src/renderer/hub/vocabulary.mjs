@@ -122,8 +122,7 @@ export function createVocabulary() {
     $("vocabulary-local").title = t("vocabulary.localTip", { file: data.file });
     // 当前方式里有收词典的云端模型，词就会随听写的请求发出去：照实写
     const leaves = data.current.hops.some(({ platform, kind }) => platform !== "local" && kind !== null);
-    $("vocabulary-local-text").textContent =
-      `${t("vocabulary.local")} · ${t(`vocabulary.localMeta.${leaves ? "cloud" : "device"}`)}`;
+    $("vocabulary-local-text").textContent = t(`vocabulary.local.${leaves ? "cloud" : "device"}`);
     // 文件坏了不能改：先照提示修好文件，免得把它覆盖掉
     const full = data.terms.length >= data.limits.maxTerms;
     // 置灰的按钮悬停时说为什么
@@ -133,10 +132,8 @@ export function createVocabulary() {
       $(id).disabled = blocked !== null || full;
       $(id).title = blocked ?? fullText ?? "";
     }
-    for (const id of ["vocabulary-import", "vocabulary-empty-import"]) {
-      $(id).disabled = blocked !== null;
-      $(id).title = blocked ?? "";
-    }
+    $("vocabulary-import").disabled = blocked !== null;
+    $("vocabulary-import").title = blocked ?? "";
     if (full || data.problem) closeComposer();
     renderSupport();
     if (editing !== null) deferred = true;
@@ -191,11 +188,17 @@ export function createVocabulary() {
     $("vocabulary-count").textContent =
       data.problem || data.terms.length === 0 ? "" : t("vocabulary.count", { count: data.terms.length });
     const empty = data.problem === null && shown.length === 0;
-    const searching = data.terms.length > 0;
+    const hasTerms = data.terms.length > 0;
+    // 一个词都没有时：标题行的"新词"和搜索那一行先收起来，屏上只有空状态里那一个"新词"（一屏只放一个主按钮），
+    // 也没什么可搜的。导入留在标题行，加了第一个词以后都回来
+    const first = data.problem === null && !hasTerms;
+    $("vocabulary-add").hidden = first;
+    $("vocabulary-search").closest(".toolbar").hidden = first;
     $("vocabulary-empty").hidden = !empty;
-    $("vocabulary-empty").dataset.kind = searching ? "search" : "first";
-    $("vocabulary-empty-title").textContent = searching ? t("vocabulary.noResults") : t("vocabulary.empty.title");
-    $("vocabulary-empty-actions").hidden = searching;
+    $("vocabulary-empty").dataset.kind = hasTerms ? "search" : "first";
+    $("vocabulary-empty-title").textContent = hasTerms ? t("vocabulary.noResults") : t("vocabulary.empty.title");
+    $("vocabulary-empty-text").hidden = hasTerms;
+    $("vocabulary-empty-add").hidden = hasTerms;
     const grid = $("vocabulary-grid");
     // 重画前焦点在哪个词的哪个按钮上，画完放回去（键盘操作不会掉到页面最前面）
     const focused = grid.contains(document.activeElement) ? document.activeElement.dataset.focus : undefined;
@@ -206,9 +209,13 @@ export function createVocabulary() {
     renderSelection(shown);
   }
 
-  /** 词格之外的东西关掉、删掉以后，焦点放到哪：搜索框（一定在） */
+  /** 一个词都没有时搜索那一行和标题行的"新词"都收起了，只剩空状态里的"新词" */
+  const firstAdd = () => ($("vocabulary-add").hidden ? $("vocabulary-empty-add") : null);
+
+  /** 词格之外的东西关掉、删掉以后，焦点放到哪：搜索框；一个词都没有时是空状态里的"新词" */
   const focusFallback = () => {
-    if (document.activeElement === document.body || document.activeElement === null) $("vocabulary-search").focus();
+    if (document.activeElement === document.body || document.activeElement === null)
+      (firstAdd() ?? $("vocabulary-search")).focus();
   };
 
   function toggle(term) {
@@ -375,7 +382,7 @@ export function createVocabulary() {
     composer.hidden = true;
     composerInput.value = "";
     setComposerProblem(null);
-    if (focus && wasOpen) $("vocabulary-add").focus();
+    if (focus && wasOpen) (firstAdd() ?? $("vocabulary-add")).focus();
   }
 
   function setComposerProblem(problem) {
@@ -528,7 +535,7 @@ export function createVocabulary() {
   }
 
   for (const id of ["vocabulary-add", "vocabulary-empty-add"]) $(id).addEventListener("click", openComposer);
-  for (const id of ["vocabulary-import", "vocabulary-empty-import"]) $(id).addEventListener("click", openImport);
+  $("vocabulary-import").addEventListener("click", openImport);
   $("vocabulary-search").addEventListener("input", () => data && renderTerms());
   $("vocabulary-select-clear").addEventListener("click", () => {
     selected.clear();

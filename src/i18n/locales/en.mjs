@@ -764,7 +764,7 @@ export default {
   },
 
   home: {
-    title: "Speak it written. Select to translate.",
+    title: "Home",
     words: "Words",
     saved: "Time saved",
     speed: "Speed",
@@ -869,8 +869,10 @@ export default {
     title: "Dictionary",
     add: "New word",
     import: "Import",
-    local: "Stored on this device only",
-    localMeta: { device: "Never uploaded", cloud: "Sent with dictation requests" },
+    local: {
+      device: "Stored on this device, never uploaded",
+      cloud: "Stored on this device, sent to the model when you dictate",
+    },
     localTip:
       "The dictionary is saved in {file} and is never uploaded or synced. When you dictate, the words your model can take are sent along with that request; in Offline mode they never leave this device",
     composer: { placeholder: "Type a new word", close: "Close" },
@@ -898,7 +900,7 @@ export default {
     },
     search: "Search",
     count: { one: "{count} word", other: "{count} words" },
-    empty: { title: "No words yet" },
+    empty: { title: "No words yet", text: "Names and terms, spelled as listed" },
     noResults: "No matching words",
     loadError: "Couldn't read the dictionary: {reason}",
     editHint: "Enter to save · Esc to cancel",
@@ -966,8 +968,8 @@ export default {
     sections: "Settings sections",
     general: "General",
     permissions: "Permissions",
-    about: "About",
-    hotkey: "Shortcut",
+    translation: "Translation",
+    hotkey: "Shortcuts",
     theme: "Theme",
     language: "Interface language",
     localModels: "On-device models",
@@ -997,7 +999,6 @@ export default {
     translateFailed: "Translation languages not changed: {reason}",
     lookupFailed: "Selection translation language not changed: {reason}",
     recheck: "Check again",
-    version: "Version",
     source: "Source code",
     storage: {
       title: "Storage location",
@@ -1077,7 +1078,7 @@ export default {
 
   onboarding: {
     groups: { features: "Features", keys: "Shortcuts", permissions: "Permissions", engine: "Engine" },
-    // 口号：开屏、功能两页的大标题，和首页的一样
+    // 口号：开屏、功能两页的大标题，和官网首屏的一样
     intro: { soft: "Speak it written. ", title: "Select to translate." },
     splash: {
       line: "Voice input, voice translation and selection translation, one shortcut away",
@@ -1109,13 +1110,13 @@ export default {
       ready: "Set up",
       unset: "Not set up",
       go: "Open Engine",
-      later: "Later",
+      later: "Set up later",
     },
     // 页底角落：这一步配的东西在主窗口哪里随时能改
     where: "Change anytime in {place}",
     back: "Back",
     next: "Continue",
-    skip: "Skip",
+    skip: "Set up later",
     skipAll: "Skip setup",
     // 功能演示（onboarding/scene.mjs）：一个聊天窗口、一个文档窗口里的字
     scene: {

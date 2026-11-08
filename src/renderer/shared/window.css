@@ -35,8 +35,6 @@
   /* 控件的描边：静止时一圈细线，悬停加深 */
   --ring: 0 0 0 1px var(--border);
   --ring-strong: 0 0 0 1px color-mix(in oklch, var(--ink) 24%, transparent);
-  --shadow-control: 0 1px 2px oklch(0 0 0 / 0.06);
-  --lift: 0 1px 2px oklch(0 0 0 / 0.04), 0 10px 30px -12px oklch(0 0 0 / 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,7 +44,6 @@
     --glass: color-mix(in oklch, var(--bg) 52%, transparent);
     --glass-strong: color-mix(in oklch, var(--bg) 78%, transparent);
     --sheen: color-mix(in oklch, var(--ink) 9%, transparent);
-    --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -12px oklch(0 0 0 / 0.5);
   }
 }
 
@@ -116,7 +113,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   color: var(--ink-2);
   white-space: nowrap;
@@ -195,7 +192,7 @@ p {
   gap: 0.375rem;
   height: var(--control-md);
   padding: 0 0.875rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
@@ -287,7 +284,7 @@ p {
   justify-content: center;
   min-width: 1.75rem;
   padding: 0.0625rem 0.5rem 0.125rem;
-  font: var(--weight-semibold) var(--text-small) / 1.5 var(--font-rounded);
+  font: var(--weight-semibold) var(--text-body) / 1.5 var(--font-rounded);
   white-space: nowrap;
   color: var(--ink);
   background: var(--surface-solid);
@@ -295,7 +292,7 @@ p {
   box-shadow:
     inset 0 0 0 1px var(--border),
     inset 0 -2px 0 var(--line),
-    0 1px 2px oklch(0 0 0 / 0.06);
+    var(--shadow-control);
 }
 
 /* 一个组合的一排键帽，和几个组合之间的"或"（shared/keycaps.mjs） */
@@ -307,14 +304,14 @@ p {
 
 .keycaps-or {
   margin: 0 0.25rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
 .link {
   padding: 0;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink);
   background: none;
   border: none;
@@ -344,7 +341,7 @@ p {
   min-width: 0;
   padding: 0.35rem 0.7rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink);
   background: var(--surface-solid);
   border: 1px solid var(--border);
@@ -370,7 +367,7 @@ p {
   height: var(--control-md);
   min-width: 0;
   padding: 0 0.625rem 0 0.875rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease-out);
 }
@@ -417,9 +414,7 @@ p {
   backdrop-filter: var(--glass-filter);
   border: none;
   border-radius: var(--radius-block);
-  box-shadow:
-    var(--edge),
-    0 24px 60px -20px oklch(0 0 0 / 0.35);
+  box-shadow: var(--edge), var(--shadow-popover);
   /* 收起时淡出：收起的样子写在这里，打开的写在 :open 上；进场从 @starting-style 淡入 */
   opacity: 0;
   translate: 0 -0.25rem;
@@ -449,7 +444,7 @@ p {
   gap: 1.5rem;
   min-height: var(--control-md);
   padding: 0 0.625rem 0 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   white-space: nowrap;
   border-radius: var(--radius-control);
   cursor: pointer;
@@ -467,7 +462,7 @@ p {
 .select option::checkmark {
   order: 1;
   margin-left: auto;
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   color: var(--primary);
 }
 
@@ -495,7 +490,7 @@ p {
   height: 1rem;
   background: var(--bg);
   border-radius: 50%;
-  box-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
+  box-shadow: var(--shadow-knob);
   transition: translate var(--dur-base) var(--ease-out);
 }
 
@@ -523,7 +518,7 @@ p {
   gap: 0.375rem;
   height: var(--control-md);
   padding: 0 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   line-height: 1;
   color: var(--ink-2);
@@ -567,7 +562,7 @@ p {
   padding: 0 0.625rem;
   overflow: hidden;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink-2);
@@ -676,7 +671,7 @@ button.badge:focus-visible {
   height: var(--control-sm);
   padding: 0 0.625rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink);
@@ -717,7 +712,7 @@ button.badge:focus-visible {
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.5;
   color: var(--ink);
   background: color-mix(in oklch, var(--problem) 9%, transparent);
@@ -852,7 +847,7 @@ button.badge:focus-visible {
   gap: 0.375rem;
   padding: 0 0.875rem;
   font: inherit;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1;
   color: var(--ink-2);
@@ -893,7 +888,7 @@ button.badge:focus-visible {
   border-radius: var(--radius-full);
   box-shadow:
     0 0 0 1px var(--line),
-    0 1px 3px oklch(0 0 0 / 0.1);
+    var(--shadow-selected);
 }
 
 /* 只有一个选项时：同样的外形，不能点 */
@@ -921,7 +916,7 @@ button.badge:focus-visible {
   border-radius: var(--radius-control);
   box-shadow:
     0 0 0 1px var(--line),
-    0 1px 2px oklch(0 0 0 / 0.06);
+    var(--shadow-control);
 }
 
 .logo-tile > :is(.provider-icon, .icon) {

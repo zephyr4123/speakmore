@@ -20,7 +20,7 @@ export function LogoLoop({ items, label }) {
             {items.map(({ id, name }) => (
               <li key={id} className="flex shrink-0 items-center gap-3 text-ink">
                 <ProviderIcon id={id} className="size-7" />
-                <span className="text-[1.0625rem] font-semibold tracking-[-0.01em] whitespace-nowrap">{name}</span>
+                <span className="text-body font-semibold tracking-brand whitespace-nowrap">{name}</span>
               </li>
             ))}
           </ul>

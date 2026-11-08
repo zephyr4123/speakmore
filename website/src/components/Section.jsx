@@ -15,7 +15,7 @@ const TONES = {
 export function Section({ id, tone = "canvas", className = "", children, labelledBy }) {
   return (
     <section id={id} aria-labelledby={labelledBy} className={`${TONES[tone]} text-ink overflow-clip ${className}`}>
-      <div className="mx-auto max-w-6xl px-5 py-[clamp(7rem,17vw,13rem)] sm:px-8">{children}</div>
+      <div className="mx-auto max-w-6xl px-5 py-section sm:px-8">{children}</div>
     </section>
   );
 }
@@ -39,6 +39,7 @@ export function Lines({ text, muted = false }) {
 
 /**
  * 一行排开的标题：文案里 \n 前后两半，前半浅、后半深（"口述随意"浅、"成文规整"深），中文用逗号接上、英文用空格。
+ * 只有"先铺垫、后落点"的句子才写 \n；两项并列的（"速度快，占用少"）整句写成一段，单色
  * 不再两行大字往下摞：只占一行（窄屏才折，中文只在标点处折），右边不空出一大块
  */
 function Inline({ text }) {
@@ -57,32 +58,14 @@ function Inline({ text }) {
 }
 
 /**
- * 每段的大标题，靠左一行（见 Inline）；给了 lead 时那句话放在右边一栏、和标题的底边对齐，窄屏上下排。
- * center：居中，给只有一行标题、没有那句话的段落
+ * 每段的大标题，靠左一行（见 Inline）
  */
-export function Heading({ id, title, lead, align = "split" }) {
-  if (align === "center") {
-    return (
-      <header className="reveal mx-auto max-w-3xl text-center">
-        <h2 id={id} className="display text-[clamp(2.4rem,6vw,4.5rem)]">
-          <Lines text={title} />
-        </h2>
-      </header>
-    );
-  }
-  const heading = (
-    <h2 id={id} className="display text-[clamp(2.125rem,4.6vw,3.75rem)] break-keep">
-      <Inline text={title} />
-    </h2>
-  );
-  if (!lead) return <header className="reveal mb-[clamp(0.75rem,2vw,1.75rem)]">{heading}</header>;
+export function Heading({ id, title }) {
   return (
-    <header className="reveal grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
-      {heading}
-      {/* 中文只在标点和空格处换行，不把一个词拆到两行；几行尽量一样长，不剩一个短尾巴 */}
-      <p className="max-w-[30rem] text-[clamp(1.0625rem,1.6vw,1.3125rem)] leading-relaxed text-balance break-keep wrap-anywhere text-ink-2 lg:justify-self-end lg:pb-[0.3em]">
-        {lead}
-      </p>
+    <header className="reveal mb-heading-gap">
+      <h2 id={id} className="display text-section break-keep">
+        <Inline text={title} />
+      </h2>
     </header>
   );
 }

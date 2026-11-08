@@ -2,7 +2,7 @@
    窗口里不再套框（消息不用气泡），口述的原话是一段字，不装进卡片。
    悬浮条、划词卡片是真页面嵌进来的（demo/）。颜色只用主题的 token。画面按 880×410 的像素画，整体缩放，所以尺寸写 px */
 
-/* 宽度由引导页定（onboarding.css 的 .stage-scene），高度按比例由 scene.mjs 写 */
+/* 宽度由引导页定（撑满 onboarding.css 的 .step.stacked），高度按比例由 scene.mjs 写 */
 .scene {
   position: relative;
 }
@@ -26,7 +26,7 @@
   border-radius: var(--radius-block);
   box-shadow:
     0 0 0 1px var(--line),
-    0 24px 48px -24px oklch(0 0 0 / 0.32);
+    var(--shadow-scene);
 }
 
 .titlebar {
@@ -68,7 +68,7 @@
 }
 
 .titlebar .title {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
 }
 
@@ -252,7 +252,7 @@
 }
 
 .message-meta b {
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
 }
 
 .message-meta time {
@@ -399,7 +399,7 @@
   align-items: center;
   gap: 6px;
   margin: 0 0 8px;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--ink-2);
   opacity: 0.6;
@@ -492,7 +492,7 @@
 
 .toc span {
   padding: 5px 10px;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -514,7 +514,7 @@
 .page h3 {
   margin: 0 0 12px;
   font-size: var(--text-title);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-semibold);
   letter-spacing: -0.01em;
 }
 

@@ -112,8 +112,9 @@ async function refreshData() {
 for (const item of document.querySelectorAll(".nav-item")) {
   item.addEventListener("click", () => navigate(item.dataset.route));
 }
-$("open-settings").addEventListener("click", () => settings.open("general"));
-$("open-about").addEventListener("click", () => settings.open("about"));
+$("open-settings").addEventListener("click", () => settings.open());
+// 版本旁边那个 ⓘ：原来的"关于"并进了通用（软件更新、源代码都在那一页）
+$("open-about").addEventListener("click", () => settings.open("general"));
 /** 补上还差的东西：缺 key 去引擎页的密钥面板，缺权限去设置的权限页 */
 function openFix() {
   const target = setup ? fixTarget(setup) : { pane: "general" };

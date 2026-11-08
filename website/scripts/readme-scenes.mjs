@@ -1,12 +1,12 @@
 // README 三个功能的配图，都出 WebP 两倍图，浅色、深色各一张：
 //   语音输入、语音翻译：字是直接写进别的应用的，App 里没有能截的画面，所以用代码画——口述的原话在左，写进输入框的字在右，
 //     样式取 App 自己的（src/renderer/shared/tokens.css 和靛青主题）；下面的悬浮条是真的悬浮条页面离屏画出来的，不是照着画的。
-//   划词翻译：真截图（在 Mac 上截的全屏），裁到卡片和选区那一块，加圆角和阴影。
+//   截图的局部：划词翻译的实拍（在 Mac 上截的全屏）、官网用的 App 截图局部（readme-shots.mjs 记下的），裁一块加圆角和阴影。
 //
 //   ../node_modules/.bin/electron scripts/readme-scenes.mjs -- <photos.json> <输出目录>     （在 website/ 下）
 //
-// photos.json 是划词截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<全屏截图.png>", "crop": { "x", "y", "width", "height" } }]，
-// 坐标是截图的像素（两倍图）。输出目录里有 manifest.json，再用 upload-media.mjs 传到图片桶的 readme/ 下。
+// photos.json 是截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<截图.png>", "crop": { "x", "y", "width", "height" }, "fade": 48 }]，
+// 坐标是截图的像素（两倍图），fade 可省（见 photo）。输出目录里有 manifest.json，再用 upload-media.mjs 传到图片桶的 readme/ 下。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -229,7 +229,7 @@ function sceneHtml({ saidLabel, wroteLabel, said, wrote, bar, scheme }) {
     .row { display: grid; grid-template-columns: 1fr 40px 1.1fr; align-items: center; gap: 14px; }
     .side { display: flex; flex-direction: column; gap: 4px; }
     .card { border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--bg); padding: 18px 20px 20px; box-shadow: 0 1px 2px oklch(0 0 0 / 0.05); }
-    .label { display: flex; align-items: center; gap: 6px; font-size: var(--text-small); font-weight: var(--weight-semibold); color: var(--ink-2); margin-bottom: 10px; }
+    .label { display: flex; align-items: center; gap: 6px; font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--ink-2); margin-bottom: 10px; }
     .label svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .said { color: var(--ink-2); font-size: 15px; }
     .arrow { display: grid; place-items: center; color: var(--primary); }
@@ -277,8 +277,11 @@ async function render(html, width) {
   return { body: await encode(image.toPNG()), width, height };
 }
 
-/** 真截图裁一块，加圆角、细边和阴影 */
-async function photo({ file, crop }) {
+/**
+ * 真截图裁一块，加圆角、细边和阴影。fade：右边这么宽（CSS 像素）渐隐成透明，连同细边和阴影一起淡掉，
+ * 读起来是"画面外还有"而不是硬切一刀（划词实拍里比裁切还长的那几行）；改的是透明度，深浅底色上都不露馅
+ */
+async function photo({ file, crop, fade = 0 }) {
   const image = nativeImage.createFromPath(file).crop(crop);
   const png = image.toPNG();
   const page = await canvasPage();
@@ -296,6 +299,12 @@ async function photo({ file, crop }) {
     c.beginPath(); c.roundRect(pad, pad, w, h, r); c.fillStyle = "#fff"; c.fill(); c.restore();
     c.save(); c.beginPath(); c.roundRect(pad, pad, w, h, r); c.clip(); c.drawImage(image, pad, pad); c.restore();
     c.beginPath(); c.roundRect(pad + 0.5 * s, pad + 0.5 * s, w - s, h - s, r); c.lineWidth = s; c.strokeStyle = "rgba(0, 0, 0, 0.14)"; c.stroke();
+    if (${fade} > 0) {
+      const mask = c.createLinearGradient(pad + w - ${fade} * s, 0, pad + w, 0);
+      mask.addColorStop(0, "#000"); mask.addColorStop(1, "transparent");
+      c.globalCompositeOperation = "destination-in"; c.fillStyle = mask; c.fillRect(0, 0, canvas.width, canvas.height);
+      c.globalCompositeOperation = "source-over";
+    }
     return { url: canvas.toDataURL("image/webp", 0.9), width: canvas.width / s, height: canvas.height / s };
   })()`);
   return {

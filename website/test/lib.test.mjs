@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { matchLocale, otherLocale, pickLocale } from "../src/lib/locale.js";
-import { siteLinks } from "../src/lib/site.js";
+import { onPhoneOrTablet, siteLinks } from "../src/lib/site.js";
 import { cutMarks, fill, fillText } from "../src/lib/text.js";
 
 test("选语言：网址参数 > 上次选的 > 浏览器", () => {
@@ -59,4 +59,35 @@ test("地址都从配置和版本号算出来，结尾多一道斜杠也不出�
   assert.equal(links.install.windows, "irm https://dl.example/sm/install.ps1 | iex");
   assert.equal(links.media("shots/a.webp"), "https://m.example/shots/a.webp");
   assert.equal(links.license, "https://github.com/o/r/blob/main/LICENSE");
+});
+
+test("手机、平板认得出来（装不了安装包，下载换成复制链接）：iPadOS 的 Safari 自称 Mac，靠触点数认", () => {
+  const iphone = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148";
+  const android = "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 Chrome/131.0 Mobile Safari/537.36";
+  const mac = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15";
+  const windows = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36";
+  assert.equal(onPhoneOrTablet({ userAgent: iphone, maxTouchPoints: 5 }), true);
+  assert.equal(onPhoneOrTablet({ userAgent: android, maxTouchPoints: 5 }), true);
+  assert.equal(onPhoneOrTablet({ userAgent: mac, maxTouchPoints: 5 }), true);
+  assert.equal(onPhoneOrTablet({ userAgent: mac, maxTouchPoints: 0 }), false);
+  // 带触屏的 Windows 笔记本照样能装
+  assert.equal(onPhoneOrTablet({ userAgent: windows, maxTouchPoints: 10 }), false);
+  // 大屏安卓平板上的 Chrome 默认要桌面版网页，自称 Linux 桌面，也靠触点数认
+  const androidDesktop =
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+  assert.equal(onPhoneOrTablet({ userAgent: androidDesktop, maxTouchPoints: 5 }), true);
+  assert.equal(onPhoneOrTablet({ userAgent: androidDesktop, maxTouchPoints: 0 }), false);
+});
+
+test("下载页的地址：给手机访客复制，到电脑上打开", () => {
+  const links = siteLinks(
+    {
+      siteUrl: "https://example.com/",
+      downloadBase: "https://dl.example.com",
+      mediaBase: "https://m.example.com",
+      repository: "r",
+    },
+    "1.2.3",
+  );
+  assert.equal(links.downloadPage, "https://example.com/#download");
 });

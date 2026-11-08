@@ -2,18 +2,20 @@ import { LOCALES, SYSTEM_LOCALE } from "../../i18n/index.mjs";
 import { fillSelect } from "../shared/dom.mjs";
 import { createHotkeyEditor, recordBlocker } from "../shared/hotkey-editor.mjs";
 import { t } from "../shared/i18n.mjs";
-import { describeError, keyMissing, permissionDenied, permissionText } from "../shared/setup-text.mjs";
+import { describeError, homeText, keyMissing, permissionDenied, permissionText } from "../shared/setup-text.mjs";
 import { createTranslatePane } from "./translate-pane.mjs";
 
-// 设置对话框：原版的"设置中心"，左边一列菜单，按功能分栏：通用（主题、界面语言、开机启动、存储位置、软件更新）、
-// 快捷键（动作目录里的每个动作、悬浮条上的按键提示）、语音翻译（译成哪几种，translate-pane.mjs）、划词翻译（译成哪一种）、
-// 本机模型（下载源、加速、内存）、权限、关于。
+// 设置对话框：原版的"设置中心"，左边一列菜单，按功能分栏：通用（主题、界面语言、开机启动、存储位置、软件更新、源代码）、
+// 快捷键（动作目录里的每个动作、悬浮条上的按键提示）、翻译（语音翻译译成哪几种，translate-pane.mjs；划词翻译译成哪一种）、
+// 本机模型（下载源、加速、内存）、权限。只有一两行的分栏不单开（原来的划词翻译、关于），设置的分栏越少越好找。
 // 识别方式、模型和 key 不在这里：在侧栏的"引擎"一页（engine/）。
 // 状态都在主进程，这里只负责画出来和转达用户的操作。
 
 const $ = (id) => document.getElementById(id);
 
-const PANES = ["general", "hotkeys", "voice-translate", "lookup", "local-models", "permissions", "about"];
+const PANES = ["general", "hotkeys", "translation", "local-models", "permissions"];
+/** 上一次看的是哪一页：只是打开设置（侧栏的齿轮、菜单的"设置…"）时回到那一页，照苹果的做法 */
+const LAST_PANE = "settings.pane";
 
 /**
  * 还差的东西在哪补：key 在侧栏"引擎"一页的密钥表；权限、小帮手停了在设置的权限页（重新检查在那页）；
@@ -113,6 +115,14 @@ export function describeUpdate(update, t) {
 export const updateFlagged = (update) =>
   Boolean(update) && update.progress?.state !== "running" && (update.available || update.progress?.state === "failed");
 
+function lastPane() {
+  try {
+    return localStorage.getItem(LAST_PANE) ?? "general";
+  } catch {
+    return "general";
+  }
+}
+
 /**
  * @param {{ refresh: () => Promise<object> }} options refresh：重新问主进程要一份状态，并让整个窗口跟着更新
  */
@@ -121,6 +131,11 @@ export function createSettings({ refresh }) {
 
   function showPane(pane) {
     const name = PANES.includes(pane) ? pane : "general";
+    try {
+      localStorage.setItem(LAST_PANE, name);
+    } catch {
+      // 存不下（存储被禁用）只是下次不回到这一页，不影响打开
+    }
     for (const section of dialog.querySelectorAll(".pane")) section.hidden = section.dataset.pane !== name;
     for (const item of dialog.querySelectorAll(".menu-item")) {
       if (item.dataset.pane === name) item.setAttribute("aria-current", "true");
@@ -445,9 +460,9 @@ export function createSettings({ refresh }) {
   });
 
   return {
-    /** @param {string} [pane] 打开哪一页 */
-    open(pane = "general") {
-      showPane(pane);
+    /** @param {string} [pane] 打开哪一页；不给或给 "last"：上一次看的那一页 */
+    open(pane = "last") {
+      showPane(pane === "last" ? lastPane() : pane);
       if (!dialog.open) dialog.showModal();
     },
 
@@ -458,8 +473,7 @@ export function createSettings({ refresh }) {
       renderLookup(setup);
       renderLocalModels(setup);
       renderPermissions(setup);
-      $("about-version").textContent = `v${setup.version}`;
-      $("storage-path").textContent = setup.home;
+      $("storage-path").textContent = homeText(setup);
       $("storage-path").title = setup.home;
       renderUpdate(setup.update);
       // 菜单上标个点：权限、快捷键这两页有东西要补（红点），通用这一页有更新的事（见下），侧栏的设置图标上也标

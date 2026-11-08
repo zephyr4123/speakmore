@@ -20,7 +20,8 @@ export default {
   },
   hero: {
     title: "口述成文，划词即译",
-    lead: "Mac 与 Windows 上的语音输入与翻译，开源免费",
+    // 手机上不在「Windows／上的」之间折：那里用不换行的空格，{wbr} 是可以折的地方（Hero.jsx 换成 <wbr>）
+    lead: "Mac 与 Windows\u00a0上的{wbr}语音输入与翻译，开源免费",
     shotAlt: "SpeakMore 主窗口首页：三项功能的快捷键、字数、省时、语速与每日热力图，右上角为当前识别方式",
     barAlt: "口述时的悬浮条：左侧取消，中间为随语音起伏的声波，右侧完成",
   },
@@ -53,7 +54,8 @@ export default {
   },
   // 语音翻译的演示：群聊里回外国同事一句。口述和译文是 App 的真实输出（混合方式，DeepSeek V4.1 Flash）
   translate: {
-    title: "开口即译\n语言任选",
+    // 两项并列，不分先后：单色（两色只给"先铺垫、后落点"的句子，Section.jsx 的 Inline）
+    title: "开口即译，语言任选",
     chat: {
       contact: "Emma",
       incoming: "Could you send me the revised schedule this week?",
@@ -108,7 +110,8 @@ export default {
     shotAlt: "引擎页：整理一步展开到 DeepSeek，详情中为渠道、价格与检测",
   },
   ways: {
-    title: "三种识别方式\n按需切换",
+    // "按需切换"是附带的一句，重音不该落在它上面：单色
+    title: "三种识别方式，按需切换",
     lanes: { cloud: "云端", device: "本机", offline: "不联网" },
     items: [
       {
@@ -137,7 +140,8 @@ export default {
     ],
   },
   speed: {
-    title: "速度快\n占用少",
+    // 两项并列：单色
+    title: "速度快，占用少",
     headline: { label: "主流硬件", value: "2", prefix: "<", unit: "秒", text: "松开快捷键到文字出现" },
     stats: [
       { value: "0.23", unit: "秒", label: "本机转文字", note: "Apple 芯片" },
@@ -189,12 +193,15 @@ export default {
     text: "模型费用按用量，直接付给厂商；划词翻译每次约 ¥0.0008。",
     per: "/ 月",
     paid: { name: "混合", note: "每天 100 次语音输入" },
-    free: { name: "离线", note: "模型下载到本机，在自己的电脑上运行 AI" },
+    // 「运行 AI」之间不折：AI 单独掉到第三行
+    free: { name: "离线", note: "模型下载到本机，在自己的电脑上运行\u00a0AI" },
   },
   setup: {
     title: "首次引导\n四步上手",
     steps: ["演示三项功能", "检查快捷键", "开启权限", "前往引擎", "推荐组合一键启用"],
     alt: "首次引导第 {n} 步：{step}",
+    after: "引导之后",
+    afterAlt: "首次引导之后：{step}",
     previous: "上一步",
     next: "下一步",
   },
@@ -257,6 +264,8 @@ export default {
     lead: "免费下载。macOS 12 及以上；Windows 10 及以上（64 位）。",
     buttons: { arm64: "下载 Apple 芯片版", windows: "下载 Windows 版" },
     intel: "Intel 芯片 Mac 版",
+    // 手机、平板上装不了：复制下载页的地址，到电脑上打开
+    phone: { copy: "复制下载链接", hint: "请在 Mac 或 Windows 电脑上打开" },
     terminal: { mac: "macOS · 终端", windows: "Windows · PowerShell" },
     copy: "复制",
     copied: "已复制",

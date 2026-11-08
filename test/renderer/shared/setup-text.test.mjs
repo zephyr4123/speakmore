@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createTranslator } from "../../../src/i18n/index.mjs";
-import { describeError, permissionGranted, permissionText } from "../../../src/renderer/shared/setup-text.mjs";
+import {
+  describeError,
+  homeText,
+  permissionGranted,
+  permissionText,
+} from "../../../src/renderer/shared/setup-text.mjs";
 
 // 按 macOS 的说法查；Windows 那几句的说法在 i18n 的测试里查
 const zh = createTranslator("zh-CN", "darwin");
@@ -29,4 +34,13 @@ test('麦克风从没问过时按钮写"授权"：要先让系统弹框，系统
   assert.deepEqual(permissionText("trusted", true, zh), ["已授权", "ok", "系统设置"]);
   assert.deepEqual(permissionText("microphone", "not-determined", en), ["Not granted", "problem", "Allow"]);
   assert.deepEqual(permissionText("trusted", true, en), ["Granted", "ok", "System Settings"]);
+});
+
+test("数据目录给人看：Mac 上家目录写成 ~，Windows 上（主进程不给 userHome）照写完整路径", () => {
+  assert.equal(homeText({ home: "/Users/kim/.speakmore", userHome: "/Users/kim" }), "~/.speakmore");
+  assert.equal(homeText({ home: "/Users/kim", userHome: "/Users/kim" }), "~");
+  // 搬到别的盘、或者名字只是开头一样的目录：不缩写
+  assert.equal(homeText({ home: "/Volumes/Data/.speakmore", userHome: "/Users/kim" }), "/Volumes/Data/.speakmore");
+  assert.equal(homeText({ home: "/Users/kimberly/.speakmore", userHome: "/Users/kim" }), "/Users/kimberly/.speakmore");
+  assert.equal(homeText({ home: "C:\\Users\\kim\\.speakmore", userHome: null }), "C:\\Users\\kim\\.speakmore");
 });

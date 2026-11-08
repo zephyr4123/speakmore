@@ -899,7 +899,7 @@ export default {
     }
   },
   "home": {
-    "title": "口述成文，劃詞即譯",
+    "title": "首頁",
     "words": "字數",
     "saved": "省時",
     "speed": "語速",
@@ -1012,10 +1012,9 @@ export default {
     "title": "詞典",
     "add": "新詞",
     "import": "匯入",
-    "local": "僅儲存在本機",
-    "localMeta": {
-      "device": "不上傳",
-      "cloud": "隨聽寫請求發出"
+    "local": {
+      "device": "存在本機，不上傳",
+      "cloud": "存在本機，聽寫時隨請求發給識別模型"
     },
     "localTip": "詞典儲存在 {file}，不上傳、不同步。聽寫時，所用模型收得下的那部分詞隨這次請求一併發出；離線方式下不離開本機",
     "composer": {
@@ -1056,7 +1055,8 @@ export default {
     "search": "搜尋",
     "count": "{count} 個詞",
     "empty": {
-      "title": "還沒有詞彙"
+      "title": "還沒有詞彙",
+      "text": "人名與術語，按詞典寫法輸出"
     },
     "noResults": "沒有匹配的詞",
     "loadError": "讀不出詞典：{reason}",
@@ -1129,7 +1129,7 @@ export default {
     "sections": "設定分類",
     "general": "通用",
     "permissions": "權限",
-    "about": "關於",
+    "translation": "翻譯",
     "hotkey": "快捷鍵",
     "theme": "主題",
     "language": "介面語言",
@@ -1160,7 +1160,6 @@ export default {
     "translateFailed": "語音翻譯的語言未能更改：{reason}",
     "lookupFailed": "劃詞翻譯的語言未能更改：{reason}",
     "recheck": "重新檢查",
-    "version": "版本",
     "source": "原始碼",
     "storage": {
       "title": "儲存位置",
@@ -1277,7 +1276,7 @@ export default {
     "where": "隨時可在 {place} 中修改",
     "back": "返回",
     "next": "繼續",
-    "skip": "跳過",
+    "skip": "稍後配置",
     "skipAll": "跳過引導",
     "scene": {
       "spoken": "口述",

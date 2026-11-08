@@ -21,7 +21,8 @@ export default {
   },
   hero: {
     title: "Speak it written. Select to translate.",
-    lead: "Free, open-source voice input and translation for Mac and Windows",
+    // {wbr}：可以折行的地方（Hero.jsx 换成 <wbr>）。英文在空格处本来就能折，这里放一个只为和中文的占位一致
+    lead: "Free, open-source voice input and translation{wbr} for Mac and Windows",
     shotAlt:
       "SpeakMore's home window: the hotkeys of the three features, words, time saved, pace and a daily heatmap, with the active mode at the top right",
     barAlt: "The floating bar during dictation: cancel, a live waveform, done",
@@ -131,7 +132,7 @@ export default {
     shotAlt: "The Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details",
   },
   ways: {
-    title: "Three modes.\nSwitch anytime.",
+    title: "Three modes. Switch anytime.",
     lanes: { cloud: "Cloud", device: "Device", offline: "Offline" },
     items: [
       {
@@ -160,7 +161,7 @@ export default {
     ],
   },
   speed: {
-    title: "Fast.\nAnd light.",
+    title: "Fast. And light.",
     headline: {
       label: "Mainstream hardware",
       value: "2",
@@ -235,6 +236,8 @@ export default {
       "A recommended setup in one click",
     ],
     alt: "Setup step {n}: {step}",
+    after: "After setup",
+    afterAlt: "After setup: {step}",
     previous: "Previous step",
     next: "Next step",
   },
@@ -312,6 +315,7 @@ export default {
     lead: "Free download. macOS 12 or later; Windows 10 or later (64-bit).",
     buttons: { arm64: "Download for Apple silicon", windows: "Download for Windows" },
     intel: "Mac with Intel",
+    phone: { copy: "Copy download link", hint: "Open it on a Mac or Windows computer" },
     terminal: { mac: "macOS · Terminal", windows: "Windows · PowerShell" },
     copy: "Copy",
     copied: "Copied",

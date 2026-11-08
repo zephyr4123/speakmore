@@ -21,30 +21,33 @@ export function Speed() {
     <Section id="speed" tone="ink" labelledBy="speed-title">
       <Heading id="speed-title" title={text.title} />
 
-      <div className="reveal mt-[clamp(3rem,7vw,5rem)] grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center">
+      <div className="reveal mt-flow-2 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center">
         <dl ref={headline.ref} data-roll={headline.stage}>
-          <dt className="text-[clamp(1.125rem,1.8vw,1.375rem)] font-semibold text-ink">{text.headline.label}</dt>
-          <dd className="mt-3 font-rounded text-[clamp(5rem,12vw,8.5rem)] leading-none font-semibold tracking-[-0.03em] text-ink">
+          <dt className="text-subhead font-semibold text-ink">{text.headline.label}</dt>
+          <dd className="mt-3 font-rounded text-stat leading-none font-semibold tracking-stat text-ink">
+            {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
             <span className="mr-1 text-[0.55em] font-medium text-ink-2">{text.headline.prefix}</span>
             <Rolling value={text.headline.value} />
+            {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
             <span className="ml-2 text-[0.32em] font-medium tracking-normal text-ink-2">{text.headline.unit}</span>
           </dd>
-          <dd className="mt-2 text-lg text-ink-2">{text.headline.text}</dd>
+          <dd className="mt-2 text-heading text-ink-2">{text.headline.text}</dd>
         </dl>
         <Hardware text={text.hardware} />
       </div>
 
-      <div className="reveal mt-[clamp(3rem,7vw,5rem)] grid gap-x-16 gap-y-12 border-t border-line pt-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div className="reveal mt-flow-2 grid gap-x-16 gap-y-12 border-t border-line pt-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <dl ref={stats.ref} data-roll={stats.stage} className="grid grid-cols-2 gap-x-8">
           {text.stats.map((stat) => (
             // 数字在上、说明在下（dt 得写在前面，所以倒过来排）；在哪类硬件上测的另起一行
             <div key={stat.label} className="flex flex-col-reverse justify-end gap-2">
-              <dt className="text-[0.9375rem] leading-snug text-ink-2">
+              <dt className="text-label leading-snug text-ink-2">
                 {stat.label}
                 {stat.note ? <span className="block">{stat.note}</span> : null}
               </dt>
-              <dd className="font-rounded text-[clamp(2.25rem,4.4vw,3.25rem)] leading-[1.25] font-semibold tracking-tight whitespace-nowrap text-ink">
+              <dd className="font-rounded text-stat-sm leading-figure font-semibold tracking-figure whitespace-nowrap text-ink">
                 <Rolling value={stat.value} />
+                {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
                 <span className="ml-1.5 text-[0.45em] font-medium tracking-normal text-ink-2">{stat.unit}</span>
               </dd>
             </div>
@@ -71,13 +74,13 @@ const MARK = {
 function Hardware({ text }) {
   const { ref, stage } = useEnterOnce();
   return (
-    <section ref={ref} data-stage={stage} className="hardware overflow-clip rounded-[1.5rem] border border-line">
+    <section ref={ref} data-stage={stage} className="hardware overflow-clip rounded-panel border border-line">
       <h3 className="sr-only">{text.label}</h3>
       {text.groups.map((group, row) => (
         <div key={group.id} className="grid border-line sm:grid-cols-[8rem_minmax(0,1fr)] [&+&]:border-t">
           <div className="flex items-baseline justify-between gap-3 px-4 pt-5 pb-1 sm:flex-col sm:justify-center sm:gap-1 sm:border-r sm:border-line sm:p-6">
             <h4 className="font-semibold text-ink">{group.name}</h4>
-            <p className="text-sm text-ink-2">{group.note}</p>
+            <p className="text-label text-ink-2">{group.note}</p>
           </div>
           <ul className="grid grid-cols-3">
             {group.items.map((item, column) => (
@@ -89,7 +92,7 @@ function Hardware({ text }) {
                 <span className="flex h-7 items-center">
                   <Icon name={item.icon} className={`w-auto ${MARK[item.icon]}`} />
                 </span>
-                <p className="text-[0.9375rem] leading-snug text-ink">
+                <p className="text-label leading-snug text-ink">
                   <span className="sr-only">{item.brand} </span>
                   {item.series}
                 </p>
@@ -120,8 +123,8 @@ function LongTake({ text }) {
   return (
     <div ref={ref}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-        <h3 className="text-[1.0625rem] font-semibold text-ink">{text.title}</h3>
-        <p className="text-[0.9375rem] text-ink-2">{text.text}</p>
+        <h3 className="text-body font-semibold text-ink">{text.title}</h3>
+        <p className="text-body text-ink-2">{text.text}</p>
       </div>
       <div aria-hidden="true" className="mt-5">
         <div className="long-take" data-play={seen ? "" : undefined}>
@@ -134,7 +137,7 @@ function LongTake({ text }) {
             </div>
           ))}
         </div>
-        <div className="mt-2.5 flex justify-between font-rounded text-sm text-ink-2 tabular-nums">
+        <div className="mt-2.5 flex justify-between font-rounded text-label text-ink-2 tabular-nums">
           <span>{text.start}</span>
           <span>{text.end}</span>
         </div>

@@ -143,7 +143,7 @@ SpeakMore 是照着对 Typeless 2.8.1 的[逆向分析](../targets/typeless/READ
 选中文字后按右⌥回车（Windows 右 Alt+回车），在选区下方弹一张卡片：译文和复制。卡片上原来还有"替换选中文字"（选区能改时把译文贴回原处），10-23 他定了砍掉：划词多半是在网页、App 里看东西，选区不一定能改，往原处贴会出各种问题。小帮手判断"能不能改"的那部分也一起删了。和语音的两个功能是两套：
 
 - **内核**在 `src/server/lookup/`（提示词、收尾、判断原文语言、翻译器、出厂模型），和语音的任务（`src/server/tasks/`）互不引用，只共用底层的 `src/server/chat/client.mjs`。账照记，用途是 `lookup`，历史库因此升到第 4 版（退回办法在 `src/storage/history.mjs` 文件头）。首页的口述统计不算它。
-- **设置**是划词自己的四项：`lookup.to`、`lookup.model`（出厂 DeepSeek V4.1 Flash）、`lookup.customUrl`、`lookup.customParams`。选自定义服务时 key 另存一把（`lookupcustom-key.bin`，环境变量 `SPEAKMORE_LOOKUP_CUSTOM_API_KEY`），和语音那边的自定义服务不相干；清单里厂商的 key 同一家只有一把，两边共用。主窗口里在设置的"划词翻译"一栏改译成，在引擎页的"划词"一段换模型、配自定义服务（先验再存，`src/app/lookup/setup.mjs`）。
+- **设置**是划词自己的四项：`lookup.to`、`lookup.model`（出厂 DeepSeek V4.1 Flash）、`lookup.customUrl`、`lookup.customParams`。选自定义服务时 key 另存一把（`lookupcustom-key.bin`，环境变量 `SPEAKMORE_LOOKUP_CUSTOM_API_KEY`），和语音那边的自定义服务不相干；清单里厂商的 key 同一家只有一把，两边共用。主窗口里在设置的"翻译"一栏改译成（和语音翻译同一栏），在引擎页的"划词"一段换模型、配自定义服务（先验再存，`src/app/lookup/setup.mjs`）。
 - **取选区**归小帮手（`selection` 命令）：Mac 先问辅助功能（选中的字和它在屏幕上的框），问不到再模拟 ⌘C 取剪贴板、取完放回原样；Windows 先问 UI Automation，再模拟 Ctrl+C。实测记事本、Edge 都是 UI Automation 拿到的，1–20 毫秒。
 - **卡片不抢焦点**：用户正在看、正在写的那个应用留着焦点和选区。卡片窗口做法同悬浮条，透明、点不到，按钮上的点击由小帮手截下来交给主进程（截的时候顺带报"点在卡片外面"，用来收起）。
 - **语音输入的键是划词组合的一部分**（右⌥ 和 右⌥回车）：按下右⌥ 时先压住，见 `docs/hotkey-research.md` 的 5.3，悬浮条不会闪一下。
@@ -356,7 +356,7 @@ src/usage/report.mjs                    今天、本月、累计、按型号分�
 | `src/renderer/bar/bar-view.mjs`、`bar-ui.mjs`、`bar.mjs` | 悬浮条：该是什么样子、把它画出来、控制 | 原版的悬浮条页面 |
 | `src/renderer/hub/` | 主窗口：首页、历史记录、设置对话框 | 原版的 hub 页面 |
 | `src/renderer/onboarding/` | 首次引导：开屏 → 功能（三个功能轮着演示，悬浮条、划词卡片是真页面嵌进来的，`demo/`）→ 快捷键（三个组合各按一下，认窗口自己的按键和小帮手转来的，`key-check.mjs`）→ 权限（只有 Mac，麦克风出电平、输入监控按一下确认）→ 引擎（去引擎页，弹出推荐组合）。每步可退回、可跳过；步骤和做完没有在 `flow.mjs` | 原版的 onboarding 页面（只借了窗口和"能跳过"） |
-| `src/renderer/shared/` | 三个页面共用：`tokens.css`（不随主题变的字号、字重、间距、圆角、动效；字号七档、字重四档，样式里只能用它们，`test/renderer/shared/type-scale.test.mjs` 守着）、`window.css`（窗口的光晕、玻璃、按钮）、`dom.mjs`（用代码画的几块拼节点、取图标）、权限的说法（设置和引导都用） | |
+| `src/renderer/shared/` | 三个页面共用：`tokens.css`（不随主题变的字号、字重、间距、圆角、动效；字号六档、字重三档，样式里只能用它们，`test/renderer/shared/type-scale.test.mjs` 守着）、`window.css`（窗口的光晕、玻璃、按钮）、`dom.mjs`（用代码画的几块拼节点、取图标）、权限的说法（设置和引导都用） | |
 | `src/renderer/bar/recorder.mjs` | 录音，每 3 秒一块 | 录音与编码（[11](../targets/typeless/docs/11-audio-recorder.md)） |
 | `src/renderer/bar/voice-socket.mjs` | 听写协议的客户端一侧 | 网络协议（[05](../targets/typeless/docs/05-network-protocol.md)） |
 | `src/server/` | 听写服务：收分块音频（`protocol/`），交给选的那一家模型整理成文字（`refine/`、`providers/`、`audio/`），见上面“不止一家模型” | 原版的服务端（内部看不到，只照着协议做） |

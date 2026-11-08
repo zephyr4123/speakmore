@@ -6,6 +6,7 @@
  */
 export function siteLinks(site, version) {
   const base = site.downloadBase.replace(/\/+$/, "");
+  const page = site.siteUrl.replace(/\/+$/, "");
   const media = site.mediaBase.replace(/\/+$/, "");
   return {
     version,
@@ -20,9 +21,21 @@ export function siteLinks(site, version) {
       mac: `curl -fsSL ${base}/install.sh | bash`,
       windows: `irm ${base}/install.ps1 | iex`,
     },
+    /** 官网的下载那一段：手机上装不了，复制这个地址到电脑上打开 */
+    downloadPage: `${page}/#download`,
     repository: site.repository,
     license: `${site.repository}/blob/main/LICENSE`,
     /** COS 上一张图的地址；path 是 src/media.json 里记的对象名 */
     media: (path) => `${media}/${path}`,
   };
+}
+
+/**
+ * 访客是不是在手机、平板上：这些设备装不了安装包。iPadOS 的 Safari 默认自称 Mac、大屏安卓平板的 Chrome 默认自称
+ * Linux 桌面，都靠触点数认（真的 Mac 没有触屏；Linux 本来也没有安装包）；带触屏的 Windows 笔记本能装，不算
+ * @param {{ userAgent: string, maxTouchPoints: number }} device 通常就是 navigator
+ */
+export function onPhoneOrTablet({ userAgent, maxTouchPoints }) {
+  if (/iPhone|iPad|iPod|Android/i.test(userAgent)) return true;
+  return /Macintosh|X11|Linux|CrOS/.test(userAgent) && maxTouchPoints > 1;
 }

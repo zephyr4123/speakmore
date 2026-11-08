@@ -1,33 +1,35 @@
-/* 三个页面共用、不随主题变的 token：字、间距、控件尺寸、圆角、动效。
-   颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。 */
+/* 各页面共用、不随主题变的 token：字、间距、控件尺寸、圆角、阴影、动效。
+   颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。
+   由 scripts/dev/make-tokens.mjs 从 src/design/app.mjs 生成，别手改：改了源再跑 npm run tokens */
 
 :root {
+  /* 字体：正文、标题（页面和引导的大标题）、圆体（大号的数字）、等宽。和官网同一份（src/design/base.mjs） */
   --font:
-    -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI",
-    system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
-  /* 大号的数字用系统的圆体（SF Pro Rounded），和正文的直角字拉开一点 */
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Text", "Segoe UI",
+    "Microsoft YaHei UI", system-ui, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Display", "Segoe UI",
+    "Microsoft YaHei UI", system-ui, sans-serif;
   --font-rounded:
-    ui-rounded, -apple-system, "PingFang SC", "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI", system-ui,
-    sans-serif;
+    ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI Variable Display",
+    "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
 
-  /* 字的层级：一种字体，靠字号、字重、颜色三样一起拉开。各处只用这七档字号、四档字重，样式里不写别的数：
-     12、14 这种夹在两档中间的字号会让名字、说明、标签看起来一样大，层级就糊了。
-     40 页面大标题 · 28 首页的大数字 · 22 对话框每页的标题、次一级的大数字 · 18 区块标题
-     15 正文：列表里的名字、设置项、导航 · 13 说明、状态、按钮、输入框、表格 · 11 标签、单位、刻度、脚注、键名 */
+  /* 字的层级：一种字体，靠字号、字重、颜色三样一起拉开。各处只用这六档字号、三档字重，样式里不写别的数。
+     相邻两档至少差 2px：差 1px 的两档看起来一样大，层级就糊了。和 Windows 11 的字阶对得上（12 Caption、14 Body、28 Title、40 Title large）。
+     40 引导每一步的大标题 · 28 页面标题、首页的大数字 · 22 对话框每页的标题、次一级的大数字 · 18 区块标题
+     14 正文：名字、设置项、导航、说明、状态、按钮、输入框、表格（名字靠字重、说明靠颜色分主次）· 12 标签、单位、刻度、脚注、键名 */
   --text-display: 2.5rem;
-  --text-figure: 1.75rem;
+  --text-page: 1.75rem;
   --text-title: 1.375rem;
   --text-heading: 1.125rem;
-  --text-body: 0.9375rem;
-  --text-small: 0.8125rem;
-  --text-micro: 0.6875rem;
+  --text-body: 0.875rem;
+  --text-micro: 0.75rem;
 
-  /* 正文 400；按钮、导航、标签 500；名字、区块标题、数值 600；页面和对话框的标题 700 */
+  /* 正文 400；按钮、导航、标签 500；名字、标题、数值 600 */
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
-  --weight-bold: 700;
 
   /* 间距：4、8、12、16、24、32、48 */
   --space-1: 0.25rem;
@@ -50,6 +52,24 @@
   --radius-card: 1rem;
   --radius-full: 999px;
 
+  /* 阴影，从低到高：control 键帽、品牌图标的底座 · selected 侧栏、分段控件里选中的那一项 · knob 开关的圆钮
+     lift 浮在光上的卡片（深色另有一份，见下面的 :root 深色段）· popover 下拉、菜单 · dialog 对话框、设置
+     card 划词卡片（窗口只比卡片大一圈，影子不能更长）· scene 引导里画的那扇窗 · bar、bar-menu 悬浮条和它的菜单。
+     popover、dialog、card 只是投影：用的地方前面接 var(--edge)（细线加上沿亮边，跟主题走，在 window.css） */
+  --shadow-control: 0 1px 2px oklch(0 0 0 / 0.06);
+  --shadow-selected: 0 1px 3px oklch(0 0 0 / 0.08);
+  --shadow-knob: 0 1px 2px oklch(0 0 0 / 0.25);
+  --lift: 0 1px 2px oklch(0 0 0 / 0.04), 0 10px 30px -12px oklch(0 0 0 / 0.12);
+  --shadow-popover: 0 24px 60px -20px oklch(0 0 0 / 0.35);
+  --shadow-dialog: 0 30px 80px -24px oklch(0 0 0 / 0.4);
+  --shadow-card: 0 12px 28px -10px oklch(0 0 0 / 0.34);
+  --shadow-scene: 0 24px 48px -24px oklch(0 0 0 / 0.32);
+  --shadow-bar: 0 0 0 1px var(--bar-edge), 0 6px 18px oklch(0 0 0 / 0.3), 0 2px 5px oklch(0 0 0 / 0.2);
+  --shadow-bar-menu: 0 0 0 1px var(--bar-edge), 0 8px 24px oklch(0 0 0 / 0.28);
+
+  /* 对话框背后压暗的那一层：深浅色都是黑的（用 --ink 的话深色下成了一层白雾） */
+  --scrim: oklch(0 0 0 / 0.18);
+
   /* 列表里定宽的两列：状态、操作。控件撑满列宽，各行的边缘才对得齐 */
   --col-status: 6rem;
   --col-action: 6rem;
@@ -58,7 +78,14 @@
   --dur-fast: 120ms;
   --dur-base: 200ms;
   --dur-slow: 320ms;
+
   /* 分类标签的下划线、分段控件的滑块从上一个位置滑过去 */
   --dur-slide: 280ms;
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -12px oklch(0 0 0 / 0.5);
+  }
 }

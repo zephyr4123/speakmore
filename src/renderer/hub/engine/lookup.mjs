@@ -265,7 +265,7 @@ export function createLookupSegment({ els, getSetup, refresh, openKeys, toast, p
                   },
             },
             brand(id),
-            name(id),
+            h("span", { class: "segment-name", text: name(id) }),
             view.hasKey(id) && svg("i-check", "icon key-mark"),
           ),
         ),

@@ -33,7 +33,7 @@ const readRows = (path) =>
 const out = join(resolve(values.out), values.flow);
 mkdirSync(join(out, "traces"), { recursive: true });
 const rows = readRows(join(dir, values.variant, "results.jsonl")).filter((row) => train.has(row.prompt_id));
-writeFileSync(join(out, "rows.jsonl"), rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
+writeFileSync(join(out, "rows.jsonl"), `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`);
 for (const row of rows) {
   const name = `${row.prompt_id}_rep${row.rep}.json`;
   copyFileSync(join(dir, values.variant, "traces", name), join(out, "traces", name));
@@ -54,10 +54,10 @@ for (const v of variants)
 const mean = (xs) => (xs ? (xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(2) : "");
 writeFileSync(
   join(out, "history.tsv"),
-  [
+  `${[
     ["case", ...variants].join("\t"),
     ...[...table].map(([id, cell]) => [id, ...variants.map((v) => mean(cell[v]))].join("\t")),
-  ].join("\n") + "\n",
+  ].join("\n")}\n`,
 );
 const failing = rows.filter((row) => row.grade.pass === 0).length;
 console.log(`${values.flow}/${values.variant}：训练集 ${rows.length} 行（没全对 ${failing} 行）→ ${out}`);

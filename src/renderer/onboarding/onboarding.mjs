@@ -495,12 +495,14 @@ function render() {
   }
   if (step === "engine") renderSummary();
 
-  // 底下：返回（开屏没有）、跳过引导、继续。开屏有自己的"开始"，引擎页有自己的"前往引擎"
+  // 底下：返回（开屏没有）、跳过引导、继续。开屏有自己的"开始"，引擎页有自己的"前往引擎"。
+  // 开屏的"继续"只是看不见、照样占着位置：不然"跳过引导"在开屏挪到最右边，到下一步又往左挪
   $("back").style.visibility = step === STEPS[0] ? "hidden" : "visible";
   $("skip-all").hidden = step === "engine";
   const next = $("next");
-  next.hidden = step === "splash" || step === "engine";
-  // 这一步做完了"继续"是主按钮，没做完写"跳过"（照样能往下走）
+  next.hidden = step === "engine";
+  next.style.visibility = step === "splash" ? "hidden" : "visible";
+  // 这一步做完了"继续"是主按钮，没做完写"稍后配置"（照样能往下走）
   const finished = stepDone(step, { passed, setup });
   next.textContent = t(finished ? "onboarding.next" : "onboarding.skip");
   next.classList.toggle("primary", finished);

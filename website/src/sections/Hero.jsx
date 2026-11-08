@@ -3,6 +3,7 @@ import { DownloadButtons } from "../components/DownloadButtons.jsx";
 import { Shot } from "../components/Shot.jsx";
 import { shot } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
+import { fill } from "../lib/text.js";
 
 /**
  * 首屏：图标、口号一行、副标题一行、下载，一张主窗口的图（跟着系统深浅换），说话时的悬浮条浮在窗口正下方。
@@ -15,28 +16,21 @@ export function Hero() {
 
   return (
     <section id="top" className="overflow-clip bg-canvas text-ink" aria-labelledby="hero-title">
-      <div className="mx-auto flex max-w-6xl flex-col items-center px-5 pt-[clamp(7rem,13vw,9.5rem)] text-center sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-5 pt-hero-top text-center sm:px-8">
         <img src={seal} alt="" width="80" height="80" className="rise size-[clamp(4rem,7vw,5rem)]" />
-        <h1
-          id="hero-title"
-          className="display rise mt-8 text-[clamp(2.5rem,6.5vw,4.75rem)] break-keep"
-          style={{ "--d": "80ms" }}
-        >
+        <h1 id="hero-title" className="display rise mt-8 text-hero break-keep" style={{ "--d": "80ms" }}>
           {m.hero.title}
         </h1>
         <p
-          className="rise mt-5 text-[clamp(1.0625rem,1.9vw,1.375rem)] leading-snug font-medium text-balance break-keep text-ink-2"
+          className="rise mt-5 text-subhead leading-snug font-medium text-balance break-keep text-ink-2"
           style={{ "--d": "160ms" }}
         >
-          {m.hero.lead}
+          {fill(m.hero.lead, { wbr: <wbr key="wbr" /> })}
         </p>
         <DownloadButtons className="rise mt-10" style={{ "--d": "240ms" }} />
       </div>
 
-      <div
-        className="rise mx-auto mt-[clamp(3.5rem,8vw,5.5rem)] max-w-5xl px-5 pb-[clamp(8rem,15vw,11rem)] sm:px-8"
-        style={{ "--d": "420ms" }}
-      >
+      <div className="rise mx-auto mt-flow-3 max-w-5xl px-5 pb-hero-bottom sm:px-8" style={{ "--d": "420ms" }}>
         <div className="relative">
           <Shot name="home" dark="home-dark" alt={m.hero.shotAlt} loading="eager" fetchPriority="high" />
           {/* 说话时那条悬浮条：在窗口正下方，像说话时它浮在桌面上 */}
@@ -45,7 +39,7 @@ export function Hero() {
             width={bar.width}
             height={bar.height}
             alt={m.hero.barAlt}
-            className="absolute bottom-0 left-1/2 w-[clamp(10rem,24vw,14.5rem)] -translate-x-1/2 translate-y-[calc(100%-0.5rem)] drop-shadow-[0_14px_24px_oklch(0_0_0/0.28)]"
+            className="absolute bottom-0 left-1/2 w-[clamp(10rem,24vw,14.5rem)] -translate-x-1/2 translate-y-[calc(100%-0.5rem)] drop-shadow-float"
           />
         </div>
       </div>

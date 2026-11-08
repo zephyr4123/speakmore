@@ -1,6 +1,10 @@
 import { links } from "../config.js";
 import { useI18n } from "../i18n/index.jsx";
 import { Icon } from "../icons/Icon.jsx";
+import { useCopy } from "../lib/copy.js";
+import { onPhoneOrTablet } from "../lib/site.js";
+
+const ON_PHONE = onPhoneOrTablet(navigator);
 
 // 每个安装包配它自己的标志，都是单色、跟着字的颜色
 const MAIN = [
@@ -14,6 +18,7 @@ const MAIN = [
  */
 export function DownloadButtons({ className = "", style }) {
   const { m } = useI18n();
+  if (ON_PHONE) return <CopyDownloadLink className={className} style={style} />;
   return (
     <div
       className={`grid w-full max-w-sm gap-3 sm:w-auto sm:max-w-none sm:grid-cols-[repeat(2,minmax(14.5rem,auto))] sm:justify-center ${className}`}
@@ -31,14 +36,41 @@ export function DownloadButtons({ className = "", style }) {
       ))}
       <a
         href={links.downloads.x64}
-        className="group inline-flex items-center justify-self-center gap-1 pt-1 text-sm text-ink-2 transition-colors duration-150 hover:text-ink sm:col-start-1 sm:row-start-2"
+        className="group inline-flex items-center justify-self-center gap-1 pt-1 text-label text-ink-2 transition-colors duration-150 hover:text-ink sm:col-start-1 sm:row-start-2"
       >
         {m.download.intel}
         <Icon
           name="arrowRight"
-          className="size-3.5 transition-transform duration-200 ease-out-quint group-hover:translate-x-0.5"
+          className="size-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
         />
       </a>
+    </div>
+  );
+}
+
+/**
+ * 手机、平板上：安装包装不了，点了只会下来一个打不开的文件。换成复制下载页的地址，到电脑上打开。
+ * 剪贴板用不了时（老浏览器、非 https）把地址写出来，长按自己复制
+ */
+function CopyDownloadLink({ className, style }) {
+  const { m } = useI18n();
+  const { copied, canCopy, copy } = useCopy(links.downloadPage);
+
+  return (
+    <div className={`grid w-full max-w-sm justify-items-center gap-3 ${className}`} style={style}>
+      {canCopy ? (
+        <button
+          type="button"
+          onClick={copy}
+          className="inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-ink px-7 font-semibold whitespace-nowrap text-canvas transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.98]"
+        >
+          <Icon name={copied ? "check" : "copy"} className="size-5 shrink-0" />
+          <span aria-live="polite">{copied ? m.download.copied : m.download.phone.copy}</span>
+        </button>
+      ) : (
+        <p className="font-mono text-code break-all text-ink select-all">{links.downloadPage}</p>
+      )}
+      <p className="text-label text-ink-2">{m.download.phone.hint}</p>
     </div>
   );
 }

@@ -33,7 +33,7 @@ export function Spoken({ text, progress, written, talking, reserve = [text], cla
               aria-hidden="true"
               // 删掉的部分从前往后依次淡下去，像被拿走了；留下的字不动
               style={part.cut ? { transitionDelay: written ? `${cuts * 110}ms` : "0ms" } : undefined}
-              className={`transition-[color,filter] duration-700 ease-out-quint motion-reduce:transition-none ${
+              className={`transition-[color,filter] duration-700 ease-out motion-reduce:transition-none ${
                 part.cut && written ? "text-ink/28 blur-[1px]" : "text-ink"
               }`}
             >

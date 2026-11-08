@@ -22,7 +22,7 @@
 /* ---------- 标题下面那一行：锁加"仅保存在本机 · …"，悬停看文件在哪 ---------- */
 
 #vocabulary-local {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   cursor: help;
 }
 
@@ -83,7 +83,7 @@
 
 .vocab-support-name {
   min-width: 0;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-medium);
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -152,7 +152,7 @@
 .vocab-composer-problem {
   flex-basis: 100%;
   padding: 0.25rem 0 0.25rem 2.125rem;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
 }
 
 /* ---------- 多选的那一条 ---------- */
@@ -172,7 +172,7 @@
 
 .vocab-selection-count {
   flex: 1;
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
 }
@@ -192,9 +192,11 @@
   font-weight: var(--weight-semibold);
 }
 
-.vocab-empty-actions {
-  display: flex;
-  gap: 0.5rem;
+.vocab-empty-text {
+  color: var(--ink-2);
+}
+
+.vocab-empty-add {
   margin-top: 1.25rem;
 }
 
@@ -405,7 +407,7 @@
 }
 
 .vocab-dialog-note {
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   color: var(--ink-2);
   white-space: pre-line;
 }

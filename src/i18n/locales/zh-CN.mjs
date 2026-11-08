@@ -743,7 +743,7 @@ export default {
   },
 
   home: {
-    title: "口述成文，划词即译",
+    title: "首页",
     words: "字数",
     saved: "省时",
     speed: "语速",
@@ -851,9 +851,9 @@ export default {
     title: "词典",
     add: "新词",
     import: "导入",
-    local: "仅保存在本机",
-    // 跟在"仅保存在本机"后面。词典文件只在本机；当前方式里有收词典的云端模型时，听写时那部分词随请求发出去，照实说
-    localMeta: { device: "不上传", cloud: "随听写请求发出" },
+    // 标题下面那一行。词典文件只在本机；当前方式里有收词典的云端模型时，听写时那部分词随请求发出去，照实说。
+    // 写成一句话：原来"仅保存在本机 · 随听写请求发出"两半并排，读起来像是自相矛盾
+    local: { device: "存在本机，不上传", cloud: "存在本机，听写时随请求发给识别模型" },
     localTip:
       "词典保存在 {file}，不上传、不同步。听写时，所用模型收得下的那部分词随这次请求一并发出；离线方式下不离开本机",
     composer: { placeholder: "输入新词", close: "收起" },
@@ -881,7 +881,8 @@ export default {
     },
     search: "搜索",
     count: "{count} 个词",
-    empty: { title: "还没有词汇" },
+    // 空的时候：一句说明词典是干什么的（和官网的说法一样）、一个"新词"按钮；导入在标题行
+    empty: { title: "还没有词汇", text: "人名与术语，按词典写法输出" },
     noResults: "没有匹配的词",
     loadError: "读不出词典：{reason}",
     editHint: "回车保存 · Esc 放弃",
@@ -932,7 +933,7 @@ export default {
     sections: "设置分类",
     general: "通用",
     permissions: "权限",
-    about: "关于",
+    translation: "翻译",
     hotkey: "快捷键",
     theme: "主题",
     language: "界面语言",
@@ -964,7 +965,6 @@ export default {
     translateFailed: "语音翻译的语言未能更改：{reason}",
     lookupFailed: "划词翻译的语言未能更改：{reason}",
     recheck: "重新检查",
-    version: "版本",
     source: "源代码",
     storage: {
       title: "存储位置",
@@ -1044,7 +1044,7 @@ export default {
 
   onboarding: {
     groups: { features: "功能", keys: "快捷键", permissions: "权限", engine: "引擎" },
-    // 口号：开屏、功能两页的大标题，和首页的一样
+    // 口号：开屏、功能两页的大标题，和官网首屏的一样
     intro: { soft: "口述成文，", title: "划词即译" },
     splash: { line: "语音输入、语音翻译、划词翻译，一个快捷键直达", start: "开始" },
     keys: {
@@ -1079,7 +1079,8 @@ export default {
     where: "随时可在 {place} 中修改",
     back: "返回",
     next: "继续",
-    skip: "跳过",
+    // 这一步没做完时的"继续"：和旁边的"跳过引导"分开说，一个只跳这一步、一个结束整个引导
+    skip: "稍后配置",
     skipAll: "跳过引导",
     // 功能演示（onboarding/scene.mjs）：一个聊天窗口、一个文档窗口里的字
     scene: {

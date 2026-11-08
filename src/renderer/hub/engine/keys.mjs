@@ -1,5 +1,6 @@
 import { $, brand, h, platformName, svg } from "../../shared/dom.mjs";
 import { t } from "../../shared/i18n.mjs";
+import { homeText } from "../../shared/setup-text.mjs";
 import { roleName } from "./plaza-view.mjs";
 
 // 引擎页的密钥面板：配置项不进树，标题行右边"密钥 n/m"点开，从窗口右边滑出（hub.html 的 #keys-sheet）。
@@ -196,21 +197,26 @@ export function createKeys(ctx) {
       "div",
       { class: "key-row", "data-platform": platform.id, "data-open": open ? "" : null },
       h("span", { class: "logo-tile" }, brand(platform.id)),
+      // 状态跟在名字后面，说明独占下面一整行：抽屉只有 30rem 宽，状态单占一列的话说明被挤到一个词一折
       h(
         "div",
         { class: "key-text" },
-        h("span", { class: "key-name-line" }, h("span", { class: "key-name", text: platformName(platform) })),
+        h(
+          "span",
+          { class: "key-name-line" },
+          h("span", { class: "key-name", text: platformName(platform) }),
+          h(
+            "span",
+            {
+              class: "key-state",
+              "data-tone": filled ? "ok" : null,
+              title: platform.key === "env" ? t("plaza.keys.envTip", { variable: platform.keyEnv }) : null,
+            },
+            h("i", { class: "dot", "data-tone": filled ? "ok" : "none" }),
+            state,
+          ),
+        ),
         h("span", { class: "key-cover", text: coverage(platform) }),
-      ),
-      h(
-        "span",
-        {
-          class: "key-state",
-          "data-tone": filled ? "ok" : null,
-          title: platform.key === "env" ? t("plaza.keys.envTip", { variable: platform.keyEnv }) : null,
-        },
-        h("i", { class: "dot", "data-tone": filled ? "ok" : "none" }),
-        state,
       ),
       h("button", {
         type: "button",
@@ -249,7 +255,8 @@ export function createKeys(ctx) {
       h("span", { class: "count", text: `${keyed}/${platforms.length}` }),
     );
     $("keys-meta").textContent = t("plaza.keys.meta", { done: keyed, total: platforms.length });
-    $("keys-home").textContent = t("plaza.keys.local", { home: ctx.setup.home });
+    $("keys-home").textContent = t("plaza.keys.local", { home: homeText(ctx.setup) });
+    $("keys-home").title = ctx.setup.home;
     $("keys-list").replaceChildren(...platforms.map(row));
   }
 

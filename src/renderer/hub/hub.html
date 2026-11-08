@@ -137,7 +137,7 @@
         <section class="page" data-route="home" aria-labelledby="home-title">
           <header class="page-head">
             <div class="page-heading">
-              <h1 class="page-title" id="home-title" data-i18n="home.title">Speak it written. Select to translate.</h1>
+              <h1 class="page-title" id="home-title" data-i18n="home.title">Home</h1>
               <!-- 每个功能一组：键帽和名字（语音输入、语音翻译、划词翻译），按动作目录画（home.mjs） -->
               <p class="page-lede home-actions" id="home-actions"></p>
             </div>
@@ -395,17 +395,13 @@
               <svg class="icon" aria-hidden="true"><use href="#i-trash" /></svg><span data-i18n="vocabulary.selection.delete">Delete</span>
             </button>
           </div>
-          <!-- 空的时候一个标题加两个入口；搜不到时只有一句 -->
+          <!-- 空的时候一个标题、一句说明、一个"新词"（导入在标题行，不再摆第二份）；搜不到时只有一句 -->
           <div class="vocab-empty" id="vocabulary-empty" hidden>
             <p class="vocab-empty-title" id="vocabulary-empty-title"></p>
-            <div class="vocab-empty-actions" id="vocabulary-empty-actions">
-              <button type="button" class="button" id="vocabulary-empty-import">
-                <svg class="icon" aria-hidden="true"><use href="#i-file-up" /></svg><span data-i18n="vocabulary.import">Import</span>
-              </button>
-              <button type="button" class="button primary" id="vocabulary-empty-add">
-                <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg><span data-i18n="vocabulary.add">New word</span>
-              </button>
-            </div>
+            <p class="vocab-empty-text" id="vocabulary-empty-text" data-i18n="vocabulary.empty.text">Names and terms, spelled as listed</p>
+            <button type="button" class="button primary vocab-empty-add" id="vocabulary-empty-add">
+              <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg><span data-i18n="vocabulary.add">New word</span>
+            </button>
           </div>
           <ul class="vocab-grid" id="vocabulary-grid" data-i18n-aria-label="vocabulary.title"></ul>
         </section>
@@ -451,22 +447,16 @@
           <svg class="icon" aria-hidden="true"><use href="#i-sliders" /></svg><span data-i18n="preferences.general">General</span><span class="menu-dot" data-for="general" hidden></span>
         </button>
         <button type="button" class="menu-item" data-pane="hotkeys">
-          <svg class="icon" aria-hidden="true"><use href="#i-keyboard" /></svg><span data-i18n="preferences.hotkey">Shortcut</span><span class="menu-dot" data-for="hotkeys" hidden></span>
+          <svg class="icon" aria-hidden="true"><use href="#i-keyboard" /></svg><span data-i18n="preferences.hotkey">Shortcuts</span><span class="menu-dot" data-for="hotkeys" hidden></span>
         </button>
-        <button type="button" class="menu-item" data-pane="voice-translate">
-          <svg class="icon" aria-hidden="true"><use href="#i-languages" /></svg><span data-i18n="actions.translate.name">Voice translation</span>
-        </button>
-        <button type="button" class="menu-item" data-pane="lookup">
-          <svg class="icon" aria-hidden="true"><use href="#i-letter-text" /></svg><span data-i18n="actions.lookup.name">Selection translation</span>
+        <button type="button" class="menu-item" data-pane="translation">
+          <svg class="icon" aria-hidden="true"><use href="#i-languages" /></svg><span data-i18n="preferences.translation">Translation</span>
         </button>
         <button type="button" class="menu-item" data-pane="local-models">
           <svg class="icon" aria-hidden="true"><use href="#i-laptop" /></svg><span data-i18n="preferences.localModels">On-device models</span>
         </button>
         <button type="button" class="menu-item" data-pane="permissions">
           <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg><span data-i18n="preferences.permissions">Permissions</span><span class="menu-dot" data-for="permissions" hidden></span>
-        </button>
-        <button type="button" class="menu-item" data-pane="about">
-          <svg class="icon" aria-hidden="true"><use href="#i-info" /></svg><span data-i18n="preferences.about">About</span>
         </button>
       </nav>
       <div class="settings-body">
@@ -528,12 +518,17 @@
             </div>
             <button type="button" class="button" id="update-action"></button>
           </div>
+          <!-- 原来"关于"一页的：版本写在软件更新那一行（查不到更新时侧栏底下也有），这里只留源代码 -->
+          <div class="setting">
+            <p class="setting-title" data-i18n="preferences.source">Source code</p>
+            <button type="button" class="button" id="open-homepage">GitHub</button>
+          </div>
           <p class="setting-note" id="general-problem" role="alert" hidden></p>
         </section>
 
         <!-- 快捷键：动作目录里每个动作一行（shared/hotkey-editor.mjs），下面是悬浮条上的按键提示 -->
         <section class="pane" data-pane="hotkeys" hidden>
-          <h3 class="pane-title" data-i18n="preferences.hotkey">Shortcut</h3>
+          <h3 class="pane-title" data-i18n="preferences.hotkey">Shortcuts</h3>
           <div id="hotkey-editor"></div>
           <!-- 悬浮条上方那行"再按一下 … 完成 · esc 取消"：熟练了可以关掉（GitHub issue #3） -->
           <div class="setting">
@@ -544,18 +539,17 @@
           <p class="setting-note" id="hotkeys-problem" role="alert" hidden></p>
         </section>
 
-        <!-- 语音翻译：译成哪几种，一行一种，第一行是默认（translate-pane.mjs）；悬浮条上能临时换成别的几种 -->
-        <section class="pane" data-pane="voice-translate" hidden>
-          <h3 class="pane-title" data-i18n="actions.translate.name">Voice translation</h3>
+        <!-- 翻译：语音翻译、划词翻译两段。划词翻译只有一行，单占一页太空，和语音翻译放在一起 -->
+        <section class="pane" data-pane="translation" hidden>
+          <h3 class="pane-title" data-i18n="preferences.translation">Translation</h3>
+          <!-- 语音翻译：译成哪几种，一行一种，第一行是默认（translate-pane.mjs）；悬浮条上能临时换成别的几种 -->
+          <h4 class="pane-section" data-i18n="actions.translate.name">Voice translation</h4>
           <p class="setting-label" data-i18n="preferences.translateTo">Translate into</p>
           <ul class="language-list" id="translate-targets"></ul>
           <p class="setting-note" id="translate-note" role="status" hidden></p>
           <p class="setting-note" id="voice-translate-problem" role="alert" hidden></p>
-        </section>
-
-        <!-- 划词翻译：只有译成哪一种；卡片上能临时换成别的（只管那一次）。交给哪个模型在引擎页"划词"那一段 -->
-        <section class="pane" data-pane="lookup" hidden>
-          <h3 class="pane-title" data-i18n="actions.lookup.name">Selection translation</h3>
+          <!-- 划词翻译：只有译成哪一种；卡片上能临时换成别的（只管那一次）。交给哪个模型在引擎页"划词"那一段 -->
+          <h4 class="pane-section" data-i18n="actions.lookup.name">Selection translation</h4>
           <div class="setting">
             <label class="setting-title" for="lookup-to" data-i18n="preferences.translateTo">Translate into</label>
             <select class="select" id="lookup-to"></select>
@@ -610,17 +604,6 @@
           <p class="recheck-row"><button type="button" class="button" id="recheck" data-i18n="preferences.recheck">Check again</button></p>
         </section>
 
-        <section class="pane" data-pane="about" hidden>
-          <h3 class="pane-title" data-i18n="preferences.about">About</h3>
-          <div class="setting">
-            <p class="setting-title" data-i18n="preferences.version">Version</p>
-            <p class="setting-value" id="about-version"></p>
-          </div>
-          <div class="setting">
-            <p class="setting-title" data-i18n="preferences.source">Source code</p>
-            <button type="button" class="button" id="open-homepage">GitHub</button>
-          </div>
-        </section>
       </div>
     </dialog>
 

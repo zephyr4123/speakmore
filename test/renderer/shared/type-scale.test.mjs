@@ -32,8 +32,8 @@ test("样式里的字号、字重都用 tokens.css 的那几档，不写数", ()
   assert.deepEqual(files.flatMap(hardcoded), []);
 });
 
-test("token 里的字号是七档、字重是四档", () => {
+test("token 里的字号是六档、字重是三档", () => {
   const tokens = readFileSync(TOKENS, "utf8");
-  assert.equal(tokens.match(/^\s*--text-[a-z]+:/gm)?.length, 7);
-  assert.equal(tokens.match(/^\s*--weight-[a-z]+:/gm)?.length, 4);
+  assert.equal(tokens.match(/^\s*--text-[a-z]+:/gm)?.length, 6);
+  assert.equal(tokens.match(/^\s*--weight-[a-z]+:/gm)?.length, 3);
 });

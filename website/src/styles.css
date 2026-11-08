@@ -1,64 +1,12 @@
 @import "tailwindcss";
 
-/* 颜色从 App 的图标那方印来：靛青的印底、朱砂和赭石两道、浅色的刻痕（assets/icon.svg）。
-   大块的底色都是纯色、不铺渐变光晕：跟着系统深浅变，隐私一段固定是近黑（.tone-ink 在下面重新给一遍颜色）。
-   用 OKLCH，浅色的底往靛青偏一点点，不往暖色偏。 */
-@theme {
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
-    sans-serif;
-  --font-display:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    system-ui, sans-serif;
-  /* 大号的数字用系统的圆体，和 App 首页一样 */
-  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+/* 设计 token（颜色、字体、字号、字距、行高、圆角、阴影、留白）都在 tokens.css：从 src/design/site.mjs 生成，别在这里另写 */
+@import "./tokens.css";
 
-  --color-canvas: oklch(0.99 0.002 255);
-  --color-surface: oklch(0.962 0.006 255);
-  --color-raised: oklch(1 0 0);
-  --color-ink: oklch(0.21 0.02 255);
-  --color-ink-2: oklch(0.45 0.02 255);
-  --color-line: oklch(0.9 0.008 255);
-  --color-link: oklch(0.47 0.11 255);
-  --color-seal: oklch(0.4 0.075 255);
-  --color-cinnabar: oklch(0.55 0.17 33);
-  --color-cinnabar-glow: oklch(0.74 0.17 32);
-  --color-ochre: oklch(0.74 0.12 75);
-
-  /* 先快后慢，不回弹 */
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-canvas: oklch(0.15 0.012 255);
-    --color-surface: oklch(0.19 0.014 255);
-    --color-raised: oklch(0.22 0.015 255);
-    --color-ink: oklch(0.96 0.005 255);
-    --color-ink-2: oklch(0.74 0.015 255);
-    --color-line: oklch(0.3 0.015 255);
-    --color-link: oklch(0.8 0.09 255);
-  }
-}
-
-/* 固定深色的那一段：里面的组件照样用 text-ink 这些，颜色在这里换掉 */
+/* 固定深色的那一段（隐私）：颜色在 tokens.css 的 .tone-ink 里换，这里只铺底、让表单控件也按深色画 */
 .tone-ink {
-  --color-canvas: oklch(0.13 0.008 255);
-  --color-surface: oklch(1 0 0 / 0.06);
-  --color-raised: oklch(1 0 0 / 0.08);
-  --color-ink: oklch(0.97 0.004 255);
-  --color-ink-2: oklch(0.78 0.02 255);
-  --color-line: oklch(1 0 0 / 0.14);
-  --color-link: oklch(0.82 0.09 230);
-  /* 印章色在近黑上要提亮，不然勾看不见 */
-  --color-seal: oklch(0.8 0.07 255);
+  background: var(--color-canvas);
   color-scheme: dark;
-}
-
-.tone-ink {
-  background: oklch(0.13 0.008 255);
 }
 
 @layer base {
@@ -66,8 +14,12 @@
     color-scheme: light dark;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    /* 吸顶导航的高度：锚点跳过去时标题不被它挡住 */
-    scroll-padding-top: 4rem;
+    /* 锚点跳过去时让出吸顶导航的高度，正好一样高：多让的话导航下面会露出上一段的一条边。窄屏的导航多一行锚点 */
+    scroll-padding-top: calc(var(--spacing-nav) + var(--spacing-nav-anchors));
+
+    @variant md {
+      scroll-padding-top: var(--spacing-nav);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -80,33 +32,61 @@
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    /* 没写字号的字都是它：要读的句子，17px */
+    font-size: var(--text-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
+  /* 段落各行尽量一样长，末行不剩一两个字。写在这里管全站，不逐个元素加；
+     太长的段落浏览器会退回普通折行，不会多出行 */
+  main :is(p, dd) {
+    text-wrap: balance;
+  }
+
   ::selection {
-    background: oklch(0.74 0.17 32 / 0.3);
+    background: var(--color-selection);
   }
 
   :focus-visible {
     outline: 2px solid var(--color-link);
     outline-offset: 3px;
-    border-radius: 6px;
+    border-radius: var(--radius-small);
+  }
+}
+
+/* README 那批截图（Shot.jsx）：图四周留着给阴影的边往外撑，图本身的左右边和这一栏对齐；窄屏换成裁得更紧的那张，比例跟着换。
+   百分比的外边距都按这一栏的宽算，上下也一样 */
+.shot {
+  width: calc(100% * var(--shot-scale));
+  margin-inline: calc(-100% * var(--shot-edge));
+
+  &[data-flush] {
+    margin-block: calc(-100% * var(--shot-edge));
+  }
+
+  @variant max-md {
+    width: calc(100% * var(--shot-scale-sm));
+    margin-inline: calc(-100% * var(--shot-edge-sm));
+
+    &[data-flush] {
+      margin-block: calc(-100% * var(--shot-edge-sm));
+    }
   }
 }
 
 /* 大标题：英文收紧字距；中文字距本来就匀，收紧了挤 */
 @utility display {
   font-family: var(--font-display);
-  font-weight: 650;
-  letter-spacing: -0.035em;
-  line-height: 1.04;
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
   text-wrap: balance;
 
   &:lang(zh-CN) {
-    letter-spacing: -0.01em;
-    line-height: 1.12;
+    letter-spacing: var(--tracking-display-zh);
+    line-height: var(--leading-display-zh);
   }
 }
 
@@ -191,7 +171,7 @@
   flex-direction: column;
   align-items: center;
   transform: translateY(calc(var(--d) * -1 * var(--roll-cell)));
-  transition: transform 1.4s var(--ease-out-quint) calc(var(--p) * 50ms);
+  transition: transform 1.4s var(--ease-out) calc(var(--p) * 50ms);
 }
 
 .roll-strip > span {
@@ -235,8 +215,8 @@
 .logo-loop-list {
   display: flex;
   align-items: center;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
-  padding-right: clamp(2.5rem, 5vw, 4.5rem);
+  gap: var(--spacing-logo-gap);
+  padding-right: var(--spacing-logo-gap);
 }
 
 @keyframes logo-loop {
@@ -264,6 +244,7 @@
 .long-take-bars > i {
   flex: 1;
   min-height: 3px;
+  /* token-exempt: 声波竖条两头圆，和 rounded-full 一样 */
   border-radius: 999px;
   background: var(--color-line);
 }
@@ -278,7 +259,7 @@
 
 .long-take[data-play] .long-take-bars + .long-take-bars {
   clip-path: inset(0 0 0 0);
-  transition: clip-path 3.2s cubic-bezier(0.45, 0, 0.25, 1) 0.3s;
+  transition: clip-path 3.2s var(--ease-sweep) 0.3s;
 }
 
 /* ---------- 性能：支持的硬件 ---------- */
@@ -296,14 +277,14 @@
 
 .hardware-cell > * {
   transition:
-    opacity 0.7s var(--ease-out-quint),
-    filter 0.7s var(--ease-out-quint);
+    opacity 0.7s var(--ease-out),
+    filter 0.7s var(--ease-out);
   transition-delay: calc(var(--i) * 110ms + 150ms);
 }
 
 .hardware-cell > .hardware-check {
   transition:
-    opacity 0.4s var(--ease-out-quint),
+    opacity 0.4s var(--ease-out),
     scale 0.5s var(--ease-out-expo);
   transition-delay: calc(var(--i) * 110ms + 380ms);
 }
@@ -321,7 +302,7 @@
 }
 
 .hardware[data-stage="play"] .hardware-cell::before {
-  animation: hardware-scan 1.1s var(--ease-out-quint) calc(var(--i) * 110ms + 100ms) both;
+  animation: hardware-scan 1.1s var(--ease-out) calc(var(--i) * 110ms + 100ms) both;
 }
 
 @keyframes hardware-scan {
@@ -419,7 +400,7 @@
 }
 
 .route-map[data-stage="play"] .route-segment {
-  transition: transform 0.42s var(--ease-out-quint) calc(0.25s + var(--i) * 0.3s);
+  transition: transform 0.42s var(--ease-out) calc(0.25s + var(--i) * 0.3s);
 }
 
 .route-map[data-stage="ready"] .route-stop {
@@ -429,8 +410,8 @@
 
 .route-map[data-stage="play"] .route-stop {
   transition:
-    opacity 0.5s var(--ease-out-quint),
-    transform 0.6s var(--ease-out-quint);
+    opacity 0.5s var(--ease-out),
+    transform 0.6s var(--ease-out);
   transition-delay: calc(0.1s + var(--i) * 0.42s);
 }
 
@@ -439,5 +420,5 @@
 }
 
 .route-map[data-stage="play"] .route-carry {
-  transition: opacity 0.6s var(--ease-out-quint) 1.1s;
+  transition: opacity 0.6s var(--ease-out) 1.1s;
 }

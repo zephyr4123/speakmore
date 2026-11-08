@@ -74,14 +74,15 @@
       </section>
 
       <!-- 引擎：引导里不填密钥。列一下哪些齐了，去主窗口的引擎页配（打开时弹出推荐组合） -->
-      <section class="step engine-step" data-step="engine" aria-labelledby="engine-title" hidden>
+      <section class="step single" data-step="engine" aria-labelledby="engine-title" hidden>
         <h1 class="step-title" id="engine-title">
           <span class="soft" data-i18n="onboarding.engine.soft">Last, </span><span data-i18n="onboarding.engine.title">set up the engine</span>
         </h1>
         <ul class="summary" id="summary"></ul>
         <div class="engine-actions">
           <button type="button" class="button primary big" id="go-engine" data-i18n="onboarding.engine.go">Open Engine</button>
-          <button type="button" class="button ghost" id="later" data-i18n="onboarding.engine.later">Later</button>
+          <!-- 和其余几步页脚的「稍后配置」同一个样子：灰色胶囊，不是一行字 -->
+          <button type="button" class="button big" id="later" data-i18n="onboarding.engine.later">Set up later</button>
         </div>
       </section>
     </main>

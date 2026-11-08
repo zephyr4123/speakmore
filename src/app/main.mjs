@@ -1332,6 +1332,8 @@ async function main() {
         enabled: loginItemEnabled(),
       },
       home: PATHS.home,
+      // 给人看数据目录时把家目录写成 ~：只有 Mac 这么写，Windows 上没有 ~ 的说法，不给
+      userHome: process.platform === "darwin" ? homedir() : null,
       version: app.getVersion(),
       update: appUpdates.describe(),
       // 正在用 key 的那一家；数据隐私模式不用 key，是 null
@@ -1632,7 +1634,7 @@ async function main() {
     const variable = overridingEnv("outputScript", process.env);
     return variable === null ? {} : { note: msg("notes.envRemove", { variable }) };
   });
-  // 设置 › 语音翻译：译成哪几种，第一种是默认。悬浮条每次开口现读，下一次说话就按新的
+  // 设置 › 翻译 › 语音翻译：译成哪几种，第一种是默认。悬浮条每次开口现读，下一次说话就按新的
   handle("setup:set-translate-to", (_event, wanted) => {
     if (!Array.isArray(wanted)) throw new TypeError("要译成的语言不是一组");
     const { value } = saveSetting(PATHS.settingsFile, "translate.to", JSON.stringify(wanted));
@@ -1783,7 +1785,7 @@ async function main() {
 
   /**
    * 打开主窗口（已经开着就亮出来），可以顺带指定去哪一页。
-   * @param {{ route?: "home" | "history", pane?: string }} [target] pane：设置里的哪一页，"auto" 是还差东西的那一页
+   * @param {{ route?: "home" | "history", pane?: string }} [target] pane：设置里的哪一页，"auto" 是还差东西的那一页，"last" 是上次看的那一页
    */
   function showHub(target = {}) {
     if (hubWindow === null) {
@@ -1899,7 +1901,7 @@ async function main() {
         { label: t("tray.open"), click: () => showHub({ route: "home" }) },
         { label: t("tray.history"), click: () => showHub({ route: "history" }) },
         { type: "separator" },
-        { label: t("tray.settings"), accelerator: "CmdOrCtrl+,", click: () => showHub({ pane: "general" }) },
+        { label: t("tray.settings"), accelerator: "CmdOrCtrl+,", click: () => showHub({ pane: "last" }) },
         { type: "separator" },
         { label: t("tray.version", { version: app.getVersion() }), enabled: false },
         // 有新版本：点了打开设置的通用页，更新按钮在那里
@@ -1918,7 +1920,7 @@ async function main() {
   /** Mac 屏幕顶上的应用菜单（app-menu.mjs）。换了界面语言要重设 */
   function refreshAppMenu() {
     if (WINDOWS) return;
-    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "general" }), dev: !app.isPackaged });
+    const template = appMenuTemplate({ t, openSettings: () => showHub({ pane: "last" }), dev: !app.isPackaged });
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
   // Windows 上点通知区域的图标是打开主窗口（右键才是菜单），macOS 上点它就是菜单

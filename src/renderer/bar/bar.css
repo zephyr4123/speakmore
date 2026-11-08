@@ -30,7 +30,7 @@ body {
   justify-content: flex-end;
   /* 窗口贴着屏幕可用区域的底边放。条离底边这么远，这段空也是留给阴影的地方 */
   padding-bottom: 28px;
-  font: var(--text-small) / 1.35 var(--font);
+  font: var(--text-body) / 1.35 var(--font);
   color: var(--bar-ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -112,9 +112,7 @@ body[data-shown="false"] .shell {
   padding: 4px;
   background: var(--bar-surface);
   border-radius: 12px;
-  box-shadow:
-    0 0 0 1px var(--bar-edge),
-    0 8px 24px oklch(0 0 0 / 0.28);
+  box-shadow: var(--shadow-bar-menu);
 }
 
 .feature-chip[data-open] .menu {
@@ -139,7 +137,7 @@ body[data-shown="false"] .shell {
   padding: 5px 8px;
   border-radius: 8px;
   color: var(--bar-ink);
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   white-space: nowrap;
 }
 
@@ -198,6 +196,8 @@ body[data-shown="false"] .shell {
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
+  /* 最后一行别只剩一个字 */
+  text-wrap: pretty;
   max-width: 320px;
   height: calc(2 * 1.35em + 10px);
   margin: 0;
@@ -206,7 +206,7 @@ body[data-shown="false"] .shell {
   background: var(--bar-surface);
   border-radius: 12px;
   box-shadow: 0 0 0 1px var(--bar-edge);
-  font-size: var(--text-small);
+  font-size: var(--text-body);
   line-height: 1.35;
 }
 
@@ -225,10 +225,7 @@ body[data-shown="false"] .shell {
   background: var(--bar-surface);
   /* 一行高时正好是两头全圆；报错写成两行时是圆角矩形 */
   border-radius: 20px;
-  box-shadow:
-    0 0 0 1px var(--bar-edge),
-    0 6px 18px oklch(0 0 0 / 0.3),
-    0 2px 5px oklch(0 0 0 / 0.2);
+  box-shadow: var(--shadow-bar);
 }
 
 .control {
@@ -400,17 +397,22 @@ body[data-view="done"] .tick path {
   display: none;
   align-items: center;
   gap: var(--space-2);
-  max-width: 300px;
+  /* 14px 的字下，最长的那句中文提示（没有辅助功能权限：文字已复制，按 ⌘V 粘贴）要一行放得下：
+     balance 折成两行后盒子不会跟着收窄，放不下时胶囊右边会空出一大块。窗口 380 宽，两边留给阴影 */
+  max-width: 340px;
   padding: 0 10px;
 }
 
 .message span {
-  /* 可能是一整句话：最多两行，再长就截断 */
+  /* 可能是一整句话：最多两行，再长就截断；要折时中文在标点处折，不把「文字」拆开。
+     用 pretty 不用 balance：balance 把两行拉成一样短，盒子却不跟着收窄，胶囊右边空出一大块（英文的提示常常两行） */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  text-wrap: balance;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 .warning {
