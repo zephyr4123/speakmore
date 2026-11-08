@@ -211,13 +211,13 @@
   margin: 0;
 }
 
-/* 首页标题下面多一行：右边的控件对着标题那一行，不对着两行的中间（标题 48px 高，控件 40px） */
+/* 首页标题下面多一行：右边的控件对着标题那一行，不对着两行的中间（标题行高 28 × 1.2，控件 40px，往上提一点） */
 .page-head:has(> .page-heading) {
   align-items: flex-start;
 }
 
 .page-head:has(> .page-heading) > .picker-trigger {
-  margin-top: 0.25rem;
+  margin-top: calc((var(--text-page) * 1.2 - var(--control-lg)) / 2);
 }
 
 /* 标题行右侧的一组控件（引擎页、词典页）：窄到放不下时整组折到标题下面 */
@@ -1335,18 +1335,6 @@
   margin-top: 1rem;
 }
 
-.setting-value {
-  font-size: var(--text-body);
-  color: var(--ink-2);
-  text-align: right;
-  overflow-wrap: anywhere;
-}
-
-code.setting-value {
-  font-family: var(--font-mono);
-  user-select: text;
-}
-
 /* 软件更新那一行：左边标题和一行状态，右边一个按钮（检查、更新、重试，进行中不给按） */
 .setting-text {
   display: grid;
@@ -1424,7 +1412,6 @@ code.setting-value {
   background: var(--problem);
 }
 
-/* 设置 › 语音翻译：一行一种语言，第一行是默认；别的行悬停时出现"设为默认"和 ×，底下一个"添加" */
 /* 一页里分两段时每段的小标题（翻译一页：语音翻译、划词翻译） */
 .pane-section {
   margin: 1.5rem 0 0.25rem;
@@ -1436,6 +1423,7 @@ code.setting-value {
   margin-top: 0;
 }
 
+/* 设置 › 翻译 › 语音翻译：一行一种语言，第一行是默认；别的行悬停时出现"设为默认"和 ×，底下一个"添加" */
 .setting-label {
   margin: 0.25rem 0 0;
   font-size: var(--text-body);

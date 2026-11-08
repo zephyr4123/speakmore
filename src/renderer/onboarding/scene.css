@@ -2,7 +2,7 @@
    窗口里不再套框（消息不用气泡），口述的原话是一段字，不装进卡片。
    悬浮条、划词卡片是真页面嵌进来的（demo/）。颜色只用主题的 token。画面按 880×410 的像素画，整体缩放，所以尺寸写 px */
 
-/* 宽度由引导页定（onboarding.css 的 .stage-scene），高度按比例由 scene.mjs 写 */
+/* 宽度由引导页定（撑满 onboarding.css 的 .step.stacked），高度按比例由 scene.mjs 写 */
 .scene {
   position: relative;
 }

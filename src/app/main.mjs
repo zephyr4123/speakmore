@@ -1634,7 +1634,7 @@ async function main() {
     const variable = overridingEnv("outputScript", process.env);
     return variable === null ? {} : { note: msg("notes.envRemove", { variable }) };
   });
-  // 设置 › 语音翻译：译成哪几种，第一种是默认。悬浮条每次开口现读，下一次说话就按新的
+  // 设置 › 翻译 › 语音翻译：译成哪几种，第一种是默认。悬浮条每次开口现读，下一次说话就按新的
   handle("setup:set-translate-to", (_event, wanted) => {
     if (!Array.isArray(wanted)) throw new TypeError("要译成的语言不是一组");
     const { value } = saveSetting(PATHS.settingsFile, "translate.to", JSON.stringify(wanted));
@@ -1785,7 +1785,7 @@ async function main() {
 
   /**
    * 打开主窗口（已经开着就亮出来），可以顺带指定去哪一页。
-   * @param {{ route?: "home" | "history", pane?: string }} [target] pane：设置里的哪一页，"auto" 是还差东西的那一页
+   * @param {{ route?: "home" | "history", pane?: string }} [target] pane：设置里的哪一页，"auto" 是还差东西的那一页，"last" 是上次看的那一页
    */
   function showHub(target = {}) {
     if (hubWindow === null) {

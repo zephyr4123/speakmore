@@ -209,9 +209,13 @@ export function createVocabulary() {
     renderSelection(shown);
   }
 
-  /** 词格之外的东西关掉、删掉以后，焦点放到哪：搜索框（一定在） */
+  /** 一个词都没有时搜索那一行和标题行的"新词"都收起了，只剩空状态里的"新词" */
+  const firstAdd = () => ($("vocabulary-add").hidden ? $("vocabulary-empty-add") : null);
+
+  /** 词格之外的东西关掉、删掉以后，焦点放到哪：搜索框；一个词都没有时是空状态里的"新词" */
   const focusFallback = () => {
-    if (document.activeElement === document.body || document.activeElement === null) $("vocabulary-search").focus();
+    if (document.activeElement === document.body || document.activeElement === null)
+      (firstAdd() ?? $("vocabulary-search")).focus();
   };
 
   function toggle(term) {
@@ -378,7 +382,7 @@ export function createVocabulary() {
     composer.hidden = true;
     composerInput.value = "";
     setComposerProblem(null);
-    if (focus && wasOpen) $("vocabulary-add").focus();
+    if (focus && wasOpen) (firstAdd() ?? $("vocabulary-add")).focus();
   }
 
   function setComposerProblem(problem) {

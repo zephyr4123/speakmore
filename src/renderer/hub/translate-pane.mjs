@@ -2,7 +2,7 @@ import { h, svg } from "../shared/dom.mjs";
 import { t } from "../shared/i18n.mjs";
 import { describeError } from "../shared/setup-text.mjs";
 
-// 设置 › 语音翻译：译成哪几种（设置里的 translate.to），一行一种，第一行是默认。
+// 设置 › 翻译 › 语音翻译：译成哪几种（设置里的 translate.to），一行一种，第一行是默认。
 // 别的行悬停时出现"设为默认"和 ×；底下一个"添加"，点开是还没加的语言。悬浮条上的语言胶囊列的就是这几种。
 
 const $ = (id) => document.getElementById(id);
