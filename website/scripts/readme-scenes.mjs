@@ -5,8 +5,8 @@
 //
 //   ../node_modules/.bin/electron scripts/readme-scenes.mjs -- <photos.json> <输出目录>     （在 website/ 下）
 //
-// photos.json 是截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<截图.png>", "crop": { "x", "y", "width", "height" } }]，
-// 坐标是截图的像素（两倍图）。输出目录里有 manifest.json，再用 upload-media.mjs 传到图片桶的 readme/ 下。
+// photos.json 是截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<截图.png>", "crop": { "x", "y", "width", "height" }, "fade": 48 }]，
+// 坐标是截图的像素（两倍图），fade 可省（见 photo）。输出目录里有 manifest.json，再用 upload-media.mjs 传到图片桶的 readme/ 下。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -277,8 +277,11 @@ async function render(html, width) {
   return { body: await encode(image.toPNG()), width, height };
 }
 
-/** 真截图裁一块，加圆角、细边和阴影 */
-async function photo({ file, crop }) {
+/**
+ * 真截图裁一块，加圆角、细边和阴影。fade：右边这么宽（CSS 像素）渐隐成透明，连同细边和阴影一起淡掉，
+ * 读起来是"画面外还有"而不是硬切一刀（划词实拍里比裁切还长的那几行）；改的是透明度，深浅底色上都不露馅
+ */
+async function photo({ file, crop, fade = 0 }) {
   const image = nativeImage.createFromPath(file).crop(crop);
   const png = image.toPNG();
   const page = await canvasPage();
@@ -296,6 +299,12 @@ async function photo({ file, crop }) {
     c.beginPath(); c.roundRect(pad, pad, w, h, r); c.fillStyle = "#fff"; c.fill(); c.restore();
     c.save(); c.beginPath(); c.roundRect(pad, pad, w, h, r); c.clip(); c.drawImage(image, pad, pad); c.restore();
     c.beginPath(); c.roundRect(pad + 0.5 * s, pad + 0.5 * s, w - s, h - s, r); c.lineWidth = s; c.strokeStyle = "rgba(0, 0, 0, 0.14)"; c.stroke();
+    if (${fade} > 0) {
+      const mask = c.createLinearGradient(pad + w - ${fade} * s, 0, pad + w, 0);
+      mask.addColorStop(0, "#000"); mask.addColorStop(1, "transparent");
+      c.globalCompositeOperation = "destination-in"; c.fillStyle = mask; c.fillRect(0, 0, canvas.width, canvas.height);
+      c.globalCompositeOperation = "source-over";
+    }
     return { url: canvas.toDataURL("image/webp", 0.9), width: canvas.width / s, height: canvas.height / s };
   })()`);
   return {

@@ -2,18 +2,17 @@
 // 出的是 docs/development.md "README 的图"第 2 步要的 PNG：<en|zh>-<序号>-<名字>.png，01–09 是首次引导，settings- 开头的只截设置那一块。
 // 接着交给 readme-media.mjs 加窗口外框。
 // 另出 photos.json：官网只放局部（整扇窗口缩到一栏里字太小），桌面一份、手机一份更紧的，裁哪块按页面上元素的位置量，
-// 交给 readme-scenes.mjs 加圆角和阴影。桌面那份的引导几步统一 16:10，宽 584–730（官网一栏 584 宽，显示在 80%–100%）。
+// 交给 readme-scenes.mjs 加圆角和阴影。桌面那份的引导几步统一 16:10，宽 584–730（官网一格 544 宽，显示在 75%–93%）。
 //
 //   ../scripts/dev/with-key.sh gemini ../scripts/dev/with-key.sh deepseek ../scripts/dev/with-key.sh bailian \
 //     node scripts/readme-shots.mjs <输出目录>                    （在 website/ 下）
 //
-// 不碰 ~/.speakmore，只把里面已经下好的本机转写模型按 APFS 克隆拷一份进临时家目录（不占空间、不改原件），
+// 不碰本机装的 SpeakMore，只把里面已经下好的本机转写模型按 APFS 克隆拷一份进临时家目录（不占空间、不改原件），
 // 主窗口才是"混合（本机转文字 + DeepSeek 整理）"、模型已下载的样子。没下过就是未下载的样子，截出来照实。
 // 热键是出厂的那套（图上要是用户装好看到的样子）；截图时没人按键，和本机正在跑的 SpeakMore 同时听也不会误触。
 // 程序坞图标关掉；动效全关。
 import { spawn, spawnSync } from "node:child_process";
 import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, rmSync, writeFileSync } from "node:fs";
-import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,13 +21,13 @@ const out = resolve(process.argv[2] ?? "readme-shots");
 const { openHistory } = await import(join(ROOT, "src/storage/history.mjs"));
 const { requestControl } = await import(join(ROOT, "src/control.mjs"));
 const { DEFAULT_TRANSCRIBER } = await import(join(ROOT, "src/models/catalog.mjs"));
+const { resolvePaths } = await import(join(ROOT, "src/storage/paths.mjs"));
 const wait = (ms) => new Promise((done) => setTimeout(done, ms));
-const PORT = 9333;
+// 不用开发窗口惯用的 9333：开发窗口验完常常开着
+const PORT = 9339;
 const NO_MOTION =
   "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}";
 const LOCALES = { zh: "zh-CN", en: "en" };
-/** 主窗口、引导窗口的大小（CSS 像素），截图是它的两倍 */
-const WINDOW = { width: 1080, height: 750 };
 const photos = [];
 
 // 历史里的话：像平时工作里说的，长短混着；隔几条是一句语音翻译（带原文和目标语言）
@@ -134,15 +133,26 @@ async function connect(match) {
         const pending = new Map();
         ws.onmessage = (event) => {
           const message = JSON.parse(event.data);
-          if (message.id && pending.has(message.id)) {
-            pending.get(message.id)(message);
-            pending.delete(message.id);
-          }
+          const call = pending.get(message.id);
+          if (!call) return;
+          pending.delete(message.id);
+          clearTimeout(call.timer);
+          if (message.error) call.bad(new Error(`${match} ${call.method}：${message.error.message}`));
+          else call.ok(message);
+        };
+        // App 中途崩了连接会断：还在等的都报错，不一直挂着
+        ws.onclose = () => {
+          for (const call of pending.values()) call.bad(new Error(`${match}：调试连接断了（App 退出了？）`));
+          pending.clear();
         };
         const send = (method, params = {}) =>
-          new Promise((done) => {
+          new Promise((ok, bad) => {
             id += 1;
-            pending.set(id, done);
+            const timer = setTimeout(() => {
+              pending.delete(id);
+              bad(new Error(`${match} ${method}：30 秒没回音`));
+            }, 30_000);
+            pending.set(id, { ok, bad, method, timer });
             ws.send(JSON.stringify({ id, method, params }));
           });
         const evaluate = async (expression) => {
@@ -152,8 +162,7 @@ async function connect(match) {
         };
         return { send, evaluate, close: () => ws.close() };
       }
-    } catch (error) {
-      if (error.message?.includes("：")) throw error;
+    } catch {
       // 还没起来
     }
     await wait(500);
@@ -192,16 +201,36 @@ const click = async (page, selector) => {
   }
 };
 
+/** 调试端口上有没有进程在听 */
+const listening = () =>
+  spawnSync("lsof", ["-ti", `tcp:${PORT}`, "-sTCP:LISTEN"], { encoding: "utf8" })
+    .stdout.split("\n")
+    .filter(Boolean);
+
 /** 起一份隔离的 App，做完 work 再退掉、删家目录 */
 async function withApp({ locale, keyed }, work) {
+  // 端口被占着的话新起的 App 绑不上，连上的会是别的窗口；收尾按端口收进程也会收错
+  if (listening().length > 0) throw new Error(`调试端口 ${PORT} 被占着：先关掉占着它的进程（lsof -i tcp:${PORT}）`);
   const home = mkdtempSync("/tmp/smreadme.");
-  seed(home, locale);
-  writeFileSync(join(home, "settings.json"), JSON.stringify({ theme: "indigo", mode: "local" }));
-  const model = join(homedir(), ".speakmore", "models", DEFAULT_TRANSCRIBER);
-  if (existsSync(model)) {
-    mkdirSync(join(home, "models"), { recursive: true });
-    spawnSync("cp", ["-cR", model, join(home, "models")]);
+  try {
+    seed(home, locale);
+    writeFileSync(join(home, "settings.json"), JSON.stringify({ theme: "indigo", mode: "local" }));
+    const model = join(resolvePaths({}).modelsDir, DEFAULT_TRANSCRIBER);
+    if (existsSync(model)) {
+      mkdirSync(join(home, "models"), { recursive: true });
+      const copy = spawnSync("cp", ["-cR", model, join(home, "models")], { encoding: "utf8" });
+      if (copy.status !== 0) throw new Error(`拷本机模型失败：${copy.stderr || copy.error?.message}`);
+    } else {
+      console.log(`本机模型没下载（${model}），截出来是未下载的样子`);
+    }
+    await runApp(home, { locale, keyed }, work);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
   }
+}
+
+/** 在准备好的家目录上起 App，做完 work 退掉 */
+async function runApp(home, { locale, keyed }, work) {
   const env = {
     ...process.env,
     SPEAKMORE_HOME: home,
@@ -229,14 +258,12 @@ async function withApp({ locale, keyed }, work) {
     );
     await wait(1500);
     child.kill();
-    // node_modules/.bin/electron 只是个启动脚本：没退成的话按调试端口把真正的 Electron 收掉，不然它占着端口
+    // 没退成时 Electron 偶尔留下来占着端口（截图时碰到过）：起之前端口是空的，现在还在听的就是这次起的，收掉
     if (!quit) {
-      const pids = spawnSync("lsof", ["-ti", `tcp:${PORT}`, "-sTCP:LISTEN"], { encoding: "utf8" }).stdout;
-      for (const pid of pids.split("\n").filter(Boolean)) spawnSync("kill", [pid]);
+      for (const pid of listening()) spawnSync("kill", [pid]);
       await wait(1500);
     }
     closeSync(log);
-    rmSync(home, { recursive: true, force: true });
   }
 }
 
@@ -257,7 +284,8 @@ async function crop(
       .map((el) => el.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
     if (rects.length === 0) return null;
     const x = Math.min(...rects.map((r) => r.left)), y = Math.min(...rects.map((r) => r.top));
-    return { x, y, width: Math.max(...rects.map((r) => r.right)) - x, height: Math.max(...rects.map((r) => r.bottom)) - y };
+    return { x, y, width: Math.max(...rects.map((r) => r.right)) - x, height: Math.max(...rects.map((r) => r.bottom)) - y,
+      view: { width: innerWidth, height: innerHeight } };
   })()`);
   if (!box) throw new Error(`${name}：页面上没找到 ${selectors.join("、")}`);
   let { x, y, width, height } = {
@@ -274,10 +302,11 @@ async function crop(
     [width, height] = [w, h];
   }
   // 不出窗口
-  x = Math.max(0, Math.min(x, WINDOW.width - width));
-  y = Math.max(0, Math.min(y, WINDOW.height - height));
-  width = Math.min(width, WINDOW.width);
-  height = Math.min(height, WINDOW.height);
+  const { view } = box;
+  x = Math.max(0, Math.min(x, view.width - width));
+  y = Math.max(0, Math.min(y, view.height - height));
+  width = Math.min(width, view.width);
+  height = Math.min(height, view.height);
   // 取整到 CSS 像素再乘 2：两倍图的宽高是偶数，官网按 CSS 像素算比例时不出半个像素
   const px = (v) => Math.round(v) * 2;
   let source = file;
@@ -418,7 +447,8 @@ async function hub(control, tag) {
   await wait(700);
   const presets = next("presets");
   await shoot(page, presets);
-  // 官网只要弹出来的那张推荐组合：后面的工具栏、引擎树、侧栏（英文的弹层靠左，压着侧栏的边）都会露半截，藏起来
+  // 官网只要弹出来的那张推荐组合：后面的工具栏、引擎树、侧栏（英文的弹层靠左，压着侧栏的边）都会露半截，藏起来。
+  // 桌面贴着弹层裁，不补成 16:10：补了左右全是空白，弹层缩得比别的几步小
   const backdrop = [".sidebar", '.page[data-route="models"] > .page-head', "#engine-canvas"];
   await crop(page, {
     name: "setup-presets",
@@ -426,7 +456,7 @@ async function hub(control, tag) {
     locale: LOCALES[tag],
     selectors: ["#preset-picker"],
     hide: backdrop,
-    ...SETUP_DESKTOP,
+    pad: 24,
   });
   await crop(page, {
     name: "setup-presets-sm",

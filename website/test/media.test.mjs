@@ -41,12 +41,12 @@ test("页面用到的 README 那批图，每种语言都传过了、记着大小
   }
 });
 
-test("划词那几张实拍（名单在文案 lookup.shots）：每种语言用自己那几张，小的两张还有裁出来的 -crop 和窄屏的 -card，都传过了", async () => {
+test("划词那几张实拍（名单在文案 lookup.shots）：每种语言用自己那几张，都有窄屏的 -card，小的两张还有裁出来的 -crop，都传过了", async () => {
   for (const locale of LOCALES) {
     const { default: messages } = await import(`../src/i18n/${locale}.js`);
     assert.equal(messages.lookup.shots.length, 3);
     const [main, ...rest] = messages.lookup.shots.map((shot) => shot.name);
-    for (const name of [main, ...rest.flatMap((name) => [`${name}-crop`, `${name}-card`])]) {
+    for (const name of [main, `${main}-card`, ...rest.flatMap((name) => [`${name}-crop`, `${name}-card`])]) {
       const entry = readmeMedia[`${name}.${locale}`];
       assert.ok(entry, `docs/media.json 里缺 ${name}.${locale}`);
       assert.match(entry.path, /^readme\/[\w.-]+\.[0-9a-f]{8}\.webp$/);

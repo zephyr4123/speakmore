@@ -6,7 +6,8 @@ import { useI18n } from "../i18n/index.jsx";
 /**
  * 划词翻译：真截图说话（README 那批，在 Mac 上截的；中英文各截了自己语言的三张，名单在文案 lookup.shots）。
  * 一张网页的大图，下面两张小的（PDF、终端或备忘录），各配一个名字；最后一行三条要点，之间一道细线。
- * 小的两张用裁到选区和卡片的那块（<名字>-crop），窄屏只要卡片（<名字>-card）：整张缩进半栏，卡片上的字太小
+ * 小的两张用裁到选区和卡片的那块（<名字>-crop），两栏等宽：同一种语言的两张裁成一样的宽高比，并排一样高、说明对齐。
+ * 窄屏三张都换成选区加卡片的那块（<名字>-card）：整张缩到手机宽，卡片上的字太小
  */
 export function Lookup() {
   const { m, locale } = useI18n();
@@ -14,24 +15,15 @@ export function Lookup() {
   const [main, ...rest] = text.shots;
   // 大图不放大到比原图宽：英文那张网页截得窄，撑满一栏会比屏幕还高
   const mainWidth = readme(main.name, locale).width - PHOTO_PAD * 2;
-  // 下面两张并排时一样高：两栏的宽度按各自图的宽高比分（宽高比大的那张占得宽），上下边、说明都对齐
-  const aspect = (name) => {
-    const { width, height } = readme(name, locale);
-    return (width - PHOTO_PAD * 2) / (height - PHOTO_PAD * 2);
-  };
-  const columns = rest.map((shot) => `minmax(0, ${aspect(`${shot.name}-crop`).toFixed(3)}fr)`).join(" ");
   return (
     <Section id="lookup" labelledBy="lookup-title">
       <Heading id="lookup-title" title={text.title} />
 
       <div className="reveal mx-auto mt-flow-2" style={{ maxWidth: `${mainWidth}px` }}>
-        <Shot name={main.name} alt={main.alt} pad={PHOTO_PAD} />
+        <Shot name={main.name} small={`${main.name}-card`} alt={main.alt} pad={PHOTO_PAD} />
       </div>
 
-      <ul
-        className="reveal mt-flow-1 grid gap-x-8 gap-y-10 md:[grid-template-columns:var(--columns)]"
-        style={{ "--columns": columns }}
-      >
+      <ul className="reveal mt-flow-1 grid gap-x-8 gap-y-10 md:grid-cols-2">
         {rest.map((shot) => (
           <li key={shot.name}>
             <Shot name={`${shot.name}-crop`} small={`${shot.name}-card`} alt={shot.alt} pad={PHOTO_PAD} flush />
