@@ -235,6 +235,8 @@ export default {
       "A recommended setup in one click",
     ],
     alt: "Setup step {n}: {step}",
+    after: "After setup",
+    afterAlt: "After setup: {step}",
     previous: "Previous step",
     next: "Next step",
   },

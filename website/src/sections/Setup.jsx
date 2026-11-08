@@ -7,6 +7,8 @@ import { fillText } from "../lib/text.js";
 
 /** 首次引导的四步截图和最后弹出的推荐组合（README 那批），和文案里 setup.steps 一一对应 */
 const SHOTS = ["onboarding-features", "onboarding-keys", "onboarding-permissions", "onboarding-engine", "presets"];
+/** 推荐组合是引导走完以后在主窗口弹出来的，不算引导的一步：不编号，写"引导之后"（标题说的是四步） */
+const AFTER = "presets";
 
 /** 这一段内容的左边离屏幕边多远：内容最宽 72rem（max-w-6xl），两边留 1.25rem，宽屏 2rem */
 const GUTTER = "max(1.25rem, calc((100vw - 72rem) / 2 + 2rem))";
@@ -38,17 +40,24 @@ export function Setup() {
           className="no-scrollbar mx-[calc(50%-50vw)] flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
           style={{ paddingInline: GUTTER, scrollPaddingInline: GUTTER }}
         >
-          {SHOTS.map((name, index) => (
-            <li key={name} className="w-[min(82vw,34rem)] shrink-0 snap-start">
-              <Shot name={name} alt={fillText(m.setup.alt, { n: index + 1, step: m.setup.steps[index] })} />
-              <p className="mt-3 flex items-baseline gap-3">
-                <span className="font-rounded text-label font-semibold text-ink-2 tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="font-medium text-ink">{m.setup.steps[index]}</span>
-              </p>
-            </li>
-          ))}
+          {SHOTS.map((name, index) => {
+            const step = m.setup.steps[index];
+            const after = name === AFTER;
+            return (
+              <li key={name} className="w-[min(82vw,34rem)] shrink-0 snap-start">
+                <Shot
+                  name={name}
+                  alt={after ? fillText(m.setup.afterAlt, { step }) : fillText(m.setup.alt, { n: index + 1, step })}
+                />
+                <p className="mt-3 flex items-baseline gap-3">
+                  <span className="font-rounded text-label font-semibold text-ink-2 tabular-nums">
+                    {after ? m.setup.after : String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-medium text-ink">{step}</span>
+                </p>
+              </li>
+            );
+          })}
         </ol>
         <div className="mt-6 flex justify-end gap-2">
           {[

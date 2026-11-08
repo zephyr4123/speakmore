@@ -198,6 +198,8 @@ export default {
     title: "首次引导\n四步上手",
     steps: ["演示三项功能", "检查快捷键", "开启权限", "前往引擎", "推荐组合一键启用"],
     alt: "首次引导第 {n} 步：{step}",
+    after: "引导之后",
+    afterAlt: "首次引导之后：{step}",
     previous: "上一步",
     next: "下一步",
   },
