@@ -1107,7 +1107,7 @@ export default {
       ready: "Set up",
       unset: "Not set up",
       go: "Open Engine",
-      later: "Later",
+      later: "Set up later",
     },
     // 页底角落：这一步配的东西在主窗口哪里随时能改
     where: "Change anytime in {place}",
