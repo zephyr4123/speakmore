@@ -24,8 +24,8 @@
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.en.164cfe94.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/home.en.d8f5fdd4.webp" alt="SpeakMore home window: the title Speak it written. Select to translate., the hotkeys of the three features, word count, time saved, speaking rate and daily heatmap, with the active recognition mode" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.en.b62afdba.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/home.en.00376692.webp" alt="SpeakMore home window: the title Speak it written. Select to translate., the hotkeys of the three features, word count, time saved, speaking rate and daily heatmap, with the active recognition mode" />
 </picture>
 
 ## Three features
@@ -61,7 +61,7 @@ All three start from Right ⌥ (Right Alt on Windows): on its own for voice inpu
 - Speak in English and the text arrives in Chinese; 16 target languages are available.
 - Suited to group chats with colleagues and clients abroad, and to emails and commit messages in another language: the translation goes straight into the input box, with no separate translation tool.
 - Speech is cleaned up before translation, so fillers and self-corrections stay out; history keeps both the original and the translation.
-- Set target languages in Settings › Voice translation; several can be listed, and the first is the default. Switch the target on the voice bar while speaking; the choice applies to that dictation only.
+- Set target languages in Settings › Translation; several can be listed, and the first is the default. Switch the target on the voice bar while speaking; the choice applies to that dictation only.
 - Median model time: 2.6 seconds with Direct, 1.3 seconds with Hybrid.
 - Works in Direct and Hybrid modes; the on-device models of Offline mode only transcribe, so it offers no voice translation.
 
@@ -205,25 +205,23 @@ Open the main window from the menu bar icon or the Dock. The four pages are on t
 
 | Pane | Contents |
 | --- | --- |
-| General | Theme, interface language, launch at login, storage location, software update |
-| Shortcut | Hotkeys for the three features and for cancel; key hints on the voice bar |
-| Voice translation | Target languages; several can be listed, and the first is the default |
-| Selection translation | Target language |
+| General | Theme, interface language, launch at login, storage location, software update, source code |
+| Shortcuts | Hotkeys for the three features and for cancel; key hints on the voice bar |
+| Translation | Voice translation targets (several can be listed; the first is the default) and the selection translation target |
 | On-device models | Download source, acceleration, memory release |
 | Permissions | Status of microphone, Input Monitoring and Accessibility (Mac only) |
-| About | Version and source code |
 
 - To change a hotkey, click it and press a new key or two-key combination; it applies at once. Each feature takes up to 4 combinations, and the selection translation hotkey can be cleared.
 - Combinations that clash with system or common shortcuts can't be bound; the rules are under Reference › Settings below.
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.en.0768e2ce.webp" alt="Settings, Shortcut pane: one row each for voice input, voice translation, selection translation and cancel, with room for more combinations" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.en.b94224fc.webp" alt="Settings, Voice translation pane: Simplified Chinese (default) and Japanese as targets, with Add" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.en.4a12f1e1.webp" alt="Settings, Shortcuts pane: one row each for voice input, voice translation, selection translation and cancel, with room for more combinations" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.en.b94224fc.webp" alt="Settings, Translation pane: voice translation into English (default) with Add; selection translation into Simplified Chinese" /></td>
   </tr>
   <tr>
-    <td align="center"><sub>Settings › Shortcut</sub></td>
-    <td align="center"><sub>Settings › Voice translation</sub></td>
+    <td align="center"><sub>Settings › Shortcuts</sub></td>
+    <td align="center"><sub>Settings › Translation</sub></td>
   </tr>
 </table>
 
@@ -235,24 +233,24 @@ Open the main window from the menu bar icon or the Dock. The four pages are on t
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.en.d45ad201.webp" alt="Onboarding splash: icon, tagline and Get started" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.en.c5f8225b.webp" alt="Onboarding step 1: feature demo, English speech translated into Chinese in a chat window" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.en.2dae7e63.webp" alt="Onboarding splash: icon, tagline and Get started" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.en.09c9e1ff.webp" alt="Onboarding step 1: feature demo, English speech translated into Chinese in a chat window" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Splash</sub></td>
     <td align="center"><sub><b>1</b> · The three features</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.en.60ada1c0.webp" alt="Onboarding step 2: each feature's hotkey pressed once, all passed" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.en.f79edcee.webp" alt="Onboarding step 3: microphone, Input Monitoring and Accessibility all on, Input Monitoring passed" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.en.d28e8079.webp" alt="Onboarding step 2: one row per feature's hotkey, each can be pressed to test" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.en.e8183b0e.webp" alt="Onboarding step 3: microphone, Input Monitoring and Accessibility all on" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>2</b> · Check the hotkeys</sub></td>
     <td align="center"><sub><b>3</b> · Permissions (Mac only)</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.en.473c2252.webp" alt="Onboarding step 4: status of hotkeys, permissions and engine, with Open Engine below" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.1cdf0488.webp" alt="The Engine page opened from onboarding, showing recommended setups with monthly cost, check and one-click enable" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.en.5af7c66a.webp" alt="Onboarding step 4: status of hotkeys, permissions and engine, with Open Engine below" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.757133bf.webp" alt="The Engine page opened from onboarding, showing recommended setups with monthly cost, check and one-click enable" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>4</b> · Open Engine</sub></td>
@@ -289,7 +287,7 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.en.d6baa23f.webp" alt="Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.en.ecf8625e.webp" alt="Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details" /></td>
     <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine-lookup.en.d9d18484.webp" alt="Engine page, Selection section: vendors and models in two columns, DeepSeek V4.1 Flash in use" /></td>
   </tr>
   <tr>
@@ -297,7 +295,7 @@ The **Engine** page has two sections: voice input and voice translation share th
     <td align="center"><sub>Selection: its own text model</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.en.1cb308bf.webp" alt="Keys panel: configuration status of eight platforms and the number of models each provides" /></td>
+    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.en.2ee397f8.webp" alt="Keys panel: configuration status of eight platforms and the number of models each provides" /></td>
   </tr>
   <tr>
     <td colspan="2" align="center"><sub>Keys managed per platform</sub></td>
@@ -320,8 +318,8 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.en.f1b01b76.webp" alt="Engine page: modes, steps, vendors and models laid out as a tree, with the route in use highlighted" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.1cdf0488.webp" alt="Recommended setups: four complete configurations with monthly cost, check and one-click enable" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.en.0e79092e.webp" alt="Engine page: modes, steps, vendors and models laid out as a tree, with the route in use highlighted" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.757133bf.webp" alt="Recommended setups: four complete configurations with monthly cost, check and one-click enable" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Switching modes on the Engine page</sub></td>
@@ -360,7 +358,7 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <sub>Median transcription time across 97 real dictations; Windows GPU: RTX 4060 Ti. Vulkan supports NVIDIA, AMD and Intel graphics.</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.en.3f5e5ff4.webp" alt="Engine page, Transcribe step: Chinese and mixed-language scores, time per minute of audio, memory and size of the on-device Qwen3-ASR 0.6B; green marks the best in its group" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.en.0958eef9.webp" alt="Engine page, Transcribe step: Chinese and mixed-language scores, time per minute of audio, memory and size of the on-device Qwen3-ASR 0.6B; green marks the best in its group" />
 
 ## 🔒 Privacy freedom
 
@@ -394,7 +392,7 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <sub>Voice input is estimated on the basis of the recommended setups above; voice translation and selection translation are medians of real requests (8 and 15 respectively), at list prices.</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/spend.en.3a54132f.webp" alt="Home window spending card: daily spending this month as bars with a trend line, and each model's cost and share below" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/spend.en.1bbe4da6.webp" alt="Home window spending card: daily spending this month as bars with a trend line, and each model's cost and share below" />
 
 Voice input compared with every Typeless plan (heavy use, 100 dictations a day):
 
