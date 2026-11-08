@@ -397,16 +397,20 @@ body[data-view="done"] .tick path {
   display: none;
   align-items: center;
   gap: var(--space-2);
-  max-width: 300px;
+  /* 14px 的字下，最长的那句中文提示（没有辅助功能权限：文字已复制，按 ⌘V 粘贴）要一行放得下：
+     balance 折成两行后盒子不会跟着收窄，放不下时胶囊右边会空出一大块。窗口 380 宽，两边留给阴影 */
+  max-width: 340px;
   padding: 0 10px;
 }
 
 .message span {
-  /* 可能是一整句话：最多两行，再长就截断 */
+  /* 可能是一整句话：最多两行，再长就截断；要折时中文在标点处折，不把「文字」拆开 */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   text-wrap: balance;
 }
 
