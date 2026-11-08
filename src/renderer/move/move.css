@@ -149,8 +149,11 @@
   display: none;
 }
 
+/* 按钮钉在最后那一行（1fr）的底上：说明、进度条没有时会 display: none，后面的元素跟着往前挪，
+   不写死行号的话按钮就落进了 auto 行，紧跟在文字下面、下半截空着 */
 .move-actions {
   display: flex;
+  grid-row: -2 / -1;
   justify-content: flex-end;
   align-self: end;
   margin-top: var(--space-2);
