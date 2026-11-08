@@ -188,17 +188,17 @@ export function createVocabulary() {
     $("vocabulary-count").textContent =
       data.problem || data.terms.length === 0 ? "" : t("vocabulary.count", { count: data.terms.length });
     const empty = data.problem === null && shown.length === 0;
-    const searching = data.terms.length > 0;
-    // 一个词都没有时：标题行的"新词"和搜索框先收起来，屏上只有空状态里那一个"新词"（一屏只放一个主按钮），
+    const hasTerms = data.terms.length > 0;
+    // 一个词都没有时：标题行的"新词"和搜索那一行先收起来，屏上只有空状态里那一个"新词"（一屏只放一个主按钮），
     // 也没什么可搜的。导入留在标题行，加了第一个词以后都回来
-    const first = data.problem === null && !searching;
+    const first = data.problem === null && !hasTerms;
     $("vocabulary-add").hidden = first;
-    $("vocabulary-search").closest(".search").hidden = first;
+    $("vocabulary-search").closest(".toolbar").hidden = first;
     $("vocabulary-empty").hidden = !empty;
-    $("vocabulary-empty").dataset.kind = searching ? "search" : "first";
-    $("vocabulary-empty-title").textContent = searching ? t("vocabulary.noResults") : t("vocabulary.empty.title");
-    $("vocabulary-empty-text").hidden = searching;
-    $("vocabulary-empty-add").hidden = searching;
+    $("vocabulary-empty").dataset.kind = hasTerms ? "search" : "first";
+    $("vocabulary-empty-title").textContent = hasTerms ? t("vocabulary.noResults") : t("vocabulary.empty.title");
+    $("vocabulary-empty-text").hidden = hasTerms;
+    $("vocabulary-empty-add").hidden = hasTerms;
     const grid = $("vocabulary-grid");
     // 重画前焦点在哪个词的哪个按钮上，画完放回去（键盘操作不会掉到页面最前面）
     const focused = grid.contains(document.activeElement) ? document.activeElement.dataset.focus : undefined;

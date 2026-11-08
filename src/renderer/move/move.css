@@ -131,6 +131,8 @@
   margin: 0;
   color: var(--ink-2);
   font-size: var(--text-body);
+  /* 最后一行别只剩一个词（英文的 done） */
+  text-wrap: pretty;
 }
 
 .move[data-phase="failed"] .move-step {

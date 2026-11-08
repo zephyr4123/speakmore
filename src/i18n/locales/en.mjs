@@ -966,7 +966,7 @@ export default {
     general: "General",
     permissions: "Permissions",
     translation: "Translation",
-    hotkey: "Shortcut",
+    hotkey: "Shortcuts",
     theme: "Theme",
     language: "Interface language",
     localModels: "On-device models",
