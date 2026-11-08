@@ -24,8 +24,8 @@
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.zh-CN.596d6346.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/home.zh-CN.52652b74.webp" alt="SpeakMore 主窗口首页：标题为口述成文，划词即译，下方为三项功能的快捷键、字数、节省时间、语速与每日热力图，右上角为当前识别方式" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.zh-CN.cb185dec.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/home.zh-CN.b46acd1d.webp" alt="SpeakMore 主窗口首页：标题为口述成文，划词即译，下方为三项功能的快捷键、字数、节省时间、语速与每日热力图，右上角为当前识别方式" />
 </picture>
 
 ## 三项功能
@@ -41,8 +41,8 @@
 ### 🎙️ 语音输入
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/dictate-dark.zh-CN.8b70e026.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/dictate-light.zh-CN.75e27234.webp" width="880" alt="语音输入：含语气词与改口的口述，整理为一句完整的文字写入输入框，下方为悬浮条" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/dictate-dark.zh-CN.f6e962c5.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/dictate-light.zh-CN.5ded8001.webp" width="880" alt="语音输入：含语气词与改口的口述，整理为一句完整的文字写入输入框，下方为悬浮条" />
 </picture>
 
 - 按下快捷键开始口述，再次按下结束，文字写入当前光标位置。
@@ -54,8 +54,8 @@
 ### 🌐 语音翻译
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/translate-dark.zh-CN.55998031.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/translate-light.zh-CN.5eb551f3.webp" width="880" alt="语音翻译：中文口述译为英文写入输入框，悬浮条上的语言选单可切换英文与日文" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/translate-dark.zh-CN.95af6e06.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/translate-light.zh-CN.0a4252fb.webp" width="880" alt="语音翻译：中文口述译为英文写入输入框，悬浮条上的语言选单可切换英文与日文" />
 </picture>
 
 - 用中文口述，写入的是英文；目标语言支持 16 种。
@@ -67,12 +67,12 @@
 
 ### 📖 划词翻译
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/lookup-web.zh-CN.0b2822d8.webp" alt="划词翻译：在 arXiv 网页中选中一段英文摘要，按下快捷键后，选区下方的卡片显示中文译文" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/lookup-web.zh-CN.ab92c208.webp" alt="划词翻译：在 arXiv 网页中选中一段英文摘要，按下快捷键后，选区下方的卡片显示中文译文" />
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-pdf.zh-CN.4e3446a2.webp" alt="划词翻译：在 PDF 中选中一段英文，卡片显示中文译文" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-terminal.zh-CN.29430237.webp" alt="划词翻译：在终端中选中 git help push 的英文说明，卡片显示中文译文" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-pdf.zh-CN.0e72d0dd.webp" alt="划词翻译：在 PDF 中选中一段英文，卡片显示中文译文" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-terminal.zh-CN.ac9f45fd.webp" alt="划词翻译：在终端中选中 git help push 的英文说明，卡片显示中文译文" /></td>
   </tr>
   <tr>
     <td align="center"><sub>PDF</sub></td>
@@ -186,8 +186,8 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/history.zh-CN.3b64aa60.webp" alt="历史页：按语音输入、语音翻译、划词翻译筛选，翻译记录下方附原文" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/vocabulary.zh-CN.afcce34f.webp?v=2" alt="词典页：十二个专有名词与术语，可搜索、导入与新增，右上为支持词典的模型" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/history.zh-CN.203bf467.webp" alt="历史页：按语音输入、语音翻译、划词翻译筛选，翻译记录下方附原文" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/vocabulary.zh-CN.de555045.webp?v=2" alt="词典页：十二个专有名词与术语，可搜索、导入与新增，右上为支持词典的模型" /></td>
   </tr>
   <tr>
     <td align="center"><sub>历史：三项功能的记录，翻译附原文</sub></td>
@@ -218,8 +218,8 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.zh-CN.d3d85bc6.webp" alt="设置的快捷键一栏：语音输入、语音翻译、划词翻译与取消各一行，可添加多个组合" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.zh-CN.a2a6d309.webp" alt="设置的语音翻译一栏：目标语言为英文（默认）与日文，可添加" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.zh-CN.651d219a.webp" alt="设置的快捷键一栏：语音输入、语音翻译、划词翻译与取消各一行，可添加多个组合" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.zh-CN.2327458d.webp" alt="设置的语音翻译一栏：目标语言为英文（默认）与日文，可添加" /></td>
   </tr>
   <tr>
     <td align="center"><sub>设置 › 快捷键</sub></td>
@@ -235,24 +235,24 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.zh-CN.e8c93b45.webp" alt="引导开屏：图标、口号与开始按钮" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.zh-CN.1f25940b.webp" alt="引导第 1 步：功能演示，聊天窗口中的中文口述译为英文写入输入框" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.zh-CN.e00040b3.webp" alt="引导开屏：图标、口号与开始按钮" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.zh-CN.c261764e.webp" alt="引导第 1 步：功能演示，聊天窗口中的中文口述译为英文写入输入框" /></td>
   </tr>
   <tr>
     <td align="center"><sub>开屏</sub></td>
     <td align="center"><sub><b>1</b> · 演示三项功能</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.zh-CN.9bdf50d3.webp" alt="引导第 2 步：三项功能的快捷键各按一次，均显示检测通过" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.zh-CN.e74eee4b.webp" alt="引导第 3 步：麦克风、输入监控、辅助功能三项权限均已开启，输入监控已检测通过" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.zh-CN.a2aad581.webp" alt="引导第 2 步：三项功能的快捷键各按一次，均显示检测通过" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.zh-CN.52679a3f.webp" alt="引导第 3 步：麦克风、输入监控、辅助功能三项权限均已开启，输入监控已检测通过" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>2</b> · 检查快捷键</sub></td>
     <td align="center"><sub><b>3</b> · 开启权限（仅 Mac）</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.zh-CN.0c125326.webp" alt="引导第 4 步：汇总快捷键、权限与引擎的状态，下方为前往引擎" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.zh-CN.87ef1878.webp" alt="前往引擎后弹出推荐组合：四套完整配置，含月成本、检测与一键启用" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.zh-CN.2186cd3a.webp" alt="引导第 4 步：汇总快捷键、权限与引擎的状态，下方为前往引擎" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.zh-CN.71a0ce3a.webp" alt="前往引擎后弹出推荐组合：四套完整配置，含月成本、检测与一键启用" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>4</b> · 前往引擎</sub></td>
@@ -289,15 +289,15 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.zh-CN.d2a35bf5.webp" alt="引擎页：整理一步展开到 DeepSeek，详情中为渠道、价格与检测" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine-lookup.zh-CN.cdf6ac0a.webp" alt="引擎页划词一段：厂商与型号两列，DeepSeek V4.1 Flash 正在使用" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.zh-CN.441596ca.webp" alt="引擎页：整理一步展开到 DeepSeek，详情中为渠道、价格与检测" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine-lookup.zh-CN.c4412e92.webp" alt="引擎页划词一段：厂商与型号两列，DeepSeek V4.1 Flash 正在使用" /></td>
   </tr>
   <tr>
     <td align="center"><sub>语音：整理模型详情</sub></td>
     <td align="center"><sub>划词：单独选择文字模型</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.zh-CN.9c509220.webp?v=2" alt="密钥面板：八个平台的配置状态及各自可调用的模型数量" /></td>
+    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.zh-CN.cb804ff0.webp?v=2" alt="密钥面板：八个平台的配置状态及各自可调用的模型数量" /></td>
   </tr>
   <tr>
     <td colspan="2" align="center"><sub>按平台管理密钥</sub></td>
@@ -320,8 +320,8 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.zh-CN.ebcad9b3.webp" alt="引擎页：识别方式、步骤、厂商、型号排成一棵树，正在使用的一路以主题色标出" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.zh-CN.87ef1878.webp" alt="推荐组合：四套完整配置，含月成本、检测与一键启用" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.zh-CN.a54c9913.webp" alt="引擎页：识别方式、步骤、厂商、型号排成一棵树，正在使用的一路以主题色标出" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.zh-CN.71a0ce3a.webp" alt="推荐组合：四套完整配置，含月成本、检测与一键启用" /></td>
   </tr>
   <tr>
     <td align="center"><sub>在引擎页切换识别方式</sub></td>
@@ -360,7 +360,7 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <sub>单条耗时为 97 条真实口述的转文字耗时中位数；Windows 显卡为 RTX 4060 Ti。Vulkan 支持 NVIDIA、AMD 与 Intel 显卡。</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.zh-CN.8bfa8c28.webp" alt="引擎页转文字一步：本机模型 Qwen3-ASR 0.6B 的中文与中英混合得分、每分钟音频耗时、内存与体积，绿色为同组最佳" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.zh-CN.d1a727cf.webp" alt="引擎页转文字一步：本机模型 Qwen3-ASR 0.6B 的中文与中英混合得分、每分钟音频耗时、内存与体积，绿色为同组最佳" />
 
 ## 🔒 隐私自由
 
@@ -394,7 +394,7 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 
 <sub>语音输入按上文推荐组合的口径估算；语音翻译、划词翻译为实际调用的中位数（分别为 8 次、15 次），按官方价格计，美元按 6.71 折算。</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/spend.zh-CN.a456f5c7.webp" alt="首页花费卡：本月每天的花费柱状图与趋势线，下方为各模型的花费与占比" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/spend.zh-CN.8e3292e5.webp" alt="首页花费卡：本月每天的花费柱状图与趋势线，下方为各模型的花费与占比" />
 
 语音输入与 Typeless 各档套餐对比（重度使用，每日 100 次）：
 

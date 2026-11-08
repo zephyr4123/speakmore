@@ -24,8 +24,8 @@
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.en.2cec7117.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/home.en.123d495c.webp" alt="SpeakMore home window: the title Speak it written. Select to translate., the hotkeys of the three features, word count, time saved, speaking rate and daily heatmap, with the active recognition mode" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/home-dark.en.164cfe94.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/home.en.d8f5fdd4.webp" alt="SpeakMore home window: the title Speak it written. Select to translate., the hotkeys of the three features, word count, time saved, speaking rate and daily heatmap, with the active recognition mode" />
 </picture>
 
 ## Three features
@@ -41,8 +41,8 @@ All three start from Right ⌥ (Right Alt on Windows): on its own for voice inpu
 ### 🎙️ Voice input
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/dictate-dark.en.9365162e.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/dictate-light.en.cc5a1d95.webp" width="880" alt="Voice input: a dictation full of fillers and self-corrections becomes one clean sentence in the text field, with the voice bar below" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/dictate-dark.en.821b06b3.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/dictate-light.en.fc64218b.webp" width="880" alt="Voice input: a dictation full of fillers and self-corrections becomes one clean sentence in the text field, with the voice bar below" />
 </picture>
 
 - Press the hotkey to start dictating; press it again to insert the text at the cursor.
@@ -54,8 +54,8 @@ All three start from Right ⌥ (Right Alt on Windows): on its own for voice inpu
 ### 🌐 Voice translation
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/translate-dark.en.04741ca4.webp" />
-  <img src="https://media.speakmore.zephyrxiang.com/readme/translate-light.en.e9eaa6ec.webp?v=2" width="880" alt="Voice translation: English speech written into the text field in Chinese, with a language menu on the voice bar" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://media.speakmore.zephyrxiang.com/readme/translate-dark.en.cac05699.webp" />
+  <img src="https://media.speakmore.zephyrxiang.com/readme/translate-light.en.4b802979.webp?v=2" width="880" alt="Voice translation: English speech written into the text field in Chinese, with a language menu on the voice bar" />
 </picture>
 
 - Speak in English and the text arrives in Chinese; 16 target languages are available.
@@ -67,12 +67,12 @@ All three start from Right ⌥ (Right Alt on Windows): on its own for voice inpu
 
 ### 📖 Selection translation
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/lookup-web.en.8c0273fa.webp" alt="Selection translation: a paragraph selected on a Chinese web page, translated into English in a card below the selection" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/lookup-web.en.198b12ce.webp" alt="Selection translation: a paragraph selected on a Chinese web page, translated into English in a card below the selection" />
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-terminal.en.c99c357d.webp" alt="Selection translation: Chinese help text selected in a terminal, translated into English in a card" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-app.en.dc494575.webp" alt="Selection translation: Chinese text selected in a notes app, translated into English in a card" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-terminal.en.fd7437cf.webp" alt="Selection translation: Chinese help text selected in a terminal, translated into English in a card" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/lookup-app.en.95df2bac.webp" alt="Selection translation: Chinese text selected in a notes app, translated into English in a card" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Terminal</sub></td>
@@ -186,8 +186,8 @@ Open the main window from the menu bar icon or the Dock. The four pages are on t
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/history.en.2397780f.webp" alt="History page: filters for voice input, voice translation and selection translation, with the original shown under each translation" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/vocabulary.en.fef0c6e8.webp" alt="Dictionary page: twelve names and terms, with search, import and New word, and the supported models at the top right" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/history.en.750bdaf6.webp" alt="History page: filters for voice input, voice translation and selection translation, with the original shown under each translation" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/vocabulary.en.e1ef441d.webp" alt="Dictionary page: twelve names and terms, with search, import and New word, and the supported models at the top right" /></td>
   </tr>
   <tr>
     <td align="center"><sub>History of the three features, with originals</sub></td>
@@ -218,8 +218,8 @@ Open the main window from the menu bar icon or the Dock. The four pages are on t
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.en.58a9660e.webp" alt="Settings, Shortcut pane: one row each for voice input, voice translation, selection translation and cancel, with room for more combinations" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.en.1d25d382.webp" alt="Settings, Voice translation pane: Simplified Chinese (default) and Japanese as targets, with Add" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-hotkeys.en.0768e2ce.webp" alt="Settings, Shortcut pane: one row each for voice input, voice translation, selection translation and cancel, with room for more combinations" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/settings-translate.en.b94224fc.webp" alt="Settings, Voice translation pane: Simplified Chinese (default) and Japanese as targets, with Add" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Settings › Shortcut</sub></td>
@@ -235,24 +235,24 @@ Open the main window from the menu bar icon or the Dock. The four pages are on t
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.en.0a17114d.webp" alt="Onboarding splash: icon, tagline and Get started" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.en.72bf00f4.webp" alt="Onboarding step 1: feature demo, English speech translated into Chinese in a chat window" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-splash.en.d45ad201.webp" alt="Onboarding splash: icon, tagline and Get started" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-features.en.c5f8225b.webp" alt="Onboarding step 1: feature demo, English speech translated into Chinese in a chat window" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Splash</sub></td>
     <td align="center"><sub><b>1</b> · The three features</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.en.db18f6ae.webp" alt="Onboarding step 2: each feature's hotkey pressed once, all passed" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.en.ab43c801.webp" alt="Onboarding step 3: microphone, Input Monitoring and Accessibility all on, Input Monitoring passed" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-keys.en.60ada1c0.webp" alt="Onboarding step 2: each feature's hotkey pressed once, all passed" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-permissions.en.f79edcee.webp" alt="Onboarding step 3: microphone, Input Monitoring and Accessibility all on, Input Monitoring passed" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>2</b> · Check the hotkeys</sub></td>
     <td align="center"><sub><b>3</b> · Permissions (Mac only)</sub></td>
   </tr>
   <tr>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.en.ecf5c820.webp" alt="Onboarding step 4: status of hotkeys, permissions and engine, with Open Engine below" /></td>
-    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.a7834de4.webp" alt="The Engine page opened from onboarding, showing recommended setups with monthly cost, check and one-click enable" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/onboarding-engine.en.473c2252.webp" alt="Onboarding step 4: status of hotkeys, permissions and engine, with Open Engine below" /></td>
+    <td><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.1cdf0488.webp" alt="The Engine page opened from onboarding, showing recommended setups with monthly cost, check and one-click enable" /></td>
   </tr>
   <tr>
     <td align="center"><sub><b>4</b> · Open Engine</sub></td>
@@ -289,15 +289,15 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.en.b43d004e.webp" alt="Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine-lookup.en.7ea57529.webp" alt="Engine page, Selection section: vendors and models in two columns, DeepSeek V4.1 Flash in use" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/polish.en.d6baa23f.webp" alt="Engine page: the Refine step expanded to DeepSeek, with channels, prices and a check in the details" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine-lookup.en.d9d18484.webp" alt="Engine page, Selection section: vendors and models in two columns, DeepSeek V4.1 Flash in use" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Voice: Refine model details</sub></td>
     <td align="center"><sub>Selection: its own text model</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.en.6008995c.webp" alt="Keys panel: configuration status of eight platforms and the number of models each provides" /></td>
+    <td colspan="2"><img src="https://media.speakmore.zephyrxiang.com/readme/keys.en.1cb308bf.webp" alt="Keys panel: configuration status of eight platforms and the number of models each provides" /></td>
   </tr>
   <tr>
     <td colspan="2" align="center"><sub>Keys managed per platform</sub></td>
@@ -320,8 +320,8 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <table>
   <tr>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.en.5c08aed5.webp" alt="Engine page: modes, steps, vendors and models laid out as a tree, with the route in use highlighted" /></td>
-    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.a7834de4.webp" alt="Recommended setups: four complete configurations with monthly cost, check and one-click enable" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/engine.en.f1b01b76.webp" alt="Engine page: modes, steps, vendors and models laid out as a tree, with the route in use highlighted" /></td>
+    <td width="50%"><img src="https://media.speakmore.zephyrxiang.com/readme/presets.en.1cdf0488.webp" alt="Recommended setups: four complete configurations with monthly cost, check and one-click enable" /></td>
   </tr>
   <tr>
     <td align="center"><sub>Switching modes on the Engine page</sub></td>
@@ -360,7 +360,7 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <sub>Median transcription time across 97 real dictations; Windows GPU: RTX 4060 Ti. Vulkan supports NVIDIA, AMD and Intel graphics.</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.en.8e075f8d.webp" alt="Engine page, Transcribe step: Chinese and mixed-language scores, time per minute of audio, memory and size of the on-device Qwen3-ASR 0.6B; green marks the best in its group" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/transcribe.en.3f5e5ff4.webp" alt="Engine page, Transcribe step: Chinese and mixed-language scores, time per minute of audio, memory and size of the on-device Qwen3-ASR 0.6B; green marks the best in its group" />
 
 ## 🔒 Privacy freedom
 
@@ -394,7 +394,7 @@ The **Engine** page has two sections: voice input and voice translation share th
 
 <sub>Voice input is estimated on the basis of the recommended setups above; voice translation and selection translation are medians of real requests (8 and 15 respectively), at list prices.</sub>
 
-<img src="https://media.speakmore.zephyrxiang.com/readme/spend.en.7cfdbdab.webp" alt="Home window spending card: daily spending this month as bars with a trend line, and each model's cost and share below" />
+<img src="https://media.speakmore.zephyrxiang.com/readme/spend.en.3a54132f.webp" alt="Home window spending card: daily spending this month as bars with a trend line, and each model's cost and share below" />
 
 Voice input compared with every Typeless plan (heavy use, 100 dictations a day):
 

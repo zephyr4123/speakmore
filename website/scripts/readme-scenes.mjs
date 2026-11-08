@@ -1,11 +1,11 @@
 // README 三个功能的配图，都出 WebP 两倍图，浅色、深色各一张：
 //   语音输入、语音翻译：字是直接写进别的应用的，App 里没有能截的画面，所以用代码画——口述的原话在左，写进输入框的字在右，
 //     样式取 App 自己的（src/renderer/shared/tokens.css 和靛青主题）；下面的悬浮条是真的悬浮条页面离屏画出来的，不是照着画的。
-//   划词翻译：真截图（在 Mac 上截的全屏），裁到卡片和选区那一块，加圆角和阴影。
+//   截图的局部：划词翻译的实拍（在 Mac 上截的全屏）、官网用的 App 截图局部（readme-shots.mjs 记下的），裁一块加圆角和阴影。
 //
 //   ../node_modules/.bin/electron scripts/readme-scenes.mjs -- <photos.json> <输出目录>     （在 website/ 下）
 //
-// photos.json 是划词截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<全屏截图.png>", "crop": { "x", "y", "width", "height" } }]，
+// photos.json 是截图怎么裁：[{ "name": "lookup-web.zh-CN", "file": "<截图.png>", "crop": { "x", "y", "width", "height" } }]，
 // 坐标是截图的像素（两倍图）。输出目录里有 manifest.json，再用 upload-media.mjs 传到图片桶的 readme/ 下。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
