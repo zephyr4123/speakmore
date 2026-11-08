@@ -93,7 +93,7 @@ export function createDetail(ctx, dock) {
                   },
             },
             brand(id),
-            view.channelName(group, id),
+            h("span", { class: "segment-name", text: view.channelName(group, id) }),
             view.hasKey(id) && svg("i-check", "icon key-mark"),
           ),
         ),

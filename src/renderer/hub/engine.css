@@ -794,6 +794,25 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
   gap: 0.375rem;
 }
 
+/* 渠道名长的语言（英文的 Alibaba Cloud Bailian）两段一行放不下：短的那段照原样，长的那段名字省略，全名在悬停提示里。
+   列宽 minmax(0, max-content)：宽度平均分给各段、够用的先停，挤掉的只有最长的那段 */
+.detail-channel .segmented {
+  display: inline-grid;
+  grid-auto-columns: minmax(0, max-content);
+  grid-auto-flow: column;
+  max-width: 100%;
+}
+
+.detail-channel .segment > :not(.segment-name) {
+  flex: none;
+}
+
+.detail-channel .segment-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .detail-label {
   font-size: var(--text-micro);
   font-weight: var(--weight-medium);
