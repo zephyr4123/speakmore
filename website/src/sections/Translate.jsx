@@ -58,13 +58,13 @@ export function Translate() {
             <span className="font-semibold text-ink">{chat.contact}</span>
           </div>
           <div className="flex flex-1 flex-col justify-end px-6 pt-6 pb-4">
-            <p className="max-w-[85%] self-start rounded-tile rounded-bl-small bg-surface px-4 py-2.5 text-lead leading-relaxed text-ink">
+            <p className="max-w-[85%] self-start rounded-tile rounded-bl-small bg-surface px-4 py-2.5 text-body leading-relaxed text-ink">
               {chat.incoming}
             </p>
           </div>
           <div className="px-4 pb-4">
             {/* 输入框一开始就按译文写进去的高度占好（垫一层看不见的译文），字落进来时窗口不变高 */}
-            <div className="grid rounded-tile px-5 py-3 text-lead leading-relaxed shadow-inset-line">
+            <div className="grid rounded-tile px-5 py-3 text-body leading-relaxed shadow-inset-line">
               <p className="invisible col-start-1 row-start-1" aria-hidden="true">
                 {chat.written}
                 <span className="ml-0.5 inline-block w-0.5" />

@@ -22,7 +22,7 @@ export function Privacy() {
             <Icon name={item.icon} className="size-8 text-seal" />
             <div>
               <h3 className="text-heading font-semibold text-ink">{item.title}</h3>
-              <p className="mt-1 text-secondary text-ink-2">{item.text}</p>
+              <p className="mt-1 text-body text-ink-2">{item.text}</p>
             </div>
           </li>
         ))}

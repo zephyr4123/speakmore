@@ -18,7 +18,7 @@ export function Chord({ keys, className = "" }) {
       {keys.map((key) => (
         <kbd
           key={key}
-          className="inline-flex h-8 min-w-8 items-center justify-center rounded-control bg-raised px-2.5 font-sans text-secondary font-medium text-ink shadow-key"
+          className="inline-flex h-8 min-w-8 items-center justify-center rounded-control bg-raised px-2.5 font-sans text-label font-medium text-ink shadow-key"
         >
           {label(key)}
         </kbd>

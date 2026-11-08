@@ -21,7 +21,7 @@ export function Trio() {
                 <h3 className="mt-5 text-card-title font-semibold tracking-card-title text-ink transition-colors duration-150 group-hover:text-link">
                   {item.name}
                 </h3>
-                <p className="mt-1.5 text-lead text-ink-2">{item.text}</p>
+                <p className="mt-1.5 text-body text-ink-2">{item.text}</p>
               </a>
             </li>
           ))}

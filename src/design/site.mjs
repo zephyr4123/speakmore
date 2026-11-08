@@ -7,7 +7,7 @@ import cinnabar from "../themes/cinnabar.mjs";
 import { BAR_DROP, EASE_OUT, FONT_DISPLAY, FONT_MONO, FONT_ROUNDED, FONT_TEXT, RADIUS } from "./base.mjs";
 import { fluid } from "./css.mjs";
 
-/** @type {{ comment?: string, tokens: [string, string][] }[]} 写进 @theme：Tailwind 按名字生成 text-lead、rounded-tile 这类工具类 */
+/** @type {{ comment?: string, tokens: [string, string][] }[]} 写进 @theme：Tailwind 按名字生成 text-body、rounded-tile 这类工具类 */
 export const SITE_THEME = [
   {
     comment:
@@ -84,14 +84,13 @@ export const SITE_THEME = [
     ],
   },
   {
-    comment: `字号，按用途起名。固定的七档：没写字号的正文继承 body 的 16px（body）
-     lead 17 区块和卡片的引导说明、对话气泡 · secondary 15 次要说明、列表、数据标签 · label 14 小标签、导航、图注
+    comment: `字号，按用途起名，不按大小。说明文字只有两档，相邻差 3px，一眼分得出（原来 17、16、15、14 四档，相邻只差 1px）：
+     body 17 要读的句子：段落、列表项的说明、对话气泡、主按钮，没写字号的字都是它 · label 14 短标签和数据：导航、标签、规格、键帽、图注
+     主次靠字重（600）和颜色（ink / ink-2）分，和 App 一个思路。
      code 13 命令行 · fine 12 页脚、小徽标 · micro 11 · heading 18 卡片标题
      label、fine、heading 原来是 Tailwind 的 text-sm、xs、lg，行高照它们原来的带上；其余原来是任意值、不带行高`,
     tokens: [
-      ["text-body", "1rem"],
-      ["text-lead", "1.0625rem"],
-      ["text-secondary", "0.9375rem"],
+      ["text-body", "1.0625rem"],
       ["text-label", "0.875rem"],
       ["text-label--line-height", "calc(1.25 / 0.875)"],
       ["text-code", "0.8125rem"],

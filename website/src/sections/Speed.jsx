@@ -41,7 +41,7 @@ export function Speed() {
           {text.stats.map((stat) => (
             // 数字在上、说明在下（dt 得写在前面，所以倒过来排）；在哪类硬件上测的另起一行
             <div key={stat.label} className="flex flex-col-reverse justify-end gap-2">
-              <dt className="text-secondary leading-snug text-ink-2">
+              <dt className="text-label leading-snug text-ink-2">
                 {stat.label}
                 {stat.note ? <span className="block">{stat.note}</span> : null}
               </dt>
@@ -92,7 +92,7 @@ function Hardware({ text }) {
                 <span className="flex h-7 items-center">
                   <Icon name={item.icon} className={`w-auto ${MARK[item.icon]}`} />
                 </span>
-                <p className="text-secondary leading-snug text-ink">
+                <p className="text-label leading-snug text-ink">
                   <span className="sr-only">{item.brand} </span>
                   {item.series}
                 </p>
@@ -123,8 +123,8 @@ function LongTake({ text }) {
   return (
     <div ref={ref}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-        <h3 className="text-lead font-semibold text-ink">{text.title}</h3>
-        <p className="text-secondary text-ink-2">{text.text}</p>
+        <h3 className="text-body font-semibold text-ink">{text.title}</h3>
+        <p className="text-body text-ink-2">{text.text}</p>
       </div>
       <div aria-hidden="true" className="mt-5">
         <div className="long-take" data-play={seen ? "" : undefined}>

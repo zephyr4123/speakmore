@@ -50,8 +50,8 @@ export function Ways() {
           >
             <div>
               <h3 className="text-title font-semibold tracking-title text-ink">{way.name}</h3>
-              <p className="mt-2 text-lead text-ink-2">{way.text}</p>
-              <ul className="mt-6 grid gap-2.5 text-secondary">
+              <p className="mt-2 text-body text-ink-2">{way.text}</p>
+              <ul className="mt-6 grid gap-2.5 text-label">
                 {way.facts.map((fact, index) => (
                   <li key={fact} className="flex items-center gap-2.5 text-ink">
                     <span

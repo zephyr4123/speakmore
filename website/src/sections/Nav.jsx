@@ -58,7 +58,7 @@ export function Nav() {
       <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-5 sm:px-8">
         <a
           href="#top"
-          className="flex items-center gap-2.5 font-display text-lead font-semibold tracking-brand"
+          className="flex items-center gap-2.5 font-display text-body font-semibold tracking-brand"
           aria-label={m.nav.home}
         >
           <img src={seal} alt="" width="28" height="28" className="size-7" />

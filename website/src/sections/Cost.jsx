@@ -28,7 +28,7 @@ export function Cost() {
     >
       <div>
         <h3 className="text-title font-semibold tracking-title text-balance text-ink">{m.cost.title}</h3>
-        <p className="mt-2 text-lead text-ink-2">{m.cost.text}</p>
+        <p className="mt-2 text-body text-ink-2">{m.cost.text}</p>
       </div>
       <dl ref={roll.ref} data-roll={roll.stage} className="grid grid-cols-2 gap-x-8 sm:gap-x-12">
         {plans.map(({ id, text, cost }) => (
@@ -42,7 +42,7 @@ export function Cost() {
               {/* token-exempt: 单位、符号按旁边大数字的字号成比例缩小 */}
               <span className="ml-1.5 text-[0.36em] font-medium tracking-normal text-ink-2">{m.cost.per}</span>
             </dd>
-            <dd className="mt-1 text-secondary leading-snug text-balance break-keep text-ink-2">{text.note}</dd>
+            <dd className="mt-1 text-label leading-snug text-balance break-keep text-ink-2">{text.note}</dd>
           </div>
         ))}
       </dl>

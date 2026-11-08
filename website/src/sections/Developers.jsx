@@ -21,7 +21,7 @@ export function Developers() {
             {text.points.map((point) => (
               <li key={point.title} className="py-5">
                 <h3 className="font-semibold text-ink">{point.title}</h3>
-                <p className="mt-1 text-secondary text-ink-2">{point.text}</p>
+                <p className="mt-1 text-body text-ink-2">{point.text}</p>
               </li>
             ))}
           </ul>

@@ -28,7 +28,7 @@
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    /* 没写字号的字都是它（浏览器默认也是 16px，写出来是为了有个名字） */
+    /* 没写字号的字都是它：要读的句子，17px */
     font-size: var(--text-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

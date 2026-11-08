@@ -5,7 +5,7 @@
 | 生成的文件 | 来自 | 谁用 |
 |---|---|---|
 | `src/renderer/shared/tokens.css` | `app.mjs` | App 的每个页面，排在别的样式前面 |
-| `website/src/tokens.css` | `site.mjs` | 官网的 `styles.css` 里 `@import`，Tailwind 按名字生成 `text-lead`、`rounded-tile` 这类工具类 |
+| `website/src/tokens.css` | `site.mjs` | 官网的 `styles.css` 里 `@import`，Tailwind 按名字生成 `text-body`、`rounded-tile` 这类工具类 |
 
 `base.mjs` 放两边值完全相同的（间距基数、三档圆角、悬浮条的投影、字体、基础缓动），`css.mjs` 负责把 token 写成 CSS。App 的颜色不在这里，那是主题的事（`src/themes`，由预加载脚本注入）；官网演示用的悬浮条从朱砂主题取色。
 
@@ -46,6 +46,7 @@
 | 朱砂色 | 取 App 朱砂主题的主色：浅色 `oklch(0.56 0.19 32)`，亮的一档是深色的主色 | 官网从 `src/themes/cinnabar.mjs` 读；白字叠朱砂进了对比度检查 |
 | 标题字重 | 统一 600：苹方 600 以上渲染都一样，雅黑 600 以上都落到粗体。英文标题会细一点 | App 删掉 `--weight-bold`，字重三档；官网 `font-weight-display` 650 → 600 |
 | App 字号 | 12、14、18、22、28、40 六档：11 → 12（Windows 11 常规字重的下限），13 和 15 合成 14，名字靠字重、说明靠颜色分主次 | `--text-small` 并进 `--text-body`；`--text-figure` 改名 `--text-page` |
+| 官网说明文字 | 17、16、15、14 四档并成两档，按用途分：要读的句子 17（`text-body`，也是没写字号时的默认），短标签和数据 14（`text-label`）；主次靠字重和颜色 | 删掉 `text-lead`、`text-secondary`；原来 15 的按用途拆开 |
 | 页面标题 | 主窗口四个页面的标题 40 → 28，首页的标题就叫「首页」（和侧栏一样）；引导保持 40 | `.page-title` 用 `--text-page` |
 | 中性色 | 不统一：App 的中性色跟着三套主题走，官网偏冷、贴近系统灰 | |
 
