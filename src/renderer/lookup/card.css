@@ -32,9 +32,7 @@ body {
   color: var(--ink);
   background: var(--surface-solid);
   border-radius: var(--radius-card);
-  box-shadow:
-    var(--edge),
-    0 12px 28px -10px oklch(0 0 0 / 0.34);
+  box-shadow: var(--edge), var(--shadow-card);
   transition: opacity var(--dur-base) var(--ease-out);
 }
 

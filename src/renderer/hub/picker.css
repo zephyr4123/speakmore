@@ -84,9 +84,7 @@
   backdrop-filter: var(--glass-filter);
   border: none;
   border-radius: var(--radius-card);
-  box-shadow:
-    var(--edge),
-    0 24px 60px -20px oklch(0 0 0 / 0.35);
+  box-shadow: var(--edge), var(--shadow-popover);
   transform-origin: top right;
   -webkit-app-region: no-drag;
 }

@@ -99,7 +99,7 @@
   background: var(--surface-solid);
   box-shadow:
     0 0 0 1px var(--line),
-    0 1px 3px oklch(0 0 0 / 0.08);
+    var(--shadow-selected);
 }
 
 .nav-item:focus-visible,
@@ -1099,9 +1099,7 @@
   backdrop-filter: var(--glass-filter);
   border: none;
   border-radius: var(--radius-card);
-  box-shadow:
-    var(--edge),
-    0 30px 80px -24px oklch(0 0 0 / 0.4);
+  box-shadow: var(--edge), var(--shadow-dialog);
   -webkit-app-region: no-drag;
 }
 
@@ -1110,7 +1108,7 @@
 }
 
 .dialog::backdrop {
-  background: oklch(0 0 0 / 0.18);
+  background: var(--scrim);
   backdrop-filter: blur(6px);
   animation: fade-in var(--dur-slow) var(--ease-out);
 }
@@ -1220,9 +1218,7 @@
   backdrop-filter: var(--glass-filter);
   border: none;
   border-radius: var(--radius-card);
-  box-shadow:
-    var(--edge),
-    0 30px 80px -24px oklch(0 0 0 / 0.4);
+  box-shadow: var(--edge), var(--shadow-dialog);
   overflow: hidden;
   /* 它盖在侧栏的拖动区上面。拖动区只认 app-region，不管上面盖着什么：不写这一句，左栏菜单有一截点下去是在拖窗口 */
   -webkit-app-region: no-drag;
@@ -1244,7 +1240,7 @@
 }
 
 .settings::backdrop {
-  background: oklch(0 0 0 / 0.18);
+  background: var(--scrim);
   backdrop-filter: blur(6px);
   animation: fade-in var(--dur-slow) var(--ease-out);
 }

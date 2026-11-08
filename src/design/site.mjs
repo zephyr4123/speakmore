@@ -4,7 +4,7 @@
 // 第一步只收纳、不改观感：值照搬原来写在 JSX 和 styles.css 里的，只并了肉眼看不出的几处（README.md 的合并记录）。
 
 import cinnabar from "../themes/cinnabar.mjs";
-import { RADIUS } from "./base.mjs";
+import { BAR_DROP, RADIUS } from "./base.mjs";
 import { fluid } from "./css.mjs";
 
 /** @type {{ comment?: string, tokens: [string, string][] }[]} 写进 @theme：Tailwind 按名字生成 text-lead、rounded-tile 这类工具类 */
@@ -113,14 +113,13 @@ export const SITE_THEME = [
   },
   {
     comment: `流体的字号：clamp(手机, 视口宽度, 宽屏)。
-     hero 首屏标题 · closing 收尾的下载标题 · section 区块标题（Section.jsx 的 Heading）· section-center 居中的区块标题
+     hero 首屏标题 · closing 收尾的下载标题 · section 区块标题（Section.jsx 的 Heading）
      statement 隐私一段的大字 · title 卡片里的大标题 · card-title 三项功能卡的标题 · subhead 标题下面那句话
      price 费用 · stat 速度的大数字 · stat-sm 速度的次一级数字`,
     tokens: [
       ["text-hero", fluid("2.5rem", 6.5, "4.75rem")],
       ["text-closing", fluid("2.75rem", 7, "5rem")],
       ["text-section", fluid("2.125rem", 4.6, "3.75rem")],
-      ["text-section-center", fluid("2.4rem", 6, "4.5rem")],
       ["text-statement", fluid("2rem", 4, "3rem")],
       ["text-title", fluid("1.5rem", 2.6, "2rem")],
       ["text-card-title", fluid("1.25rem", 2, "1.5rem")],
@@ -179,7 +178,7 @@ export const SITE_THEME = [
       ["shadow-card", "0 0 0 1px var(--color-line), 0 24px 60px -28px oklch(0 0 0 / 0.35)"],
       ["shadow-window", "0 0 0 1px oklch(0 0 0 / 0.06), 0 40px 80px -40px oklch(0.2 0.03 255 / 0.55)"],
       ["shadow-bar-edge", "0 0 0 1px var(--color-bar-edge)"],
-      ["shadow-bar", "0 0 0 1px var(--color-bar-edge), 0 6px 18px oklch(0 0 0 / 0.3), 0 2px 5px oklch(0 0 0 / 0.2)"],
+      ["shadow-bar", `0 0 0 1px var(--color-bar-edge), ${BAR_DROP}`],
       ["drop-shadow-float", "0 14px 24px oklch(0 0 0 / 0.28)"],
     ],
   },

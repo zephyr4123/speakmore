@@ -77,13 +77,12 @@
   --text-heading--line-height: calc(1.75 / 1.125);
 
   /* 流体的字号：clamp(手机, 视口宽度, 宽屏)。
-     hero 首屏标题 · closing 收尾的下载标题 · section 区块标题（Section.jsx 的 Heading）· section-center 居中的区块标题
+     hero 首屏标题 · closing 收尾的下载标题 · section 区块标题（Section.jsx 的 Heading）
      statement 隐私一段的大字 · title 卡片里的大标题 · card-title 三项功能卡的标题 · subhead 标题下面那句话
      price 费用 · stat 速度的大数字 · stat-sm 速度的次一级数字 */
   --text-hero: clamp(2.5rem, 6.5vw, 4.75rem);
   --text-closing: clamp(2.75rem, 7vw, 5rem);
   --text-section: clamp(2.125rem, 4.6vw, 3.75rem);
-  --text-section-center: clamp(2.4rem, 6vw, 4.5rem);
   --text-statement: clamp(2rem, 4vw, 3rem);
   --text-title: clamp(1.5rem, 2.6vw, 2rem);
   --text-card-title: clamp(1.25rem, 2vw, 1.5rem);

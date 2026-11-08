@@ -57,33 +57,14 @@ function Inline({ text }) {
 }
 
 /**
- * 每段的大标题，靠左一行（见 Inline）；给了 lead 时那句话放在右边一栏、和标题的底边对齐，窄屏上下排。
- * center：居中，给只有一行标题、没有那句话的段落
+ * 每段的大标题，靠左一行（见 Inline）
  */
-export function Heading({ id, title, lead, align = "split" }) {
-  if (align === "center") {
-    return (
-      <header className="reveal mx-auto max-w-3xl text-center">
-        <h2 id={id} className="display text-section-center">
-          <Lines text={title} />
-        </h2>
-      </header>
-    );
-  }
-  const heading = (
-    <h2 id={id} className="display text-section break-keep">
-      <Inline text={title} />
-    </h2>
-  );
-  if (!lead) return <header className="reveal mb-heading-gap">{heading}</header>;
+export function Heading({ id, title }) {
   return (
-    <header className="reveal grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
-      {heading}
-      {/* 中文只在标点和空格处换行，不把一个词拆到两行；几行尽量一样长，不剩一个短尾巴 */}
-      {/* token-exempt: 底边和左边大标题的基线对齐，按字号算 */}
-      <p className="max-w-[30rem] text-subhead leading-relaxed text-balance break-keep wrap-anywhere text-ink-2 lg:justify-self-end lg:pb-[0.3em]">
-        {lead}
-      </p>
+    <header className="reveal mb-heading-gap">
+      <h2 id={id} className="display text-section break-keep">
+        <Inline text={title} />
+      </h2>
     </header>
   );
 }

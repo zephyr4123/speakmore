@@ -2,7 +2,7 @@
 // 颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。
 // 生成 src/renderer/shared/tokens.css（npm run tokens）。一组一段注释，照原样写进生成的文件。
 
-import { RADIUS, SPACE_UNIT } from "./base.mjs";
+import { BAR_DROP, RADIUS, SPACE_UNIT } from "./base.mjs";
 
 const unit = Number.parseFloat(SPACE_UNIT);
 const space = (n) => `${n * unit}rem`;
@@ -75,6 +75,28 @@ export const APP_TOKENS = [
     ],
   },
   {
+    comment: `阴影，从低到高：control 键帽、品牌图标的底座 · selected 侧栏、分段控件里选中的那一项 · knob 开关的圆钮
+     lift 浮在光上的卡片（深色另有一份，见下面的 :root 深色段）· popover 下拉、菜单 · dialog 对话框、设置
+     card 划词卡片（窗口只比卡片大一圈，影子不能更长）· scene 引导里画的那扇窗 · bar、bar-menu 悬浮条和它的菜单。
+     popover、dialog、card 只是投影：用的地方前面接 var(--edge)（细线加上沿亮边，跟主题走，在 window.css）`,
+    tokens: [
+      ["shadow-control", "0 1px 2px oklch(0 0 0 / 0.06)"],
+      ["shadow-selected", "0 1px 3px oklch(0 0 0 / 0.08)"],
+      ["shadow-knob", "0 1px 2px oklch(0 0 0 / 0.25)"],
+      ["lift", "0 1px 2px oklch(0 0 0 / 0.04), 0 10px 30px -12px oklch(0 0 0 / 0.12)"],
+      ["shadow-popover", "0 24px 60px -20px oklch(0 0 0 / 0.35)"],
+      ["shadow-dialog", "0 30px 80px -24px oklch(0 0 0 / 0.4)"],
+      ["shadow-card", "0 12px 28px -10px oklch(0 0 0 / 0.34)"],
+      ["shadow-scene", "0 24px 48px -24px oklch(0 0 0 / 0.32)"],
+      ["shadow-bar", `0 0 0 1px var(--bar-edge), ${BAR_DROP}`],
+      ["shadow-bar-menu", "0 0 0 1px var(--bar-edge), 0 8px 24px oklch(0 0 0 / 0.28)"],
+    ],
+  },
+  {
+    comment: "对话框背后压暗的那一层：深浅色都是黑的（用 --ink 的话深色下成了一层白雾）",
+    tokens: [["scrim", "oklch(0 0 0 / 0.18)"]],
+  },
+  {
     comment: "列表里定宽的两列：状态、操作。控件撑满列宽，各行的边缘才对得齐",
     tokens: [
       ["col-status", "6rem"],
@@ -98,5 +120,12 @@ export const APP_TOKENS = [
   },
 ];
 
-export const APP_HEADER = `三个页面共用、不随主题变的 token：字、间距、控件尺寸、圆角、动效。
+/** 深色下另给一份的：浮起来的卡片在深底上要更重的影子才看得出 */
+export const APP_DARK = [
+  {
+    tokens: [["lift", "0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -12px oklch(0 0 0 / 0.5)"]],
+  },
+];
+
+export const APP_HEADER = `各页面共用、不随主题变的 token：字、间距、控件尺寸、圆角、阴影、动效。
    颜色不在这里：那是主题的事（src/themes），由预加载脚本赶在页面画出来之前注入。`;

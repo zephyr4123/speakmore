@@ -40,13 +40,14 @@ test("主题给的每个变量都有地方用：没有白定义的", () => {
   );
 });
 
-test("样式里不写死颜色：只有阴影用的半透明黑例外", () => {
+test("样式里不写死颜色：阴影、压暗用的半透明黑也只在 tokens.css 里（src/design/app.mjs 生成），用的地方引用 --shadow-*、--lift、--scrim", () => {
   for (const { name, css } of sheets) {
     const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
     const literals =
       withoutComments.match(/#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab|lab|lch|color)\([^)]*\)/gi) ?? [];
+    const allowed = name === join("shared", "tokens.css") ? /^oklch\(0 0 0 \/ [\d.]+\)$/ : /$^/;
     assert.deepEqual(
-      literals.filter((literal) => !/^oklch\(0 0 0 \/ [\d.]+\)$/.test(literal)),
+      literals.filter((literal) => !allowed.test(literal)),
       [],
       name,
     );

@@ -112,9 +112,7 @@ body[data-shown="false"] .shell {
   padding: 4px;
   background: var(--bar-surface);
   border-radius: 12px;
-  box-shadow:
-    0 0 0 1px var(--bar-edge),
-    0 8px 24px oklch(0 0 0 / 0.28);
+  box-shadow: var(--shadow-bar-menu);
 }
 
 .feature-chip[data-open] .menu {
@@ -225,10 +223,7 @@ body[data-shown="false"] .shell {
   background: var(--bar-surface);
   /* 一行高时正好是两头全圆；报错写成两行时是圆角矩形 */
   border-radius: 20px;
-  box-shadow:
-    0 0 0 1px var(--bar-edge),
-    0 6px 18px oklch(0 0 0 / 0.3),
-    0 2px 5px oklch(0 0 0 / 0.2);
+  box-shadow: var(--shadow-bar);
 }
 
 .control {

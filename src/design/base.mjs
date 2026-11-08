@@ -10,3 +10,6 @@ export const RADIUS = Object.freeze({
   block: "12px",
   card: "1rem",
 });
+
+/** 悬浮条浮起来的那两层投影。App 的悬浮条（--shadow-bar）和官网照着它画的演示条（shadow-bar）用同一组 */
+export const BAR_DROP = "0 6px 18px oklch(0 0 0 / 0.3), 0 2px 5px oklch(0 0 0 / 0.2)";

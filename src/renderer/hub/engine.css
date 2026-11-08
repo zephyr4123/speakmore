@@ -1039,7 +1039,7 @@ body:has(.page[data-route="models"]:not([hidden])) .toast {
 
 /* 和设置、词典对话框一样压暗：用 --ink 的话深色下变成一层白雾 */
 .sheet::backdrop {
-  background: oklch(0 0 0 / 0.18);
+  background: var(--scrim);
 }
 
 .sheet-head {
