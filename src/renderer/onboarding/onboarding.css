@@ -243,13 +243,13 @@ body[data-step="splash"] .steps {
 
 /* ---------- 功能：标题、演示、底下三个功能一排 ---------- */
 
+/* 标题和演示左边对齐：引导里只有开屏居中，其余几步都靠左（Windows、苹果的设置流程都是这样） */
 .step.stacked {
-  align-items: center;
+  width: min(100%, 55rem);
 }
 
 .stacked .step-title {
   margin-bottom: 0.75rem;
-  text-align: center;
 }
 
 .stage-scene {
@@ -473,13 +473,13 @@ body[data-step="splash"] .steps {
 
 /* ---------- 引擎：哪些齐了，去引擎页 ---------- */
 
+/* 和快捷键、权限两步一样：一栏、靠左 */
 .step.engine-step {
-  align-items: center;
-  text-align: center;
+  width: min(100%, 30rem);
 }
 
 .summary {
-  width: min(100%, 26rem);
+  width: 100%;
   margin: 0 0 2rem;
   padding: 0;
   list-style: none;
@@ -524,7 +524,6 @@ body[data-step="splash"] .steps {
 
 .engine-actions {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
