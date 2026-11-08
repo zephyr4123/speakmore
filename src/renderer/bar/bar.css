@@ -404,14 +404,15 @@ body[data-view="done"] .tick path {
 }
 
 .message span {
-  /* 可能是一整句话：最多两行，再长就截断；要折时中文在标点处折，不把「文字」拆开 */
+  /* 可能是一整句话：最多两行，再长就截断；要折时中文在标点处折，不把「文字」拆开。
+     用 pretty 不用 balance：balance 把两行拉成一样短，盒子却不跟着收窄，胶囊右边空出一大块（英文的提示常常两行） */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   word-break: keep-all;
   overflow-wrap: anywhere;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 .warning {
