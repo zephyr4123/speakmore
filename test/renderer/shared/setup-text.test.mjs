@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createTranslator } from "../../../src/i18n/index.mjs";
-import { describeError, homeText, permissionGranted, permissionText } from "../../../src/renderer/shared/setup-text.mjs";
+import {
+  describeError,
+  homeText,
+  permissionGranted,
+  permissionText,
+} from "../../../src/renderer/shared/setup-text.mjs";
 
 // 按 macOS 的说法查；Windows 那几句的说法在 i18n 的测试里查
 const zh = createTranslator("zh-CN", "darwin");

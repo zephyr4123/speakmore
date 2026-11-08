@@ -46,7 +46,10 @@ export function Nav() {
   ];
   const anchors = items.map(([id, label]) => (
     <li key={id} className="shrink-0">
-      <a href={`#${id}`} className="inline-flex h-nav-anchors items-center transition-colors duration-150 hover:text-ink">
+      <a
+        href={`#${id}`}
+        className="inline-flex h-nav-anchors items-center transition-colors duration-150 hover:text-ink"
+      >
         {label}
       </a>
     </li>
